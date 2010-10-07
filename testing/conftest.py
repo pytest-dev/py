@@ -1,3 +1,3 @@
 
-pytest_plugins = "skipping", "pytester", "tmpdir"
+pytest_plugins = "pytester",
 

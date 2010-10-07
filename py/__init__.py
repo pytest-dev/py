@@ -8,7 +8,7 @@ dictionary or an import path.
 
 (c) Holger Krekel and others, 2004-2010
 """
-__version__ = version = "1.4.0a1"
+__version__ = version = "2.0.0a1"
 
 import py.apipkg
 
@@ -21,35 +21,7 @@ py.apipkg.initpkg(__name__, dict(
     _pydir = '.__metainfo:pydir',
     version = 'py:__version__', # backward compatibility
 
-    cmdline = {
-        'pytest':     '._cmdline.pytest:main',
-        'pylookup':   '._cmdline.pylookup:main',
-        'pycountloc': '._cmdline.pycountlog:main',
-        'pylookup':   '._cmdline.pylookup:main',
-        'pycountloc': '._cmdline.pycountloc:main',
-        'pycleanup':  '._cmdline.pycleanup:main',
-        'pywhich'        : '._cmdline.pywhich:main',
-        'pysvnwcrevert'  : '._cmdline.pysvnwcrevert:main',
-        'pyconvert_unittest'  : '._cmdline.pyconvert_unittest:main',
-    },
-
-    test = {
-        # helpers for use from test functions or collectors
-        '__onfirstaccess__' : '._test.config:onpytestaccess',
-        '__doc__'           : '._test:__doc__',
-        # configuration/initialization related test api
-        'config'            : '._test.config:config_per_process',
-        'ensuretemp'        : '._test.config:ensuretemp',
-        'collect': {
-            'Collector' : '._test.collect:Collector',
-            'Directory' : '._test.collect:Directory',
-            'File'      : '._test.collect:File',
-            'Item'      : '._test.collect:Item',
-        },
-        'cmdline': {
-            'main' : '._test.session:main', # backward compat
-        },
-    },
+    test = 'pytest', # defer to pytest package
 
     # hook into the top-level standard library
     process = {

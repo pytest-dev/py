@@ -30,7 +30,9 @@ def initpkg(pkgname, exportdefs):
 
 def importobj(modpath, attrname):
     module = __import__(modpath, None, None, ['__doc__'])
-    return getattr(module, attrname)
+    if attrname:
+        return getattr(module, attrname)
+    return module
 
 class ApiModule(ModuleType):
     def __init__(self, name, importspec, implprefix=None, attr=None):
@@ -49,7 +51,9 @@ class ApiModule(ModuleType):
                 sys.modules[subname] = apimod
                 setattr(self, name, apimod)
             else:
-                modpath, attrname = importspec.split(':')
+                parts = importspec.split(':')
+                modpath = parts.pop(0)
+                attrname = parts and parts[0] or ""
                 if modpath[0] == '.':
                     modpath = implprefix + modpath
                 if name == '__doc__':

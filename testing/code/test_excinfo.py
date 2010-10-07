@@ -115,7 +115,7 @@ class TestTraceback_f_g_h:
     def test_traceback_cut_excludepath(self, testdir):
         p = testdir.makepyfile("def f(): raise ValueError")
         excinfo = py.test.raises(ValueError, "p.pyimport().f()")
-        basedir = py._pydir
+        basedir = py.path.local(py.test.__file__).dirpath()
         newtraceback = excinfo.traceback.cut(excludepath=basedir)
         for x in newtraceback:
             if hasattr(x, 'path'):
