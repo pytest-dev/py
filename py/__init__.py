@@ -39,16 +39,6 @@ py.apipkg.initpkg(__name__, dict(
         'SvnAuth'        : '._path.svnwc:SvnAuth',
     },
 
-    # some nice slightly magic APIs
-    magic = {
-        'invoke'           : '._code.oldmagic:invoke',
-        'revoke'           : '._code.oldmagic:revoke',
-        'patch'            : '._code.oldmagic:patch',
-        'revert'           : '._code.oldmagic:revert',
-        'autopath'         : '._path.local:autopath',
-        'AssertionError'   : '._code.oldmagic2:AssertionError',
-    },
-
     # python inspection/code-generation API
     code = {
         '__doc__'           : '._code:__doc__',
