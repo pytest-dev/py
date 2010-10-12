@@ -533,7 +533,7 @@ class LocalPath(FSBase):
                 modfile = modfile[:-1]
             elif modfile.endswith('$py.class'):
                 modfile = modfile[:-9] + '.py'
-            if modfile.endswith("__init__.py"):
+            if modfile.endswith(os.path.sep + "__init__.py"):
                 if self.basename != "__init__.py":
                     modfile = modfile[:-12]
             if not self.samefile(modfile):

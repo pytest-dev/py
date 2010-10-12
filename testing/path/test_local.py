@@ -304,6 +304,11 @@ class TestImport:
         assert obj.x == 42
         assert obj.__name__ == 'execfile'
 
+    def test_pyimport_messy_name(self, tmpdir):
+        # http://bitbucket.org/hpk42/py-trunk/issue/129
+        path = tmpdir.ensure('foo__init__.py')
+        obj = path.pyimport()
+
     def test_pyimport_dir(self, tmpdir):
         p = tmpdir.join("hello_123")
         p_init = p.ensure("__init__.py")
