@@ -24,7 +24,7 @@ def main():
         name='pylib',
         description='pylib: cross-python path, io, code, log facilities',
         long_description = long_description,
-        #install_requires=['py>=1.3.9', ], # force newer py version which removes 'py' namespace
+        install_requires=['py>=1.3.9', ], # force newer py version which removes 'py' namespace
         #                                  # so we can occupy it
         version= '2.0.0.dev0',
         url='http://pylib.org',

@@ -1,7 +1,7 @@
 import py
 import sys
 
-pytest_plugins = '_pytest doctest pytester'.split()
+pytest_plugins = 'doctest pytester'.split()
 
 collect_ignore = ['build', 'doc/_build']
 
