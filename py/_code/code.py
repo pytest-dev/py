@@ -711,9 +711,12 @@ def unpatch_builtins(assertion=True, compile=True):
 
 def getrawcode(obj):
     """ return code object for given function. """
-    obj = getattr(obj, 'im_func', obj)
-    obj = getattr(obj, 'func_code', obj)
-    obj = getattr(obj, 'f_code', obj)
-    obj = getattr(obj, '__code__', obj)
-    return obj
+    try:
+        return obj.__code__
+    except AttributeError:
+        obj = getattr(obj, 'im_func', obj)
+        obj = getattr(obj, 'func_code', obj)
+        obj = getattr(obj, 'f_code', obj)
+        obj = getattr(obj, '__code__', obj)
+        return obj
 
