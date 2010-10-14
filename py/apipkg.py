@@ -9,9 +9,9 @@ import os
 import sys
 from types import ModuleType
 
-__version__ = "1.0b7"
+__version__ = "1.1"
 
-def initpkg(pkgname, exportdefs):
+def initpkg(pkgname, exportdefs, attr=dict()):
     """ initialize given package from the export definitions. """
     oldmod = sys.modules[pkgname]
     d = {}
@@ -19,20 +19,29 @@ def initpkg(pkgname, exportdefs):
     if f:
         f = os.path.abspath(f)
     d['__file__'] = f
-    d['__version__'] = getattr(oldmod, '__version__', '0')
+    if hasattr(oldmod, '__version__'):
+        d['__version__'] = oldmod.__version__
     if hasattr(oldmod, '__loader__'):
         d['__loader__'] = oldmod.__loader__
     if hasattr(oldmod, '__path__'):
         d['__path__'] = [os.path.abspath(p) for p in oldmod.__path__]
+    if hasattr(oldmod, '__doc__'):
+        d['__doc__'] = oldmod.__doc__
+    d.update(attr)
     oldmod.__dict__.update(d)
     mod = ApiModule(pkgname, exportdefs, implprefix=pkgname, attr=d)
     sys.modules[pkgname]  = mod
 
 def importobj(modpath, attrname):
     module = __import__(modpath, None, None, ['__doc__'])
-    if attrname:
-        return getattr(module, attrname)
-    return module
+    if not attrname:
+        return module
+
+    retval = module
+    names = attrname.split(".")
+    for x in names:
+        retval = getattr(retval, x)
+    return retval
 
 class ApiModule(ModuleType):
     def __init__(self, name, importspec, implprefix=None, attr=None):

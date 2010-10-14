@@ -2,10 +2,12 @@
 Changes between 1.3.4 and 2.0.0dev0
 ==================================================
 
-- py.test was moved to its own "pytest" package
-- command line tools moved to "pytools" package
-- pylib now only has some cross-platform utilities
+- py.test was moved to a separate "pytest" package. What remains is
+  a stub hook which will proxy ``import py.test`` to ``pytest``.
+- all command line tools ("py.cleanup/lookup/countloc/..." moved 
+  to "pytools" package)
 - removed the old deprecated "py.magic" namespace
+- use apipkg-1.1
 
 Changes between 1.3.3 and 1.3.4
 ==================================================
