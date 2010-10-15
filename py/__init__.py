@@ -31,6 +31,11 @@ py.apipkg.initpkg(__name__, dict(
         'ForkedFunc'     : '._process.forkedfunc:ForkedFunc',
     },
 
+    iniconfig = {
+        'IniConfig'      : '._iniconfig:IniConfig',
+        'ParseError'     : '._iniconfig:ParseError',
+    },
+
     path = {
         '__doc__'        : '._path:__doc__',
         'svnwc'          : '._path.svnwc:SvnWCCommandPath',

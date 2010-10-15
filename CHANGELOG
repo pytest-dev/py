@@ -8,6 +8,7 @@ Changes between 1.3.4 and 2.0.0dev0
   to "pytools" package)
 - removed the old deprecated "py.magic" namespace
 - use apipkg-1.1
+- add py.iniconfig package for brain-dead easy ini-config file parsing
 
 Changes between 1.3.3 and 1.3.4
 ==================================================

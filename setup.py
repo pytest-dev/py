@@ -7,6 +7,11 @@ from setuptools import setup
 long_description = """
 pylib: cross-python development utils
 
+py.path.local: local path objects
+py.path.svnwc: local subversion WC paths
+py.iniconfig.IniConfig: Parser for IniConfig files
+py.io: io-capturing on filedescriptor or sys.* level
+
 Platforms: Linux, Win32, OSX
 
 Interpreters: Python versions 2.4 through to 3.2, Jython 2.5.1 and PyPy
