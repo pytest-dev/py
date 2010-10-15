@@ -10,9 +10,9 @@ dictionary or an import path.
 """
 __version__ = version = "2.0.0a1"
 
-import py.apipkg
+from py import _apipkg
 
-py.apipkg.initpkg(__name__, dict(
+_apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
     # access to all standard lib modules
     std = '._std:std',
     # access to all posix errno's as classes
@@ -29,6 +29,11 @@ py.apipkg.initpkg(__name__, dict(
         'cmdexec'        : '._process.cmdexec:cmdexec',
         'kill'           : '._process.killproc:kill',
         'ForkedFunc'     : '._process.forkedfunc:ForkedFunc',
+    },
+
+    apipkg = {
+        'initpkg'   : '._apipkg:initpkg',
+        'ApiModule' : '._apipkg:ApiModule',
     },
 
     iniconfig = {
