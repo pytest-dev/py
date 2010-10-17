@@ -288,7 +288,7 @@ def test_onfirstaccess(tmpdir, monkeypatch):
 
 @py.test.mark.multi(mode=['attr', 'dict', 'onfirst'])
 def test_onfirstaccess_setsnewattr(tmpdir, monkeypatch, mode):
-    pkgname = tmpdir.basename.replace("-", "")
+    pkgname = 'mode_' + mode
     pkgdir = tmpdir.mkdir(pkgname)
     pkgdir.join('__init__.py').write(py.code.Source("""
         from py import apipkg
@@ -329,10 +329,12 @@ def test_bpython_getattr_override(tmpdir, monkeypatch):
 
 
 def test_chdir_with_relative_imports_shouldnt_break_lazy_loading(tmpdir):
+    from py import _apipkg  # cause py.apipkg is a apimodule
+    tmpdir.join('apipkg.py').write(py.code.Source(_apipkg))
     pkg = tmpdir.mkdir('pkg')
     messy = tmpdir.mkdir('messy')
     pkg.join('__init__.py').write(py.code.Source("""
-        from py import apipkg
+        import apipkg
         apipkg.initpkg(__name__, {
             'test': '.sub:test',
         })
@@ -345,14 +347,16 @@ def test_chdir_with_relative_imports_shouldnt_break_lazy_loading(tmpdir):
         sys.path.insert(0, '')
         import pkg
         import py
+        print(py.__file__)
         py.builtin.print_(pkg.__path__, file=sys.stderr)
         py.builtin.print_(pkg.__file__, file=sys.stderr)
         py.builtin.print_(pkg, file=sys.stderr)
         os.chdir('messy')
         pkg.test()
+        assert os.path.isabs(pkg.sub.__file__), pkg.sub.__file__
     """))
     res = subprocess.call(
-        ['python', 'main.py'],
+        [py.std.sys.executable, 'main.py'],
         cwd=str(tmpdir),
     )
     assert res == 0
