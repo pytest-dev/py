@@ -75,6 +75,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
         'reversed'       : '._builtin:reversed',
         'sorted'         : '._builtin:sorted',
         'any'            : '._builtin:any',
+        'all'            : '._builtin:all',
         'set'            : '._builtin:set',
         'frozenset'      : '._builtin:frozenset',
         'BaseException'  : '._builtin:BaseException',

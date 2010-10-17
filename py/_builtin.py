@@ -45,6 +45,15 @@ except NameError:
         return False
 
 try:
+    all = all
+except NameError:
+    def all(iterable):
+        for x in iterable:
+            if not x:
+                return False
+        return True
+
+try:
     sorted = sorted
 except NameError:
     builtin_cmp = cmp # need to use cmp as keyword arg
