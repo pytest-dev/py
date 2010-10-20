@@ -9,6 +9,7 @@ Changes between 1.3.4 and 2.0.0dev0
 - removed the old deprecated "py.magic" namespace
 - use apipkg-1.1 and make py.apipkg.initpkg|ApiModule available
 - add py.iniconfig module for brain-dead easy ini-config file parsing
+- introduce py.builtin.any()
 
 Changes between 1.3.3 and 1.3.4
 ==================================================
