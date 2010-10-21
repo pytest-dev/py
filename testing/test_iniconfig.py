@@ -81,6 +81,10 @@ check_tokens = {
         'value:xyz=5',
         [(0, None, 'value:xyz', '5')]
     ),
+    'equality gets precedence': (
+        'value=xyz:5',
+        [(0, None, 'value', 'xyz:5')]
+    ),
 
 }
    
