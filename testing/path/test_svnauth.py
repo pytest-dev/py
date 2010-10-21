@@ -99,6 +99,8 @@ class svnwc_no_svn(py.path.svnwc):
 
 class TestSvnWCAuth(object):
     def setup_method(self, meth):
+        if not svnbin:
+            py.test.skip("svn binary required")
         self.auth = SvnAuth('user', 'pass', cache_auth=False)
 
     def test_checkout(self):
