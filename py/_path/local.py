@@ -528,6 +528,9 @@ class LocalPath(FSBase):
                     self._prependsyspath(self.dirpath())
                 modname = self.purebasename
             mod = __import__(modname, None, None, ['__doc__'])
+            if self.basename == "__init__.py":
+                return mod # we don't check anything as we might
+                       # we in a namespace package ... too icky to check
             modfile = mod.__file__
             if modfile[-4:] in ('.pyc', '.pyo'):
                 modfile = modfile[:-1]
@@ -536,6 +539,7 @@ class LocalPath(FSBase):
             if modfile.endswith(os.path.sep + "__init__.py"):
                 if self.basename != "__init__.py":
                     modfile = modfile[:-12]
+
             if not self.samefile(modfile):
                 raise self.ImportMismatchError(modname, modfile, self)
             return mod

@@ -376,6 +376,16 @@ class TestImport:
         assert orig == p
         assert issubclass(pseudopath.ImportMismatchError, ImportError)
 
+    def test_issue131_pyimport_on__init__(self, tmpdir):
+        # __init__.py files may be namespace packages, and thus the
+        # __file__ of an imported module may not be ourselves
+        # see issue
+        p1 = tmpdir.ensure("proja", "__init__.py")
+        p2 = tmpdir.ensure("sub", "proja", "__init__.py")
+        m1 = p1.pyimport()
+        m2 = p2.pyimport()
+        assert m1 == m2
+
 def test_pypkgdir(tmpdir):
     pkg = tmpdir.ensure('pkg1', dir=1)
     pkg.ensure("__init__.py")
