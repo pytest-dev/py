@@ -62,7 +62,6 @@ class FDCapture:
             if hasattr(self, '_oldsys'):
                 setattr(sys, patchsysdict[self.targetfd], DontReadFromInput())
         else:
-            fd = self.tmpfile.fileno()
             os.dup2(self.tmpfile.fileno(), self.targetfd)
             if hasattr(self, '_oldsys'):
                 setattr(sys, patchsysdict[self.targetfd], self.tmpfile)
@@ -156,7 +155,10 @@ class Capture(object):
 
     def reset(self):
         """ reset sys.stdout/stderr and return captured output as strings. """
-        outfile, errfile = self.done()
+        if hasattr(self, '_reset'):
+            raise ValueError("was already reset")
+        self._reset = True
+        outfile, errfile = self.done(save=False)
         out, err = "", ""
         if outfile and not outfile.closed:
             out = outfile.read()
@@ -234,7 +236,7 @@ class StdCaptureFD(Capture):
         """ resume capturing with original temp files. """
         self.startall()
 
-    def done(self):
+    def done(self, save=True):
         """ return (outfile, errfile) and stop capturing. """
         outfile = errfile = None
         if hasattr(self, 'out') and not self.out.tmpfile.closed:
@@ -243,7 +245,8 @@ class StdCaptureFD(Capture):
             errfile = self.err.done()
         if hasattr(self, 'in_'):
             tmpfile = self.in_.done()
-        self._save()
+        if save:
+            self._save()
         return outfile, errfile
 
     def readouterr(self):
@@ -291,7 +294,7 @@ class StdCapture(Capture):
         if self.in_:
             sys.stdin  = self.in_  = DontReadFromInput()
 
-    def done(self):
+    def done(self, save=True):
         """ return (outfile, errfile) and stop capturing. """
         outfile = errfile = None
         if self.out and not self.out.closed:
