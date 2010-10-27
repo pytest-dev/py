@@ -1,5 +1,5 @@
 import py
-from py.iniconfig import IniConfig, ParseError
+from py._iniconfig import IniConfig, ParseError, __all__ as ALL
 from textwrap import dedent
 
 def pytest_generate_tests(metafunc):
@@ -171,6 +171,9 @@ def test_iniconfig_lineof():
     assert config.lineof('section2') == 3
     assert config.lineof('section', 'value') == 2
     assert config.lineof('section2','value') == 5
+    
+    assert config['section'].lineof('value') == 2
+    assert config['section2'].lineof('value') == 5
 
 def test_iniconfig_get_convert():
     config= IniConfig("x", data='[section]\nint = 1\nfloat = 1.1')
@@ -270,3 +273,5 @@ def test_example_pypirc():
     assert ['repository', 'username', 'password'] == list(other)
 
 
+def test_api_import():
+    assert ALL == ['IniConfig', 'ParseError']
