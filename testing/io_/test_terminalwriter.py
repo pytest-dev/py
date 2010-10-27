@@ -1,6 +1,7 @@
 import py
 import os, sys
 from py._io import terminalwriter
+import codecs
 
 def test_get_terminal_width():
     x = py.io.get_terminal_width
@@ -79,12 +80,12 @@ class TestTerminalWriter:
         if request.param == "path":
             tmpdir = request.getfuncargvalue("tmpdir")
             p = tmpdir.join("tmpfile")
-            import codecs
             f = codecs.open(str(p), 'w+', encoding='utf8')
             tw = py.io.TerminalWriter(f)
             def getlines():
                 tw._file.flush()
-                return p.open('r').readlines()
+                return codecs.open(str(p), 'r',
+                    encoding='utf8').readlines()
         elif request.param == "stringio":
             tw = py.io.TerminalWriter(stringio=True)
             def getlines():
