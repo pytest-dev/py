@@ -79,7 +79,9 @@ class TestTerminalWriter:
         if request.param == "path":
             tmpdir = request.getfuncargvalue("tmpdir")
             p = tmpdir.join("tmpfile")
-            tw = py.io.TerminalWriter(p.open('w+'))
+            import codecs
+            f = codecs.open(str(p), 'w+', encoding='utf8')
+            tw = py.io.TerminalWriter(f)
             def getlines():
                 tw._file.flush()
                 return p.open('r').readlines()
