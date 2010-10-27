@@ -1,7 +1,7 @@
 """ brain-dead simple parser for ini-style files.
 (C) Ronny Pfannschmidt, Holger Krekel -- MIT licensed
 """
-__version__ = "0.2.dev0"
+__version__ = "0.2.dev2"
 
 __all__ = ['IniConfig', 'ParseError']
 
@@ -19,6 +19,9 @@ class SectionWrapper(object):
     def __init__(self, config, name):
         self.config = config
         self.name = name
+
+    def lineof(self, name):
+        return self.config.lineof(self.name, name)
 
     def get(self, key, default=None, convert=str):
         return self.config.get(self.name, key, convert=convert, default=default)
