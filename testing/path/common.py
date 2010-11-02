@@ -68,6 +68,10 @@ class CommonFSTests(object):
         assert newpath.check(basename='sampledir')
         assert newpath.basename, 'sampledir'
 
+    def test_dirname(self, path1):
+        newpath = path1.join('sampledir')
+        assert newpath.dirname == str(path1)
+
     def test_dirpath(self, path1):
         newpath = path1.join('sampledir')
         assert newpath.dirpath() == path1

@@ -91,6 +91,11 @@ class PathBase(object):
         return self._getbyspec('basename')[0]
     basename = property(basename, None, None, basename.__doc__)
 
+    def dirname(self):
+        """ dirname part of path. """
+        return self._getbyspec('dirname')[0]
+    dirname = property(dirname, None, None, dirname.__doc__)
+
     def purebasename(self):
         """ pure base name of the path."""
         return self._getbyspec('purebasename')[0]
