@@ -268,7 +268,7 @@ newline will be removed from the end of each line. """
         except AttributeError:
             return str(self) < str(other)
 
-    def visit(self, fil=None, rec=None, ignore=NeverRaised):
+    def visit(self, fil=None, rec=None, ignore=NeverRaised, bf=False, sort=False):
         """ yields all paths below the current one
 
             fil is a filter (glob pattern or callable), if not matching the
@@ -280,26 +280,14 @@ newline will be removed from the end of each line. """
 
             ignore is an Exception class that is ignoredwhen calling dirlist()
             on any of the paths (by default, all exceptions are reported)
+
+            bf if True will cause a breadthfirst search instead of the
+            default depthfirst. Default: False
+
+            sort if True will sort entries within each directory level.
         """
-        if isinstance(fil, str):
-            fil = FNMatcher(fil)
-        if rec:
-            if isinstance(rec, str):
-                rec = fnmatch(fil)
-            elif not hasattr(rec, '__call__'):
-                rec = None
-        try:
-            entries = self.listdir()
-        except ignore:
-            return
-        dirs = [p for p in entries
-                    if p.check(dir=1) and (rec is None or rec(p))]
-        for subdir in dirs:
-            for p in subdir.visit(fil=fil, rec=rec, ignore=ignore):
-                yield p
-        for p in entries:
-            if fil is None or fil(p):
-                yield p
+        for x in Visitor(fil, rec, ignore, bf, sort).gen(self):
+            yield x
 
     def _sortlist(self, res, sort):
         if sort:
@@ -311,6 +299,41 @@ newline will be removed from the end of each line. """
     def samefile(self, other):
         """ return True if other refers to the same stat object as self. """
         return self.strpath == str(other)
+
+class Visitor:
+    def __init__(self, fil, rec, ignore, bf, sort):
+        if isinstance(fil, str):
+            fil = FNMatcher(fil)
+        if rec:
+            if isinstance(rec, str):
+                rec = fnmatch(fil)
+            else:
+                assert hasattr(rec, '__call__')
+        self.fil = fil
+        self.rec = rec
+        self.ignore = ignore
+        self.breadthfirst = bf
+        self.optsort = sort and sorted or (lambda x: x)
+
+    def gen(self, path):
+        try:
+            entries = path.listdir()
+        except self.ignore:
+            return
+        rec = self.rec
+        dirs = self.optsort([p for p in entries
+                    if p.check(dir=1) and (rec is None or rec(p))])
+        if not self.breadthfirst:
+            for subdir in dirs:
+                for p in self.gen(subdir):
+                    yield p
+        for p in self.optsort(entries):
+            if self.fil is None or self.fil(p):
+                yield p
+        if self.breadthfirst:
+            for subdir in dirs:
+                for p in self.gen(subdir):
+                    yield p
 
 class FNMatcher:
     def __init__(self, pattern):
