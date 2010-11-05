@@ -46,10 +46,13 @@ class IniConfig(object):
         self.path = str(path) # convenience
         if data is None:
             f = open(self.path)
-            data = f.read()
-            f.close()
-        tokens = self._parse(data)
-        
+            try:
+                tokens = self._parse(iter(f))
+            finally:
+                f.close()
+        else:
+            tokens = self._parse(data.splitlines(True))
+
         self._sources = {}
         self.sections = {}
 
@@ -69,10 +72,10 @@ class IniConfig(object):
     def _raise(self, lineno, msg):
         raise ParseError(self.path, lineno, msg)
 
-    def _parse(self, data):
+    def _parse(self, line_iter):
         result = []
         section = None
-        for lineno, line in enumerate(data.splitlines(True)):
+        for lineno, line in enumerate(line_iter):
             name, data = self._parseline(line, lineno)
             # new value
             if name is not None and data is not None:
@@ -116,7 +119,7 @@ class IniConfig(object):
                 try:
                     name, value = line.split(": ", 1)
                 except ValueError:
-                    self._raise(lineno, 'unexpected line: %s')
+                    self._raise(lineno, 'unexpected line: %r' % line)
             return name.strip(), value.strip()
         # continuation
         else:

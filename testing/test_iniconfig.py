@@ -92,7 +92,7 @@ def parse(input):
     # only for testing purposes - _parse() does not use state except path
     ini = object.__new__(IniConfig)
     ini.path = "sample"
-    return ini._parse(input)
+    return ini._parse(input.splitlines(True))
 
 def parse_a_error(input):
     return py.test.raises(ParseError, parse, input)
