@@ -327,13 +327,13 @@ class Visitor:
     def __init__(self, fil, rec, ignore, bf, sort):
         if isinstance(fil, str):
             fil = FNMatcher(fil)
-        if rec:
-            if isinstance(rec, str):
-                rec = fnmatch(fil)
-            else:
-                assert hasattr(rec, '__call__')
+        if isinstance(rec, str):
+            self.rec = fnmatch(fil)
+        elif not hasattr(rec, '__call__') and rec:
+            self.rec = lambda path: True
+        else:
+            self.rec = rec
         self.fil = fil
-        self.rec = rec
         self.ignore = ignore
         self.breadthfirst = bf
         self.optsort = sort and sorted or (lambda x: x)
