@@ -41,3 +41,19 @@ filedescriptors you may invoke::
   >>> out,err = capture.reset()
   >>> err
   'world'
+
+py.io object reference
+============================
+
+.. autoclass:: py.io.StdCaptureFD
+    :members: 
+    :inherited-members:
+
+.. autoclass:: py.io.StdCapture
+    :members: 
+    :inherited-members:
+
+.. autoclass:: py.io.TerminalWriter
+    :members: 
+    :inherited-members:
+

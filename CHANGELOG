@@ -5,8 +5,8 @@ Changes between 1.3.4 and 2.0.0dev0
 - py.test was moved to a separate "pytest" package. What remains is
   a stub hook which will proxy ``import py.test`` to ``pytest``.
 - all command line tools ("py.cleanup/lookup/countloc/..." moved 
-  to "pytools" package)
-- removed the old deprecated "py.magic" namespace
+  to "pycmd" package)
+- removed the old and deprecated "py.magic" namespace
 - use apipkg-1.1 and make py.apipkg.initpkg|ApiModule available
 - add py.iniconfig module for brain-dead easy ini-config file parsing
 - introduce py.builtin.any()

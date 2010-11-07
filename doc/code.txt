@@ -46,6 +46,11 @@ A quick example::
   >>> str(c.source()).split('\n')[0]
   "def read(self, mode='r'):"
 
+.. autoclass:: py.code.Code
+    :members: 
+    :inherited-members:
+
+
 ``py.code.Source``
 ---------------------
 
@@ -66,6 +71,9 @@ Example::
   >>> sub = s.getstatement(1) # get the statement starting at line 1
   >>> str(sub).strip() # XXX why is the strip() required?!?
   'print "foo"'
+
+.. autoclass:: py.code.Source
+    :members: 
 
 
 ``py.code.Traceback``
@@ -92,6 +100,9 @@ Example::
   >>> str(first.statement).strip().startswith('raise ValueError')
   True
 
+.. autoclass:: py.code.Traceback
+    :members: 
+
 ``py.code.Frame``
 --------------------
 
@@ -110,6 +121,9 @@ Example (using the 'first' TracebackItem instance created above)::
   True
   >>> [namevalue[0] for namevalue in frame.getargs()]
   ['cls', 'path']
+
+.. autoclass:: py.code.Frame
+    :members: 
 
 ``py.code.ExceptionInfo``
 ----------------------------
@@ -131,4 +145,7 @@ Example::
   True
   >>> excinfo.exconly()
   "NameError: name 'foobar' is not defined"
+
+.. autoclass:: py.code.ExceptionInfo
+    :members: 
 

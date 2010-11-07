@@ -102,7 +102,8 @@ class CommonFSTests(object):
 
     def test_fnmatch_file(self, path1):
         assert path1.join("samplefile").check(fnmatch='s*e')
-        assert path1.join("samplefile").check(notfnmatch='s*x')
+        assert path1.join("samplefile").fnmatch('s*e')
+        assert not path1.join("samplefile").fnmatch('s*x')
         assert not path1.join("samplefile").check(fnmatch='s*x')
 
     #def test_fnmatch_dir(self, path1):

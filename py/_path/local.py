@@ -203,14 +203,14 @@ class LocalPath(FSBase):
 
     def new(self, **kw):
         """ create a modified version of this path.
-            the following keyword arguments modify various path parts:
+            the following keyword arguments modify various path parts::
 
               a:/some/path/to/a/file.ext
-              ||                            drive
-                |-------------|             dirname
-                                |------|    basename
-                                |--|        purebasename
-                                    |--|    ext
+              xx                           drive
+              xxxxxxxxxxxxxxxxx            dirname
+                                xxxxxxxx   basename
+                                xxxx       purebasename
+                                     xxx   ext
         """
         obj = object.__new__(self.__class__)
         drive, dirname, basename, purebasename,ext = self._getbyspec(
@@ -461,8 +461,8 @@ class LocalPath(FSBase):
         return self.strpath
 
     def pypkgpath(self, pkgname=None):
-        """ return the path's package path by looking for the given
-            pkgname.  If pkgname is None then look for the last
+        """ return the Python package path by looking for a
+            pkgname.  If pkgname is None look for the last
             directory upwards which still contains an __init__.py
             and whose basename is python-importable.
             Return None if a pkgpath can not be determined.

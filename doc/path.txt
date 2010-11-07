@@ -8,13 +8,13 @@ object to fs-like object trees (reading from and writing to files, adding
 files/directories, examining the types and structure, etc.), and out-of-the-box
 provides a number of implementations of this API.
 
-Path implementations provided by ``py.path``
+py.test.local - local file system path
 ===============================================
 
 .. _`local`:
 
-``py.path.local``
---------------------
+basic interactive example
+-------------------------------------
 
 The first and most obvious of the implementations is a wrapper around a local
 filesystem. It's just a bit nicer in usage than the regular Python APIs, and
@@ -40,8 +40,15 @@ a ``py.path.local`` object for us (which wraps a directory):
   >>> foofile.read(1)
   'b'
 
+reference documentation
+---------------------------------
+
+.. autoclass:: py._path.local.LocalPath
+    :members:
+    :inherited-members:
+
 ``py.path.svnurl`` and ``py.path.svnwc``
-----------------------------------------------
+==================================================
 
 Two other ``py.path`` implementations that the py lib provides wrap the
 popular `Subversion`_ revision control system: the first (called 'svnurl')
@@ -78,8 +85,23 @@ Example usage of ``py.path.svnwc``:
 
 .. _`Subversion`: http://subversion.tigris.org/
 
-Common vs. specific API
-=======================
+svn path related API reference
+-----------------------------------------
+
+.. autoclass:: py._path.svnwc.SvnWCCommandPath
+    :members:
+    :inherited-members:
+
+.. autoclass:: py._path.svnurl.SvnCommandPath
+    :members:
+    :inherited-members:
+
+.. autoclass:: py._path.svnwc.SvnAuth
+    :members:
+    :inherited-members:
+
+Common vs. specific API, Examples
+========================================
 
 All Path objects support a common set of operations, suitable
 for many use cases and allowing to transparently switch the
@@ -93,15 +115,12 @@ children, etc.  Only things that are not common on 'normal' filesystems (yet),
 such as handling metadata (e.g. the Subversion "properties") require
 using specific APIs.
 
-Examples
----------------------------------
-
 A quick 'cookbook' of small examples that will be useful 'in real life',
 which also presents parts of the 'common' API, and shows some non-common
 methods:
 
 Searching `.txt` files
-..........................
+--------------------------------
 
 Search for a particular string inside all files with a .txt extension in a
 specific directory.
@@ -123,7 +142,7 @@ specific directory.
   ['textfile1.txt', 'textfile2.txt', 'textfile2.txt']
 
 Working with Paths
-.......................
+----------------------------
 
 This example shows the ``py.path`` features to deal with
 filesystem paths Note that the filesystem is never touched,
@@ -160,7 +179,7 @@ one, or a database or object tree, these functions should be available (each
 with their own notion of path seperators and dealing with conversions, etc.).
 
 Checking path types
-.......................
+-------------------------------
 
 Now we will show a bit about the powerful 'check()' method on paths, which
 allows you to check whether a file exists, what type it is, etc.:
@@ -186,7 +205,7 @@ allows you to check whether a file exists, what type it is, etc.:
   True
 
 Setting svn-properties
-.......................
+--------------------------------
 
 As an example of 'uncommon' methods, we'll show how to read and write
 properties in an ``py.path.svnwc`` instance:
@@ -206,7 +225,7 @@ properties in an ``py.path.svnwc`` instance:
   0
 
 SVN authentication
-.......................
+----------------------------
 
 Some uncommon functionality can also be provided as extensions, such as SVN
 authentication:
@@ -238,36 +257,4 @@ Known problems / limitations
   there is no attention yet on making unicode paths
   work or deal with the famous "8.3" filename issues.
 
-Future plans
-============
-
-The Subversion path implementations are based
-on the `svn` command line, not on the bindings.
-It makes sense now to directly use the bindings.
-
-Moreover, it would be good, also considering
-`execnet`_ distribution of programs, to
-be able to manipulate Windows Paths on Linux
-and vice versa.  So we'd like to consider
-refactoring the path implementations
-to provide this choice (and getting rid
-of platform-dependencies as much as possible).
-
-There is some experimental small approach
-(``py/path/gateway/``) aiming at having
-a convenient Remote Path implementation.
-
-There are various hacks out there to have
-Memory-Filesystems and even path objects
-being directly mountable under Linux (via `fuse`).
-However, the Path object implementations
-do not internally have a clean abstraction
-of going to the filesystem - so with some
-refactoring it should become easier to
-have very custom Path objects, still offering
-the quite full interface without requiring
-to know about all details of the full path
-implementation.
-
-.. _`execnet`: execnet.html
 

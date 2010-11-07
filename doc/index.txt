@@ -1,29 +1,37 @@
-py lib: tested useful cross-Python abstractions
-===============================================================
+.. pylib documentation master file, created by
+   sphinx-quickstart on Thu Oct 21 08:30:10 2010.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-The ``py`` lib has several namespaces:
+Welcome to pylib's documentation!
+=================================
 
-`py.path`_: use path objects to transparently access local and svn filesystems.
+:ref:`2.0.0 release announcement <release-2.0.0>` and :ref:`CHANGELOG <changelog>`
 
-`py.code`_: generate code and use advanced introspection/traceback support.
+Contents:
 
-`py.io`_: Helper Classes for Capturing of Input/Output on FD/sys.std* level
+.. toctree::
 
-`py.xml`_ for generating in-memory xml/html object trees
+   install
+   path
+   code
+   io
+   log
+   xml
+   misc
 
-`py.log`_: an alpha document about the ad-hoc logging facilities
+   :maxdepth: 2
 
-`miscellaneous features`_ describes some small but nice py lib features.
+.. toctree::
+    :hidden:
 
-.. _`PyPI project page`: http://pypi.python.org/pypi/py/
+    announce/release-2.0.0
+    changelog
 
-For the latest Release, see `PyPI project page`_
+Indices and tables
+==================
 
-.. _`py-dev at codespeak net`: http://codespeak.net/mailman/listinfo/py-dev
-.. _`py.log`: log.html
-.. _`py.io`: io.html
-.. _`py.path`: path.html
-.. _`py.code`: code.html
-.. _`py.xml`: xml.html
-.. _`miscellaneous features`: misc.html
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 

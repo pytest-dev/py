@@ -36,7 +36,7 @@ class Checkers:
         return self.path.relto(arg)
 
     def fnmatch(self, arg):
-        return FNMatcher(arg)(self.path)
+        return self.path.fnmatch(arg)
 
     def endswith(self, arg):
         return str(self.path).endswith(arg)
@@ -161,21 +161,44 @@ newline will be removed from the end of each line. """
         return repr(str(self))
 
     def check(self, **kw):
-        """ check a path for existence, or query its properties
+        """ check a path for existence and properties.
 
-            without arguments, this returns True if the path exists (on the
-            filesystem), False if not
+            Without arguments, return True if the path exists, otherwise False.
 
-            with (keyword only) arguments, the object compares the value
-            of the argument with the value of a property with the same name
-            (if it has one, else it raises a TypeError)
+            valid checkers::
 
-            when for example the keyword argument 'ext' is '.py', this will
-            return True if self.ext == '.py', False otherwise
+                file=1    # is a file
+                file=0    # is not a file (may not even exist)
+                dir=1     # is a dir
+                link=1    # is a link
+                exists=1  # exists
+
+            You can specify multiple checker definitions, for example::
+                
+                path.check(file=1, link=1)  # a link pointing to a file
         """
         if not kw:
             kw = {'exists' : 1}
         return self.Checkers(self)._evaluate(kw)
+
+    def fnmatch(self, pattern):
+        """return true if the basename/fullname matches the glob-'pattern'.
+
+        valid pattern characters::
+
+            *       matches everything
+            ?       matches any single character
+            [seq]   matches any character in seq
+            [!seq]  matches any char not in seq
+
+        If the pattern contains a path-separator then the full path
+        is used for pattern matching and a '*' is prepended to the
+        pattern.
+
+        if the pattern doesn't contain a path-separator the pattern
+        is only matched against the basename.
+        """
+        return FNMatcher(pattern)(self)
 
     def relto(self, relpath):
         """ return a string which is the relative part of the path
@@ -339,20 +362,6 @@ class FNMatcher:
     def __init__(self, pattern):
         self.pattern = pattern
     def __call__(self, path):
-        """return true if the basename/fullname matches the glob-'pattern'.
-
-        *       matches everything
-        ?       matches any single character
-        [seq]   matches any character in seq
-        [!seq]  matches any char not in seq
-
-        if the pattern contains a path-separator then the full path
-        is used for pattern matching and a '*' is prepended to the
-        pattern.
-
-        if the pattern doesn't contain a path-separator the pattern
-        is only matched against the basename.
-        """
         pattern = self.pattern
         if pattern.find(path.sep) == -1:
             name = path.basename

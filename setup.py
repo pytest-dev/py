@@ -9,8 +9,6 @@ pylib: cross-python development utils
 
 py.path.local: local path objects
 py.path.svnwc: local subversion WC paths
-py.iniconfig: parse for .ini / .cfg files
-py.apipkg: package API export control + lazy import
 py.io: io-capturing on filedescriptor or sys.* level
 
 Platforms: Linux, Win32, OSX

@@ -1,7 +1,6 @@
 ====================================================
-py.xml: Lightweight and flexible xml/html generation
+py.xml: simple pythonic xml/html file generation
 ====================================================
-
 
 Motivation
 ==========
@@ -10,9 +9,6 @@ There are a plethora of frameworks and libraries to generate
 xml and html trees.  However, many of them are large, have a
 steep learning curve and are often hard to debug.  Not to
 speak of the fact that they are frameworks to begin with.
-
-The py lib strives to offer enough functionality to represent
-itself and especially its API in html or xml.
 
 .. _xist: http://www.livinglogic.de/Python/xist/index.html
 
