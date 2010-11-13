@@ -1,7 +1,7 @@
 import sys
 if __name__ == '__main__':
-    import py
-    sys.exit(py.test.cmdline.main())
+    import pytest
+    sys.exit(pytest.main())
 else:
     import sys, pytest
     sys.modules['py.test'] = pytest
