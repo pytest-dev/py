@@ -229,24 +229,17 @@ class LocalPath(FSBase):
                     ext = '.' + ext
             kw['basename'] = pb + ext
 
-        kw.setdefault('drive', drive)
-        kw.setdefault('dirname', dirname)
+        if ('dirname' in kw and not kw['dirname']):
+            kw['dirname'] = drive
+        else:
+            kw.setdefault('dirname', dirname)
         kw.setdefault('sep', self.sep)
         obj.strpath = os.path.normpath(
-            "%(drive)s%(dirname)s%(sep)s%(basename)s" % kw)
+            "%(dirname)s%(sep)s%(basename)s" % kw)
         return obj
 
     def _getbyspec(self, spec):
-        """ return a sequence of specified path parts.  'spec' is
-            a comma separated string containing path part names.
-            according to the following convention:
-            a:/some/path/to/a/file.ext
-            ||                            drive
-              |-------------|             dirname
-                              |------|    basename
-                              |--|        purebasename
-                                  |--|    ext
-        """
+        """ see new for what 'spec' can be. """
         res = []
         parts = self.strpath.split(self.sep)
 
@@ -256,7 +249,7 @@ class LocalPath(FSBase):
             if name == 'drive':
                 append(parts[0])
             elif name == 'dirname':
-                append(self.sep.join(['']+parts[1:-1]))
+                append(self.sep.join(parts[:-1]))
             else:
                 basename = parts[-1]
                 if name == 'basename':

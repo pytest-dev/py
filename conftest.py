@@ -5,7 +5,6 @@ pytest_plugins = 'doctest pytester'.split()
 
 collect_ignore = ['build', 'doc/_build']
 
-rsyncdirs = ['conftest.py', 'py', 'doc', 'testing']
 
 import os, py
 pid = os.getpid()
