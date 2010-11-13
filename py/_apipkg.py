@@ -9,11 +9,11 @@ import os
 import sys
 from types import ModuleType
 
-__version__ = "1.1"
+__version__ = '1.2.dev5'
 
 def initpkg(pkgname, exportdefs, attr=dict()):
     """ initialize given package from the export definitions. """
-    oldmod = sys.modules[pkgname]
+    oldmod = sys.modules.get(pkgname)
     d = {}
     f = getattr(oldmod, '__file__', None)
     if f:
@@ -25,10 +25,11 @@ def initpkg(pkgname, exportdefs, attr=dict()):
         d['__loader__'] = oldmod.__loader__
     if hasattr(oldmod, '__path__'):
         d['__path__'] = [os.path.abspath(p) for p in oldmod.__path__]
-    if hasattr(oldmod, '__doc__'):
+    if '__doc__' not in exportdefs and getattr(oldmod, '__doc__', None):
         d['__doc__'] = oldmod.__doc__
     d.update(attr)
-    oldmod.__dict__.update(d)
+    if hasattr(oldmod, "__dict__"):
+        oldmod.__dict__.update(d)
     mod = ApiModule(pkgname, exportdefs, implprefix=pkgname, attr=d)
     sys.modules[pkgname]  = mod
 
@@ -44,6 +45,16 @@ def importobj(modpath, attrname):
     return retval
 
 class ApiModule(ModuleType):
+    def __docget(self):
+        try:
+            return self.__doc
+        except AttributeError:
+            if '__doc__' in self.__map__:
+                return self.__makeattr('__doc__')
+    def __docset(self, value):
+        self.__doc = value
+    __doc__ = property(__docget, __docset)
+
     def __init__(self, name, importspec, implprefix=None, attr=None):
         self.__name__ = name
         self.__all__ = [x for x in importspec if x != '__onfirstaccess__']
@@ -65,8 +76,13 @@ class ApiModule(ModuleType):
                 attrname = parts and parts[0] or ""
                 if modpath[0] == '.':
                     modpath = implprefix + modpath
-                if name == '__doc__':
-                    self.__doc__ = importobj(modpath, attrname)
+
+                if not attrname:
+                    subname = '%s.%s'%(self.__name__, name)
+                    apimod = AliasModule(subname, modpath)
+                    sys.modules[subname] = apimod
+                    if '.' not in name:
+                        setattr(self, name, apimod)
                 else:
                     self.__map__[name] = (modpath, attrname)
 
@@ -118,3 +134,28 @@ class ApiModule(ModuleType):
                     pass
         return dict
     __dict__ = property(__dict__)
+
+
+def AliasModule(modname, modpath):
+    mod = []
+
+    def getmod():
+        if not mod:
+            mod.append(importobj(modpath, None))
+        return mod[0]
+
+    class AliasModule(ModuleType):
+
+        def __repr__(self):
+            return '<AliasModule %r for %r>' % (modname, modpath)
+
+        def __getattribute__(self, name):
+            return getattr(getmod(), name)
+
+        def __setattr__(self, name, value):
+            setattr(getmod(), name, value)
+
+        def __delattr__(self, name):
+            delattr(getmod(), name)
+
+    return AliasModule(modname)

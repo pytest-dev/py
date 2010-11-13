@@ -30,7 +30,7 @@ def main():
         long_description = long_description,
         install_requires=['py>=1.3.9', ], # force newer py version which removes 'py' namespace
         #                                  # so we can occupy it
-        version='2.0.0.dev6',
+        version='2.0.0.dev7',
         url='http://pylib.org',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],

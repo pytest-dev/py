@@ -8,40 +8,44 @@ dictionary or an import path.
 
 (c) Holger Krekel and others, 2004-2010
 """
-__version__ = '2.0.0.dev6'
+__version__ = '2.0.0.dev7'
 
 from py import _apipkg
 
-_apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
+_apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs={
     # access to all standard lib modules
-    std = '._std:std',
+    'std': '._std:std',
     # access to all posix errno's as classes
-    error = '._error:error',
+    'error': '._error:error',
 
-    _pydir = '.__metainfo:pydir',
-    version = 'py:__version__', # backward compatibility
+    '_pydir' : '.__metainfo:pydir',
+    'version': 'py:__version__', # backward compatibility
 
-    test = 'pytest', # defer to pytest package
+    # pytest-2.0 has a flat namespace, we use alias modules
+    # to keep old references compatible
+    'test' : 'pytest',
+    'test.collect' : 'pytest',
+    'test.cmdline' : 'pytest',
 
     # hook into the top-level standard library
-    process = {
+    'process' : {
         '__doc__'        : '._process:__doc__',
         'cmdexec'        : '._process.cmdexec:cmdexec',
         'kill'           : '._process.killproc:kill',
         'ForkedFunc'     : '._process.forkedfunc:ForkedFunc',
     },
 
-    apipkg = {
+    'apipkg' : {
         'initpkg'   : '._apipkg:initpkg',
         'ApiModule' : '._apipkg:ApiModule',
     },
 
-    iniconfig = {
+    'iniconfig' : {
         'IniConfig'      : '._iniconfig:IniConfig',
         'ParseError'     : '._iniconfig:ParseError',
     },
 
-    path = {
+    'path' : {
         '__doc__'        : '._path:__doc__',
         'svnwc'          : '._path.svnwc:SvnWCCommandPath',
         'svnurl'         : '._path.svnurl:SvnCommandPath',
@@ -50,7 +54,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
     },
 
     # python inspection/code-generation API
-    code = {
+    'code' : {
         '__doc__'           : '._code:__doc__',
         'compile'           : '._code.source:compile_',
         'Source'            : '._code.source:Source',
@@ -69,7 +73,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
     },
 
     # backports and additions of builtins
-    builtin = {
+    'builtin' : {
         '__doc__'        : '._builtin:__doc__',
         'enumerate'      : '._builtin:enumerate',
         'reversed'       : '._builtin:reversed',
@@ -98,7 +102,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
     },
 
     # input-output helping
-    io = {
+    'io' : {
         '__doc__'             : '._io:__doc__',
         'dupfile'             : '._io.capture:dupfile',
         'TextIO'              : '._io.capture:TextIO',
@@ -113,7 +117,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
     },
 
     # small and mean xml/html generation
-    xml = {
+    'xml' : {
         '__doc__'            : '._xmlgen:__doc__',
         'html'               : '._xmlgen:html',
         'Tag'                : '._xmlgen:Tag',
@@ -122,7 +126,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
         'escape'             : '._xmlgen:escape',
     },
 
-    log = {
+    'log' : {
         # logging API ('producers' and 'consumers' connected via keywords)
         '__doc__'            : '._log:__doc__',
         '_apiwarn'           : '._log.warning:_apiwarn',
@@ -137,11 +141,11 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs=dict(
     },
 
     # compatibility modules (deprecated)
-    compat = {
+    'compat' : {
         '__doc__'         : '._compat:__doc__',
         'doctest'         : '._compat.dep_doctest:doctest',
         'optparse'        : '._compat.dep_optparse:optparse',
         'textwrap'        : '._compat.dep_textwrap:textwrap',
         'subprocess'      : '._compat.dep_subprocess:subprocess',
     },
-))
+})
