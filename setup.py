@@ -4,30 +4,11 @@ if sys.version_info >= (3,0):
     use_setuptools()
 from setuptools import setup
 
-long_description = """
-pylib: cross-python development utils
-
-py.path.local: local path objects
-py.path.svnwc: local subversion WC paths
-py.io: io-capturing on filedescriptor or sys.* level
-
-Platforms: Linux, Win32, OSX
-
-Interpreters: Python versions 2.4 through to 3.2, Jython 2.5.1 and PyPy
-
-Web page: http://pylib.org
-
-Bugs and issues: http://bitbucket.org/hpk42/pylib/issues/
-
-Mailing lists and more contact points: http://pylib.org/contact.html
-
-(c) Holger Krekel and others, 2004-2010
-"""
 def main():
     setup(
         name='pylib',
-        description='pylib: cross-python path, io, code, log facilities',
-        long_description = long_description,
+        description='pylib: cross-python path, ini-parsing, io, code, log facilities',
+        long_description = open('README.txt').read(),
         install_requires=['py>=1.3.9', ], # force newer py version which removes 'py' namespace
         #                                  # so we can occupy it
         version='2.0.0.dev7',

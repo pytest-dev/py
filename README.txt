@@ -8,3 +8,10 @@ the following tools and modules:
 * py.path:  uniform local and svn path objects
 
 For questions and more information please visit http://pylib.org
+
+Bugs and issues: http://bitbucket.org/hpk42/pylib/issues/
+
+Mailing lists and more contact points: http://pylib.org/contact.html
+
+(c) Holger Krekel and others, 2004-2010
+
