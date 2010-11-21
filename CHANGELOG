@@ -13,6 +13,7 @@ Changes between 1.3.4 and 2.0.0dev0
 - path objects have a .dirname attribute now (equivalent to
   os.path.dirname(path))
 - path.visit() accepts breadthfirst (bf) and sort options
+- remove deprecated py.compat namespace
 
 Changes between 1.3.3 and 1.3.4
 ==================================================

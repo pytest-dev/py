@@ -14,7 +14,7 @@ skiponwin32 = py.test.mark.skipif(
 
 def pytest_funcarg__path1(request):
     def setup():
-        path1 = request.config.mktemp("path1")
+        path1 = request.getfuncargvalue("tmpdir")
         common.setuptestfs(path1)
         return path1
     def teardown(path1):

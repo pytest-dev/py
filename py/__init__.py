@@ -140,12 +140,4 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs={
         'Syslog'             : '._log.log:Syslog',
     },
 
-    # compatibility modules (deprecated)
-    'compat' : {
-        '__doc__'         : '._compat:__doc__',
-        'doctest'         : '._compat.dep_doctest:doctest',
-        'optparse'        : '._compat.dep_optparse:optparse',
-        'textwrap'        : '._compat.dep_textwrap:textwrap',
-        'subprocess'      : '._compat.dep_subprocess:subprocess',
-    },
 })

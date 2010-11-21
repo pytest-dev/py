@@ -30,7 +30,6 @@ def main():
                      'Programming Language :: Python :: 3'],
         packages=['py',
                   'py._code',
-                  'py._compat',
                   'py._io',
                   'py._log',
                   'py._path',
