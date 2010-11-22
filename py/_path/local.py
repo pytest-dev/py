@@ -68,10 +68,6 @@ class PosixPath(common.PathBase):
             target = self.sep.join(('..', )*n + (relsource, ))
             py.error.checked_call(os.symlink, target, self.strpath)
 
-    def samefile(self, other):
-        """ return True if other refers to the same stat object as self. """
-        return py.error.checked_call(os.path.samefile, str(self), str(other))
-
 def getuserid(user):
     import pwd
     if not isinstance(user, int):
@@ -159,6 +155,14 @@ class LocalPath(FSBase):
 
     def __lt__(self, other):
         return str(self) < str(other)
+
+    def samefile(self, other):
+        """ return True if 'other' references the same file as 'self'. """
+        if self == other:
+            return True
+        if not iswin32:
+            return py.error.checked_call(os.path.samefile, str(self), str(other))
+        return False
 
     def remove(self, rec=1, ignore_errors=False):
         """ remove a file or directory (or a directory tree if rec=1).
