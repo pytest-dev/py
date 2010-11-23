@@ -1,12 +1,18 @@
-.. pylib documentation master file, created by
+.. py documentation master file, created by
    sphinx-quickstart on Thu Oct 21 08:30:10 2010.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pylib's documentation!
+Welcome to py's documentation!
 =================================
 
-:ref:`2.0.0 release announcement <release-2.0.0>` and :ref:`CHANGELOG <changelog>`
+:ref:`1.4.0 release announcement <release-1.4.0>` and :ref:`CHANGELOG <changelog>`
+
+.. note::
+    
+   py.test now comes from the `pytest distribtion`_
+
+.. _`pytest distribution`: http://pypi.python.org/pypi/pytest
 
 Contents:
 

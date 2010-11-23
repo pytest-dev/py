@@ -2,15 +2,11 @@
 py.code: higher level python code and introspection objects
 ================================================================================
 
-The ``py.code`` part of the pylib contains some functionality to help
-dealing with Python code objects. Even though working with Python's internal
-code objects (as found on frames and callables) can be very powerful, it's
-usually also quite cumbersome, because the API provided by core Python is
-relatively low level and not very accessible.
-
-The ``py.code`` library tries to simplify accessing the code objects as well
-as creating them. There is a small set of interfaces a user needs to deal with,
-all nicely bundled together, and with a rich set of 'Pythonic' functionality.
+``py.code`` provides higher level APIs and objects for Code, Frame, Traceback,
+ExceptionInfo and source code construction.  The ``py.code`` library
+tries to simplify accessing the code objects as well as creating them.
+There is a small set of interfaces a user needs to deal with, all nicely
+bundled together, and with a rich set of 'Pythonic' functionality.
 
 Contents of the library
 =======================
@@ -47,7 +43,7 @@ A quick example::
   "def read(self, mode='r'):"
 
 .. autoclass:: py.code.Code
-    :members: 
+    :members:
     :inherited-members:
 
 
@@ -73,7 +69,7 @@ Example::
   'print "foo"'
 
 .. autoclass:: py.code.Source
-    :members: 
+    :members:
 
 
 ``py.code.Traceback``
@@ -101,7 +97,7 @@ Example::
   True
 
 .. autoclass:: py.code.Traceback
-    :members: 
+    :members:
 
 ``py.code.Frame``
 --------------------
@@ -123,7 +119,7 @@ Example (using the 'first' TracebackItem instance created above)::
   ['cls', 'path']
 
 .. autoclass:: py.code.Frame
-    :members: 
+    :members:
 
 ``py.code.ExceptionInfo``
 ----------------------------
@@ -147,5 +143,5 @@ Example::
   "NameError: name 'foobar' is not defined"
 
 .. autoclass:: py.code.ExceptionInfo
-    :members: 
+    :members:
 

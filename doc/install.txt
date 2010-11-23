@@ -5,7 +5,7 @@
 installation info in a nutshell
 ===================================================
 
-**PyPI name**: pylib_
+**PyPI name**: py_
 
 **Pythons**: 2.4, 2.5, 2.6, 2.7, 3.0, 3.1.x, Jython-2.5.1, PyPy-1.3
 
@@ -15,8 +15,7 @@ installation info in a nutshell
 
 **Installers**: ``easy_install`` and ``pip``
 
-**hg repository**: https://bitbucket.org/hpk42/pylib
-
+**hg repository**: https://bitbucket.org/hpk42/py
 
 easy install
 -----------------------------
@@ -24,12 +23,17 @@ easy install
 Both `Distribute`_ and setuptools_ provide the ``easy_install``
 installation tool with which you can type into a command line window::
 
-    easy_install -U pylib
+    easy_install -U py
 
 to install the latest release of the py lib.  The ``-U`` switch
 will trigger an upgrade if you already have an older version installed.
-Note that setuptools works ok with Python2 interpreters while `Distribute`_
-additionally works with Python3 and also avoid some issues on Windows.
+
+.. note::
+    
+   As of version 1.4 py does not contain py.test anymore - you
+   need to install the new `pytest`_ distribution.
+
+.. _pytest: http://pytest.org
 
 Working from version control or a tarball
 -----------------------------------------------

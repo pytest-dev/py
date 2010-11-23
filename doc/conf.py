@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pylib documentation build configuration file, created by
+# py documentation build configuration file, created by
 # sphinx-quickstart on Thu Oct 21 08:30:10 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,7 +40,7 @@ source_suffix = '.txt'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pylib'
+project = u'py'
 copyright = u'2010, holger krekel et. al.'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -166,7 +166,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pylibdoc'
+htmlhelp_basename = 'py'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -180,7 +180,7 @@ htmlhelp_basename = 'pylibdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pylib.tex', u'pylib Documentation',
+  ('index', 'py.tex', u'py Documentation',
    u'holger krekel et. al.', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pylib', u'pylib Documentation',
+    ('index', 'py', u'py Documentation',
      [u'holger krekel et. al.'], 1)
 ]
 
@@ -223,7 +223,7 @@ autodoc_default_flags = "inherited-members"
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'pylib'
+epub_title = u'py'
 epub_author = u'holger krekel et. al.'
 epub_publisher = u'holger krekel et. al.'
 epub_copyright = u'2010, holger krekel et. al.'

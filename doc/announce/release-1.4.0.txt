@@ -1,7 +1,7 @@
 
 .. _`release-1.4.0`:
 
-pylib 1.4.0: cross-platform library for path, code, io, ... manipulations
+py-1.4.0: lib for path, code, io, ... manipulations
 ===========================================================================
 
 "py" is a small library comprising APIs for filesystem and svn path manipulations,
