@@ -6,12 +6,10 @@ from setuptools import setup
 
 def main():
     setup(
-        name='pylib',
-        description='pylib: cross-python path, ini-parsing, io, code, log facilities',
+        name='py',
+        description='library with cross-python path, ini-parsing, io, code, log facilities',
         long_description = open('README.txt').read(),
-        install_requires=['py>=1.3.9', ], # force newer py version which removes 'py' namespace
-        #                                  # so we can occupy it
-        version='2.0.0.dev8',
+        version='1.4.0a2',
         url='http://pylib.org',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
