@@ -98,14 +98,14 @@ class Source(object):
         newsource.lines = [(indent+line) for line in self.lines]
         return newsource
 
-    def getstatement(self, lineno):
+    def getstatement(self, lineno, assertion=False):
         """ return Source statement which contains the
             given linenumber (counted from 0).
         """
-        start, end = self.getstatementrange(lineno)
+        start, end = self.getstatementrange(lineno, assertion)
         return self[start:end]
 
-    def getstatementrange(self, lineno):
+    def getstatementrange(self, lineno, assertion=False):
         """ return (start, end) tuple which spans the minimal
             statement region which containing the given lineno.
         """
@@ -117,6 +117,10 @@ class Source(object):
         # 1. find the start of the statement
         from codeop import compile_command
         for start in range(lineno, -1, -1):
+            if assertion:
+                if "assert " not in self.lines[start]:
+                    continue
+                
             trylines = self.lines[start:lineno+1]
             # quick hack to indent the source and get it as a string in one go
             trylines.insert(0, 'def xxx():')

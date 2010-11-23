@@ -63,8 +63,10 @@ class AssertionError(BuiltinAssertionError):
         else:
             f = py.code.Frame(sys._getframe(1))
             try:
-                source = f.statement
-                source = str(source.deindent()).strip()
+                source = f.code.fullsource
+                if source is not None:
+                    source = source.getstatement(f.lineno, assertion=True)
+                    source = str(source.deindent()).strip()
             except py.error.ENOENT:
                 source = None
                 # this can also occur during reinterpretation, when the
