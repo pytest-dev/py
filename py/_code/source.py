@@ -118,7 +118,7 @@ class Source(object):
         from codeop import compile_command
         for start in range(lineno, -1, -1):
             if assertion:
-                if "assert " not in self.lines[start]:
+                if "assert" not in self.lines[start]:
                     continue
                 
             trylines = self.lines[start:lineno+1]

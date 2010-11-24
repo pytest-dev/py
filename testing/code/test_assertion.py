@@ -252,12 +252,22 @@ def test_assert_customizable_reprcompare(monkeypatch):
         s = str(e)
         assert "hello" in s
 
-def test_assert_long_source():
-    result = None
+def test_assert_long_source_1():
     try:
-        assert result == [
+        assert len == [
             (None, ['somet text', 'more text']),
         ]
+    except AssertionError:
+        e = exvalue()
+        s = str(e)
+        assert 're-run' not in s
+        assert 'somet text' in s
+
+def test_assert_long_source_2():
+    try:
+        assert(len == [
+            (None, ['somet text', 'more text']),
+        ])
     except AssertionError:
         e = exvalue()
         s = str(e)
