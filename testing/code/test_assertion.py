@@ -273,3 +273,32 @@ def test_assert_long_source_2():
         s = str(e)
         assert 're-run' not in s
         assert 'somet text' in s
+
+def test_assert_raise_alias(testdir):
+    testdir.makepyfile("""
+    import sys
+    EX = AssertionError
+    def test_hello():
+        raise EX("hello"
+            "multi"
+            "line")
+    """)
+    result = testdir.runpytest()
+    result.stdout.fnmatch_lines([
+        "*def test_hello*",
+        "*raise EX*",
+        "*1 failed*",
+    ])
+
+
+def test_assert_raise_subclass():
+    class SomeEx(AssertionError):
+        def __init__(self, *args):
+            super(SomeEx, self).__init__()
+    try:
+        raise SomeEx("hello")
+    except AssertionError:
+        s = str(exvalue())
+        assert 're-run' not in s
+        assert 'could not determine' in s
+

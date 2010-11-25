@@ -118,9 +118,12 @@ class Source(object):
         from codeop import compile_command
         for start in range(lineno, -1, -1):
             if assertion:
-                if "assert" not in self.lines[start]:
+                line = self.lines[start]
+                # the following lines are not fully tested, change with care
+                if 'super' in line and 'self' in line and '__init__' in line:
+                    raise IndexError("likely a subclass")
+                if "assert" not in line and "raise" not in line:
                     continue
-                
             trylines = self.lines[start:lineno+1]
             # quick hack to indent the source and get it as a string in one go
             trylines.insert(0, 'def xxx():')

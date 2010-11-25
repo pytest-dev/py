@@ -65,18 +65,22 @@ class AssertionError(BuiltinAssertionError):
             try:
                 source = f.code.fullsource
                 if source is not None:
-                    source = source.getstatement(f.lineno, assertion=True)
-                    source = str(source.deindent()).strip()
+                    try:
+                        source = source.getstatement(f.lineno, assertion=True)
+                    except IndexError:
+                        source = None
+                    else:
+                        source = str(source.deindent()).strip()
             except py.error.ENOENT:
                 source = None
                 # this can also occur during reinterpretation, when the
                 # co_filename is set to "<run>".
             if source:
                 self.msg = reinterpret(source, f, should_fail=True)
-                if not self.args:
-                    self.args = (self.msg,)
             else:
-                self.msg = None
+                self.msg = "<could not determine information>"
+            if not self.args:
+                self.args = (self.msg,)
 
 if sys.version_info > (3, 0):
     AssertionError.__module__ = "builtins"
