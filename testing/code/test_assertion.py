@@ -1,4 +1,4 @@
-import py
+import pytest, py
 
 def exvalue():
     return py.std.sys.exc_info()[1]
@@ -291,6 +291,7 @@ def test_assert_raise_alias(testdir):
     ])
 
 
+@pytest.mark.skipif("sys.version_info < (2,5)")
 def test_assert_raise_subclass():
     class SomeEx(AssertionError):
         def __init__(self, *args):
