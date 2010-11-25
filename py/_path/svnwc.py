@@ -138,7 +138,7 @@ class SvnPathBase(common.PathBase):
     def new(self, **kw):
         """ create a modified version of this path. A 'rev' argument
             indicates a new revision.
-            the following keyword arguments modify various path parts:
+            the following keyword arguments modify various path parts::
 
               http://host.com/repo/path/file.ext
               |-----------------------|          dirname

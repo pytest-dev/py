@@ -10,9 +10,9 @@ Welcome to py's documentation!
 
 .. note::
     
-   py.test now comes from the `pytest distribtion`_
+   py.test now comes from the `pytest distribution`_
 
-.. _`pytest distribution`: http://pypi.python.org/pypi/pytest
+.. _`pytest distribution`: http://pytest.org
 
 Contents:
 

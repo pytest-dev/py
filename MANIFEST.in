@@ -6,11 +6,3 @@ include LICENSE
 include conftest.py
 graft doc
 graft testing
-#exclude *.orig 
-#exclude *.orig 
-#exclude *.rej 
-#exclude *.pyc
-#recursive-exclude testing *.pyc *.orig *.rej *$py.class
-#prune .pyc
-#prune .svn 
-#prune .hg 

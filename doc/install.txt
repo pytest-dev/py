@@ -1,6 +1,6 @@
 
-.. _`pylib`:
-.. _`index page`: http://pypi.python.org/pypi/pylib/
+.. _`py`:
+.. _`index page`: http://pypi.python.org/pypi/py/
 
 installation info in a nutshell
 ===================================================
@@ -41,14 +41,14 @@ Working from version control or a tarball
 To follow development or start experiments, checkout the
 complete code and documentation source with mercurial_::
 
-    hg clone https://bitbucket.org/hpk42/pylib
+    hg clone https://bitbucket.org/hpk42/py
 
 Development takes place on the 'trunk' branch.
 
 You can also go to the python package index and
 download and unpack a TAR file::
 
-    http://pypi.python.org/pypi/pylib/
+    http://pypi.python.org/pypi/py/
 
 activating a checkout with setuptools
 --------------------------------------------
@@ -76,7 +76,7 @@ Contact and Communication points
 - `bitbucket issue tracker`_ use this bitbucket issue tracker to report
   bugs or request features.
 
-.. _`bitbucket issue tracker`: http://bitbucket.org/hpk42/pylib/issues/
+.. _`bitbucket issue tracker`: http://bitbucket.org/hpk42/py/issues/
 
 .. _codespeak: http://codespeak.net/
 .. _`py-dev`:

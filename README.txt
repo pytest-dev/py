@@ -7,6 +7,9 @@ the following tools and modules:
 * py.code: dynamic code generation and introspection
 * py.path:  uniform local and svn path objects
 
+NOTE: prior to the 1.4 release this distribution used to
+contain py.test which is now its own package, see http://pytest.org
+
 For questions and more information please visit http://pylib.org
 
 Bugs and issues: http://bitbucket.org/hpk42/pylib/issues/
