@@ -1,5 +1,5 @@
 
-Changes between 1.3.4 and 1.4.0dev0
+Changes between 1.3.4 and 1.4.0
 ==================================================
 
 - py.test was moved to a separate "pytest" package. What remains is

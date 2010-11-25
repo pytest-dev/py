@@ -4,18 +4,35 @@
 py-1.4.0: lib for path, code, io, ... manipulations
 ===========================================================================
 
-"py" is a small library comprising APIs for filesystem and svn path manipulations,
-dynamic code construction and introspection, IO capturing and a Python2/Python3
-compatibility namespace.  It runs unmodified on all Python interpreters compatible
-to Python2.4 up until Python 3.2.
+"py" is a small library comprising APIs for filesystem and svn path
+manipulations, dynamic code construction and introspection, IO capturing
+and a Python2/Python3 compatibility namespace.  It runs unmodified on
+all Python interpreters compatible to Python2.4 up until Python 3.2.
+The general goal with "py" is to provide stable APIs that are
+continously tested against many Python interpreters and thus also to
+help transition.
 
 The py distribution prior to 1.4.0 used to contain "py.test" which now
-comes as its own "pytest" distribution.  Also, the "py.cleanup|py.lookup|py.countloc"
-etc. helpers are now part of pycmd.  This makes "py-1.4.0" a simple library
-not installing any command line utilities.  The general idea for "py" is to
-place high value on providing some basic APIs that are continously tested
-against many Python interpreters and thus also to help transition.
+comes as its own "pytest" distribution.  Also, the
+"py.cleanup|py.lookup|py.countloc" etc. helpers are now part of pycmd.
+This makes "py-1.4.0" a simple library which does not nstall any command
+line utilities anymore.
 
 cheers,
 holger
 
+Changes between 1.3.4 and 1.4.0
+-------------------------------------
+
+- py.test was moved to a separate "pytest" package. What remains is
+  a stub hook which will proxy ``import py.test`` to ``pytest``.
+- all command line tools ("py.cleanup/lookup/countloc/..." moved
+  to "pycmd" package)
+- removed the old and deprecated "py.magic" namespace
+- use apipkg-1.1 and make py.apipkg.initpkg|ApiModule available
+- add py.iniconfig module for brain-dead easy ini-config file parsing
+- introduce py.builtin.any()
+- path objects have a .dirname attribute now (equivalent to
+  os.path.dirname(path))
+- path.visit() accepts breadthfirst (bf) and sort options
+- remove deprecated py.compat namespace
