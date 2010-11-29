@@ -17,7 +17,7 @@ installation info in a nutshell
 
 **hg repository**: https://bitbucket.org/hpk42/py
 
-easy install
+easy install or pip ``py``
 -----------------------------
 
 Both `Distribute`_ and setuptools_ provide the ``easy_install``

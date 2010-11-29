@@ -1,22 +1,31 @@
 
 .. _`release-1.4.0`:
 
-py-1.4.0: lib for path, code, io, ... manipulations
+py-1.4.0: cross-python lib for path, code, io, ... manipulations
 ===========================================================================
 
 "py" is a small library comprising APIs for filesystem and svn path
-manipulations, dynamic code construction and introspection, IO capturing
-and a Python2/Python3 compatibility namespace.  It runs unmodified on
-all Python interpreters compatible to Python2.4 up until Python 3.2.
-The general goal with "py" is to provide stable APIs that are
-continously tested against many Python interpreters and thus also to
-help transition.
+manipulations, dynamic code construction and introspection, a Py2/Py3
+compatibility namespace ("py.builtin"), IO capturing, terminal colored printing
+(on windows and linux), ini-file parsing and a lazy import mechanism.
+It runs unmodified on all Python interpreters compatible to Python2.4 up
+until Python 3.2.  The general goal with "py" is to provide stable APIs
+for some common tasks that are continously tested against many Python
+interpreters and thus also to help transition. Here are some docs:
 
-The py distribution prior to 1.4.0 used to contain "py.test" which now
-comes as its own "pytest" distribution.  Also, the
-"py.cleanup|py.lookup|py.countloc" etc. helpers are now part of pycmd.
-This makes "py-1.4.0" a simple library which does not nstall any command
-line utilities anymore.
+    http://pylib.org
+
+NOTE: The prior py-1.3.X versions contained "py.test" which now comes
+as its own separate "pytest" distribution and was just released
+as "pytest-2.0.0", see here for the revamped docs:
+
+    http://pytest.org
+   
+And "py.cleanup|py.lookup|py.countloc" etc. helpers are now part of
+the pycmd distribution, see http://pypi.python.org/pypi/pycmd
+
+This makes "py-1.4.0" a simple library which does not install
+any command line utilities anymore.
 
 cheers,
 holger

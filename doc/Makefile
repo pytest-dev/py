@@ -37,7 +37,7 @@ clean:
 	-rm -rf $(BUILDDIR)/*
 
 install: clean html
-	rsync -avz _build/html/ code:www-pylib/1.4.0
+	rsync -avz _build/html/ code:www-pylib/
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
