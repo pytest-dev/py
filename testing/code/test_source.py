@@ -230,6 +230,11 @@ class TestSourceParsingAndCompiling:
         assert len(source) == 9
         assert source.getstatementrange(5) == (0, 9)
 
+    def test_getstatementrange_out_of_bounds_py3(self):
+        source = Source("if xxx:\n   from .collections import *")
+        r = source.getstatementrange(1)
+        assert r == (1,2)
+
     @py.test.mark.skipif("sys.version_info < (2,6)")
     def test_compile_to_ast(self):
         import ast
@@ -423,3 +428,4 @@ def test_getfslineno():
     _, A_lineno = py.std.inspect.findsource(A)
     assert fspath.basename == "test_source.py"
     assert lineno == A_lineno
+

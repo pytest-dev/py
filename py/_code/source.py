@@ -126,7 +126,7 @@ class Source(object):
                     continue
             trylines = self.lines[start:lineno+1]
             # quick hack to indent the source and get it as a string in one go
-            trylines.insert(0, 'def xxx():')
+            trylines.insert(0, 'if xxx:')
             trysource = '\n '.join(trylines)
             #              ^ space here
             try:
