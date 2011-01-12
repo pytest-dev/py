@@ -303,3 +303,19 @@ def test_assert_raise_subclass():
         assert 're-run' not in s
         assert 'could not determine' in s
 
+def test_assert_raises_in_nonzero_of_object_pytest_issue10():
+    class A(object):
+        def __nonzero__(self):
+            raise ValueError(42)
+        def __lt__(self, other):
+            return A()
+        def __repr__(self):
+            return "<MY42 object>"
+    def myany(x):
+        return True
+    try:
+        assert not(myany(A() < 0))
+    except AssertionError:
+        e = exvalue()
+        s = str(e)
+        assert "<MY42 object> < 0" in s

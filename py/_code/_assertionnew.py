@@ -174,7 +174,12 @@ class DebugInterpreter(ast.NodeVisitor):
                                          __exprinfo_right=next_result)
             except Exception:
                 raise Failure(explanation)
-            if not result:
+            try:
+                if not result:
+                    break
+            except KeyboardInterrupt:
+                raise
+            except:
                 break
             left_explanation, left_result = next_explanation, next_result
 
