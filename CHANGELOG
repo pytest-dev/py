@@ -1,6 +1,8 @@
 Changes between 1.4.0 and 1.4.1
 ==================================================
 
+- fix issue1 - py.error.* classes to be pickleable
+
 - fix (pytest-) issue10 and refine assertion reinterpretation
   to avoid breaking if the __nonzero__ of an object fails
 

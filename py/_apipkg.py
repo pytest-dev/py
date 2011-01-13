@@ -9,7 +9,7 @@ import os
 import sys
 from types import ModuleType
 
-__version__ = '1.2.dev5'
+__version__ = '1.2.dev6'
 
 def initpkg(pkgname, exportdefs, attr=dict()):
     """ initialize given package from the export definitions. """
@@ -136,18 +136,24 @@ class ApiModule(ModuleType):
     __dict__ = property(__dict__)
 
 
-def AliasModule(modname, modpath):
+def AliasModule(modname, modpath, attrname=None):
     mod = []
 
     def getmod():
         if not mod:
-            mod.append(importobj(modpath, None))
+            x = importobj(modpath, None)
+            if attrname is not None:
+                x = getattr(x, attrname)
+            mod.append(x)
         return mod[0]
 
     class AliasModule(ModuleType):
 
         def __repr__(self):
-            return '<AliasModule %r for %r>' % (modname, modpath)
+            x = modpath
+            if attrname:
+                x += "." + attrname
+            return '<AliasModule %r for %r>' % (modname, x)
 
         def __getattribute__(self, name):
             return getattr(getmod(), name)

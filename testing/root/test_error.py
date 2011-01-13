@@ -9,6 +9,12 @@ def test_error_classes():
         assert issubclass(x, py.error.Error)
         assert issubclass(x, EnvironmentError)
 
+def test_picklability_issue1():
+    e1 = py.error.ENOENT()
+    s = py.std.pickle.dumps(e1)
+    e2 = py.std.pickle.loads(s)
+    assert isinstance(e2, py.error.ENOENT)
+
 def test_unknown_error():
     num = 3999
     cls = py.error._geterrnoclass(num)
