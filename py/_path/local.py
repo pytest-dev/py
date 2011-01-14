@@ -599,7 +599,7 @@ class LocalPath(FSBase):
                 else:
                     paths = [re.sub('%SystemRoot%', systemroot, path)
                              for path in paths]
-                tryadd = '', '.exe', '.com', '.bat' # XXX add more?
+                tryadd = [''] + os.environ['PATHEXT'].split(os.pathsep)
             else:
                 paths = py.std.os.environ['PATH'].split(':')
                 tryadd = ('',)

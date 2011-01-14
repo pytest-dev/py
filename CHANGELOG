@@ -3,6 +3,9 @@ Changes between 1.4.0 and 1.4.1
 
 - fix issue1 - py.error.* classes to be pickleable
 
+- fix issue2 - on windows32 use PATHEXT as the list of potential
+  extensions to find find binaries with py.path.local.sysfind(commandname)
+
 - fix (pytest-) issue10 and refine assertion reinterpretation
   to avoid breaking if the __nonzero__ of an object fails
 
