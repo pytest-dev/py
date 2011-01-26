@@ -230,6 +230,7 @@ class TestSourceParsingAndCompiling:
         assert len(source) == 9
         assert source.getstatementrange(5) == (0, 9)
 
+    @py.test.mark.skipif("sys.version_info < (2,6)")
     def test_getstatementrange_out_of_bounds_py3(self):
         source = Source("if xxx:\n   from .collections import *")
         r = source.getstatementrange(1)
