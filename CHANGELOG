@@ -12,6 +12,8 @@ Changes between 1.4.0 and 1.4.1
 - fix (pytest-) issue17 where python3 does not like "import *"
   leading to misrepresentation of import-errors in test modules
 
+- fix py.error.* attribute pypy access issue
+
 Changes between 1.3.4 and 1.4.0
 ==================================================
 
