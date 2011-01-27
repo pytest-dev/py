@@ -158,11 +158,12 @@ class LocalPath(FSBase):
 
     def samefile(self, other):
         """ return True if 'other' references the same file as 'self'. """
-        if self == other:
-            return True
         if not iswin32:
-            return py.error.checked_call(os.path.samefile, str(self), str(other))
-        return False
+            return py.error.checked_call(
+                    os.path.samefile, str(self), str(other))
+        if not os.path.isabs(other):
+            other = os.path.abspath(other)
+        return self == other
 
     def remove(self, rec=1, ignore_errors=False):
         """ remove a file or directory (or a directory tree if rec=1).

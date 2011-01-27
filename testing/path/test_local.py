@@ -420,6 +420,11 @@ def test_samefile(tmpdir):
     assert tmpdir.samefile(tmpdir)
     p = tmpdir.ensure("hello")
     assert p.samefile(p)
+    old = p.dirpath().chdir()
+    try:
+        assert p.samefile(p.basename)
+    finally:
+        old.chdir()
     if sys.platform == "win32":
         p1 = p.__class__(str(p).lower())
         p2 = p.__class__(str(p).upper())

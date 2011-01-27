@@ -14,6 +14,10 @@ Changes between 1.4.0 and 1.4.1
 
 - fix py.error.* attribute pypy access issue
 
+- allow path.samefile(arg) to succeed when arg is a relative filename
+
+- fix (pytest-) issue20 path.samefile(relpath) works as expected now
+
 Changes between 1.3.4 and 1.4.0
 ==================================================
 
