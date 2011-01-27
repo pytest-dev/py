@@ -161,8 +161,9 @@ class LocalPath(FSBase):
         if not iswin32:
             return py.error.checked_call(
                     os.path.samefile, str(self), str(other))
-        if not os.path.isabs(other):
-            other = os.path.abspath(other)
+        if self == other:
+            return True
+        other = os.path.abspath(str(other))
         return self == other
 
     def remove(self, rec=1, ignore_errors=False):
