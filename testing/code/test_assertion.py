@@ -106,7 +106,7 @@ def test_attrib_inst():
         assert s.startswith("assert 1 == 2")
 
 def test_len():
-    l = list(xrange(42))
+    l = list(range(42))
     try:
         assert len(l) == 100
     except AssertionError:
