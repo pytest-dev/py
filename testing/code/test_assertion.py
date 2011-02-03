@@ -105,6 +105,16 @@ def test_attrib_inst():
         s = str(e)
         assert s.startswith("assert 1 == 2")
 
+def test_len():
+    l = list(xrange(42))
+    try:
+        assert len(l) == 100
+    except AssertionError:
+        e = exvalue()
+        s = str(e)
+        assert s.startswith("assert 42 == 100")
+        assert "where 42 = len([" in s
+
 def test_assert_non_string_message():
     class A:
         def __str__(self):
