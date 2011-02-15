@@ -749,7 +749,7 @@ class LocalPath(FSBase):
             pass
         try:
             os.symlink(src, dest)
-        except (OSError, AttributeError): # AttributeError on win32
+        except (OSError, AttributeError, NotImplementedError):
             pass
 
         return udir

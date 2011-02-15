@@ -280,6 +280,14 @@ class TestExecution:
             if i>=3:
                 assert not numdir.new(ext=str(i-3)).check()
 
+    def test_make_numbered_dir_NotImplemented_Error(self, tmpdir, monkeypatch):
+        def notimpl(x, y):
+            raise NotImplementedError(42)
+        monkeypatch.setattr(py.std.os, 'symlink', notimpl)
+        x = tmpdir.make_numbered_dir(rootdir=tmpdir, lock_timeout=0)
+        assert x.relto(tmpdir)
+        assert x.check()
+
     def test_locked_make_numbered_dir(self, tmpdir):
         for i in range(10):
             numdir = local.make_numbered_dir(prefix='base2.', rootdir=tmpdir,
