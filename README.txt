@@ -16,5 +16,5 @@ Bugs and issues: http://bitbucket.org/hpk42/pylib/issues/
 
 Mailing lists and more contact points: http://pylib.org/contact.html
 
-(c) Holger Krekel and others, 2004-2010
+(c) Holger Krekel and others, 2004-2011
 
