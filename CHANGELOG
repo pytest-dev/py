@@ -6,6 +6,8 @@ Changes between 1.4.1 and 1.4.2
 
 - better error message for syntax errors from compiled code
 
+- small fix to better deal with (un-)colored terminal output on windows
+
 Changes between 1.4.0 and 1.4.1
 ==================================================
 
