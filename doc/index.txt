@@ -6,7 +6,7 @@
 Welcome to py's documentation!
 =================================
 
-:ref:`1.4.1 release announcement <release-1.4.1>` and :ref:`CHANGELOG <changelog>`
+see :ref:`CHANGELOG <changelog>` for latest changes.
 
 .. note::
     
