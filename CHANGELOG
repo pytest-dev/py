@@ -2,6 +2,7 @@ Changes between 1.4.2 and 1.4.3.dev
 ==================================================
 
 - fix terminal coloring issue for skipped tests (thanks Amaury)
+- fix issue4 - large calls to ansi_print (thanks Amaury)
 
 Changes between 1.4.1 and 1.4.2
 ==================================================

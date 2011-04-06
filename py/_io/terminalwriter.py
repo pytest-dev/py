@@ -81,7 +81,9 @@ def ansi_print(text, esc, file=None, newline=True, flush=False):
         oldcolors = GetConsoleInfo(handle).wAttributes
         attr |= (oldcolors & 0x0f0)
         SetConsoleTextAttribute(handle, attr)
-        file.write(text)
+        while len(text) > 32768:
+            file.write(text[:32768])
+            text = text[32768:]
         SetConsoleTextAttribute(handle, oldcolors)
     else:
         file.write(text)
