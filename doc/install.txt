@@ -66,7 +66,7 @@ in order to work inline with the tools and the lib of your checkout.
 .. _`setuptools`: http://pypi.python.org/pypi/setuptools
 
 
-Contact and Communication points
+Mailing list and issue tracker
 --------------------------------------
 
 - `py-dev developers list`_ and `commit mailing list`_.

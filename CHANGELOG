@@ -1,4 +1,4 @@
-Changes between 1.4.2 and 1.4.3.dev
+Changes between 1.4.2 and 1.4.3
 ==================================================
 
 - fix terminal coloring issue for skipped tests (thanks Amaury)
