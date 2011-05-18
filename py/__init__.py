@@ -74,6 +74,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs={
         '_reinterpret_old'  : '._code.assertion:reinterpret_old',
         '_reinterpret'      : '._code.assertion:reinterpret',
         '_reprcompare'      : '._code.assertion:_reprcompare',
+        '_format_explanation' : '._code.assertion:_format_explanation',
     },
 
     # backports and additions of builtins
