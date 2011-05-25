@@ -50,7 +50,6 @@ copyright = u'2010, holger krekel et. al.'
 # The short X.Y version.
 # The full version, including alpha/beta/rc tags.
 import py
-assert py.path.local().relto(py.path.local(py.__file__).dirpath().dirpath())
 release = py.__version__
 version = ".".join(release.split(".")[:2])
 
