@@ -310,7 +310,7 @@ class ExceptionInfo(object):
         #     ExceptionInfo-like classes may have different attributes.
         if tup is None:
             tup = sys.exc_info()
-            if exprinfo is None and isinstance(tup[1], py.code._AssertionError):
+            if exprinfo is None and isinstance(tup[1], AssertionError):
                 exprinfo = getattr(tup[1], 'msg', None)
                 if exprinfo is None:
                     exprinfo = str(tup[1])
