@@ -193,6 +193,15 @@ class TestTraceback_f_g_h:
 def hello(x):
     x + 5
 
+def test_tbentry_reinterpret():
+    try:
+        hello("hello")
+    except TypeError:
+        excinfo = py.code.ExceptionInfo()
+    tbentry = excinfo.traceback[-1]
+    msg = tbentry.reinterpret()
+    assert msg.startswith("TypeError: ('hello' + 5)")
+
 def test_excinfo_exconly():
     excinfo = py.test.raises(ValueError, h)
     assert excinfo.exconly().startswith('ValueError')
@@ -585,6 +594,27 @@ raise ValueError()
             reprtb = p.repr_traceback(excinfo)
             assert reprtb.extraline == "!!! Recursion detected (same locals & position)"
             assert str(reprtb)
+
+    def test_tb_entry_AssertionError(self, importasmod):
+        # probably this test is a bit redundant
+        # as py/magic/testing/test_assertion.py
+        # already tests correctness of
+        # assertion-reinterpretation  logic
+        mod = importasmod("""
+            def somefunc():
+                x = 1
+                assert x == 2
+        """)
+        py.code.patch_builtins(assertion=True)
+        try:
+            excinfo = py.test.raises(AssertionError, mod.somefunc)
+        finally:
+            py.code.unpatch_builtins(assertion=True)
+
+        p = FormattedExcinfo()
+        reprentry = p.repr_traceback_entry(excinfo.traceback[-1], excinfo)
+        lines = reprentry.lines
+        assert lines[-1] == "E       assert 1 == 2"
 
     def test_reprexcinfo_getrepr(self, importasmod):
         mod = importasmod("""
