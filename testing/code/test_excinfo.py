@@ -296,15 +296,11 @@ class TestFormattedExcinfo:
     def test_repr_source_excinfo(self):
         """ check if indentation is right """
         pr = FormattedExcinfo()
-        py.code.patch_builtins()
-        try:
-            excinfo = self.excinfo_from_exec("""
+        excinfo = self.excinfo_from_exec("""
                 def f():
                     assert 0
                 f()
-            """)
-        finally:
-            py.code.unpatch_builtins()
+        """)
         pr = FormattedExcinfo()
         source = pr._getentrysource(excinfo.traceback[-1])
         lines = pr.get_source(source, 1, excinfo)
@@ -605,11 +601,7 @@ raise ValueError()
                 x = 1
                 assert x == 2
         """)
-        py.code.patch_builtins(assertion=True)
-        try:
-            excinfo = py.test.raises(AssertionError, mod.somefunc)
-        finally:
-            py.code.unpatch_builtins(assertion=True)
+        excinfo = py.test.raises(AssertionError, mod.somefunc)
 
         p = FormattedExcinfo()
         reprentry = p.repr_traceback_entry(excinfo.traceback[-1], excinfo)

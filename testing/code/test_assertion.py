@@ -3,12 +3,6 @@ import pytest, py
 def exvalue():
     return py.std.sys.exc_info()[1]
 
-def setup_module(mod):
-    py.code.patch_builtins(assertion=True, compile=False)
-
-def teardown_module(mod):
-    py.code.unpatch_builtins(assertion=True, compile=False)
-
 def f():
     return 2
 
@@ -254,7 +248,8 @@ def test_underscore_api():
 
 @py.test.mark.skipif("sys.version_info < (2,6)")
 def test_assert_customizable_reprcompare(monkeypatch):
-    monkeypatch.setattr(py.code, '_reprcompare', lambda *args: 'hello')
+    import _pytest.assertion.util
+    monkeypatch.setattr(_pytest.assertion.util, '_reprcompare', lambda *args: 'hello')
     try:
         assert 3 == 4
     except AssertionError:
