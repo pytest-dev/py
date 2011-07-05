@@ -462,7 +462,7 @@ class FormattedExcinfo(object):
     def repr_locals(self, locals):
         if self.showlocals:
             lines = []
-            keys = list(locals)
+            keys = [loc for loc in locals if loc[0] != "@"]
             keys.sort()
             for name in keys:
                 value = locals[name]
