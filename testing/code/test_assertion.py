@@ -248,8 +248,8 @@ def test_underscore_api():
 
 @py.test.mark.skipif("sys.version_info < (2,6)")
 def test_assert_customizable_reprcompare(monkeypatch):
-    import _pytest.assertion.util
-    monkeypatch.setattr(_pytest.assertion.util, '_reprcompare', lambda *args: 'hello')
+    util = pytest.importorskip("_pytest.assertion.util")
+    monkeypatch.setattr(util, '_reprcompare', lambda *args: 'hello')
     try:
         assert 3 == 4
     except AssertionError:
