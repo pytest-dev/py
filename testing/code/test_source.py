@@ -443,3 +443,8 @@ def test_code_of_object_instance_with_call():
 
     code = py.code.Code(WithCall())
     assert 'pass' in str(code.source())
+
+    class Hello(object):
+        def __call__(self):
+            pass
+    py.test.raises(TypeError, lambda: py.code.Code(Hello))
