@@ -260,9 +260,12 @@ def getfslineno(obj):
     try:
         code = py.code.Code(obj)
     except TypeError:
-        # fallback to
-        fn = (py.std.inspect.getsourcefile(obj) or
-              py.std.inspect.getfile(obj))
+        try:
+            fn = (py.std.inspect.getsourcefile(obj) or
+                  py.std.inspect.getfile(obj))
+        except TypeError:
+            return None, None
+
         fspath = fn and py.path.local(fn) or None
         if fspath:
             try:

@@ -709,7 +709,7 @@ def unpatch_builtins(assertion=True, compile=True):
     if compile:
         py.builtin.builtins.compile = oldbuiltins['compile'].pop()
 
-def getrawcode(obj):
+def getrawcode(obj, trycall=True):
     """ return code object for given function. """
     try:
         return obj.__code__
@@ -718,5 +718,10 @@ def getrawcode(obj):
         obj = getattr(obj, 'func_code', obj)
         obj = getattr(obj, 'f_code', obj)
         obj = getattr(obj, '__code__', obj)
+        if trycall and not hasattr(obj, 'co_firstlineno'):
+            if hasattr(obj, '__call__'):
+                x = getrawcode(obj.__call__, trycall=False)
+                if hasattr(x, 'co_firstlineno'):
+                    return x
         return obj
 

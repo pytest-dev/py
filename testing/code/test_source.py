@@ -430,3 +430,16 @@ def test_getfslineno():
     assert fspath.basename == "test_source.py"
     assert lineno == A_lineno
 
+    assert getfslineno(3) == (None, None)
+
+
+def test_code_of_object_instance_with_call():
+    class A:
+        pass
+    py.test.raises(TypeError, lambda: py.code.Source(A()))
+    class WithCall:
+        def __call__(self):
+            pass
+
+    code = py.code.Code(WithCall())
+    assert 'pass' in str(code.source())

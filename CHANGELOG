@@ -2,6 +2,9 @@ Changes between 1.4.3 and 1.4.4
 ==================================================
 
 - a few fixes and assertion related refinements for pytest-2.1
+- guard py.code.Code and getfslineno against bogus input
+  and make py.code.Code objects for object instance
+  by looking up their __call__ function.
 
 Changes between 1.4.2 and 1.4.3
 ==================================================
