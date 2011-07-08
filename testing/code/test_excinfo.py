@@ -549,6 +549,22 @@ raise ValueError()
             assert repr.reprcrash.path.endswith("mod.py")
             assert repr.reprcrash.message == "ValueError: 0"
 
+    def test_repr_traceback_with_invalid_cwd(self, importasmod, monkeypatch):
+        mod = importasmod("""
+            def f(x):
+                raise ValueError(x)
+            def entry():
+                f(0)
+        """)
+        excinfo = py.test.raises(ValueError, mod.entry)
+
+        p = FormattedExcinfo()
+        def raiseos():
+            raise OSError(2)
+        monkeypatch.setattr(py.std.os, 'getcwd', raiseos)
+        assert p._makepath(__file__) == __file__
+        reprtb = p.repr_traceback(excinfo)
+
     def test_repr_excinfo_addouterr(self, importasmod):
         mod = importasmod("""
             def entry():

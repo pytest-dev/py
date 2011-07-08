@@ -5,6 +5,7 @@ Changes between 1.4.3 and 1.4.4
 - guard py.code.Code and getfslineno against bogus input
   and make py.code.Code objects for object instance
   by looking up their __call__ function.
+- make exception presentation robust against invalid current cwd
 
 Changes between 1.4.2 and 1.4.3
 ==================================================
