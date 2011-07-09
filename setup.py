@@ -1,8 +1,10 @@
 import os, sys
-if sys.version_info >= (3,0):
+
+try:
+    from setuptools import setup
+except ImportError:
     from distribute_setup import use_setuptools
     use_setuptools()
-from setuptools import setup
 
 def main():
     setup(
