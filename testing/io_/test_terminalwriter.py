@@ -62,6 +62,11 @@ def test_terminalwriter_dumb_term_no_markup(monkeypatch):
     finally:
         monkeypatch.undo()
 
+def test_terminalwriter_file_unicode(tmpdir):
+    f = py.std.codecs.open(str(tmpdir.join("xyz")), "wb", "utf8")
+    tw = py.io.TerminalWriter(file=f)
+    assert tw.encoding == "utf8"
+
 def test_unicode_encoding():
     msg = py.builtin._totext('b\u00f6y', 'utf8')
     for encoding in 'utf8', 'latin1':

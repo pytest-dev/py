@@ -213,6 +213,12 @@ class TestStdCapture:
             out, err = cap.reset()
         assert err == "error2"
 
+    def test_capturing_readouterr_unicode(self):
+        cap = self.getcapture()
+        print ("hx\xc4\x85\xc4\x87")
+        out, err = cap.readouterr()
+        assert out == py.builtin._totext("hx\xc4\x85\xc4\x87\n", "utf8")
+
     def test_capturing_mixed(self):
         cap = self.getcapture(mixed=True)
         sys.stdout.write("hello ")

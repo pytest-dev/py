@@ -112,11 +112,9 @@ class TerminalWriter(object):
                 self.stringio = file = py.io.TextIO()
             else:
                 file = py.std.sys.stdout
-                if hasattr(file, 'encoding'):
-                    encoding = file.encoding
         elif hasattr(file, '__call__'):
             file = WriteFile(file, encoding=encoding)
-        self.encoding = encoding
+        self.encoding = encoding or getattr(file, 'encoding', "utf-8")
         self._file = file
         self.fullwidth = get_terminal_width()
         self.hasmarkup = should_do_markup(file)
