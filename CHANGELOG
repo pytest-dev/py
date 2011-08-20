@@ -1,4 +1,4 @@
-Changes between 1.4.4 and 1.4.5.dev1
+Changes between 1.4.4 and 1.4.5
 ==================================================
 
 - improve some unicode handling in terminalwriter and capturing
