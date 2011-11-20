@@ -108,6 +108,7 @@ class Source(object):
     def getstatementrange(self, lineno, assertion=False):
         """ return (start, end) tuple which spans the minimal
             statement region which containing the given lineno.
+            raise a ValueError if no such statementrange can be found.
         """
         # XXX there must be a better than these heuristic ways ...
         # XXX there may even be better heuristics :-)
@@ -116,6 +117,7 @@ class Source(object):
 
         # 1. find the start of the statement
         from codeop import compile_command
+        end = None
         for start in range(lineno, -1, -1):
             if assertion:
                 line = self.lines[start]
@@ -139,6 +141,8 @@ class Source(object):
                 trysource = self[start:end]
                 if trysource.isparseable():
                     return start, end
+        if end is None:
+            raise ValueError("no valid source range around line %d " % (lineno,))
         return start, end
 
     def getblockend(self, lineno):
