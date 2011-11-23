@@ -154,6 +154,25 @@ class TestTraceback_f_g_h:
         recindex = traceback.recursionindex()
         assert recindex is None
 
+    def test_traceback_messy_recursion(self):
+        #XXX: simplified locally testable version
+        decorator = py.test.importorskip('decorator').decorator
+        
+        def log(f, *k, **kw):
+            print('%s %s' % (k, kw))
+            f(*k, **kw)
+        log = decorator(log)
+
+        def fail():
+            raise ValueError('')
+
+        fail = log(log(fail))
+
+        excinfo = py.test.raises(ValueError, fail)
+        assert excinfo.traceback.recursionindex() is None
+
+
+
     def test_traceback_getcrashentry(self):
         def i():
             __tracebackhide__ = True
@@ -239,6 +258,7 @@ def test_excinfo_no_sourcecode():
         assert s == "  File '<string>':1 in <module>\n  ???\n"
 
 def test_excinfo_no_python_sourcecode(tmpdir):
+    #XXX: simplified locally testable version
     tmpdir.join('test.txt').write("{{ h()}}:")
 
     jinja2 = py.test.importorskip('jinja2')
