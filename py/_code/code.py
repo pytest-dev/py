@@ -283,7 +283,11 @@ class Traceback(list):
         """
         cache = {}
         for i, entry in enumerate(self):
-            key = entry.frame.code.path, entry.lineno
+            # id for the code.raw is needed to work around 
+            # the strange metaprogramming in the decorator lib from pypi
+            # which generates code objects that have hash/value equality
+            #XXX needs a test
+            key = entry.frame.code.path, id(entry.frame.code.raw), entry.lineno
             #print "checking for recursion at", key
             l = cache.setdefault(key, [])
             if l:
