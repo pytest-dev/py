@@ -3,6 +3,8 @@ Changes between 1.4.5 and 1.4.x
 
 - fix issue7: source.getstatementrange() now raises proper error
   if no valid statement can be found
+- make source.getstatementrange() more resilent about non-python code frames
+  (as seen from jnja2)
 - make trackeback recursion detection more resilent
   about the eval magic of a decorator library
 - add py.builtin.next

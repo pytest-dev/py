@@ -238,6 +238,20 @@ def test_excinfo_no_sourcecode():
     else:
         assert s == "  File '<string>':1 in <module>\n  ???\n"
 
+def test_excinfo_no_python_sourcecode(tmpdir):
+    tmpdir.join('test.txt').write("{{ h()}}:")
+
+    jinja2 = py.test.importorskip('jinja2')
+    loader = jinja2.FileSystemLoader(str(tmpdir))
+    env = jinja2.Environment(loader=loader)
+    template = env.get_template('test.txt')
+    excinfo = py.test.raises(ValueError,
+                             template.render, h=h)
+    for item in excinfo.traceback:
+        print(item) #XXX: for some reason jinja.Template.render is printed in full
+        item.source # shouldnt fail
+
+
 def test_entrysource_Queue_example():
     try:
         queue.Queue().get(timeout=0.001)

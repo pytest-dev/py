@@ -171,6 +171,8 @@ class TracebackEntry(object):
             _, end = source.getstatementrange(end)
         except IndexError:
             end = self.lineno + 1
+        except ValueError:
+            pass
         # heuristic to stop displaying source on e.g.
         #   if something:  # assume this causes a NameError
         #      # _this_ lines and the one
