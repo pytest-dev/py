@@ -104,6 +104,7 @@ _apipkg.initpkg(__name__, attr={'_apipkg': _apipkg}, exportdefs={
         'builtins'       : '._builtin:builtins',
         'execfile'       : '._builtin:execfile',
         'callable'       : '._builtin:callable',
+        'next'           : '._builtin:next',
     },
 
     # input-output helping

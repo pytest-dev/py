@@ -91,6 +91,22 @@ except NameError:
 enumerate = enumerate
 
 try:
+    next = next
+except NameError:
+    _next_noarg = object()
+    def next(it, default=_next_noarg):
+        try:
+            if hasattr(it, '__next__'):
+                return it.__next__()
+            else:
+                return it.next()
+        except StopIteration:
+            if default is _next_noarg:
+                raise
+            else:
+                return default
+
+try:
     BaseException = BaseException
 except NameError:
     BaseException = Exception
