@@ -12,7 +12,7 @@ def main():
         name='py',
         description='library with cross-python path, ini-parsing, io, code, log facilities',
         long_description = open('README.txt').read(),
-        version='1.4.6.dev1',
+        version='1.4.6.dev3',
         url='http://pylib.org',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],

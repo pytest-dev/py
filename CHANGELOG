@@ -3,6 +3,9 @@ Changes between 1.4.5 and 1.4.x
 
 - fix issue7: source.getstatementrange() now raises proper error
   if no valid statement can be found
+- fix issue8: fix code and tests of svnurl/svnwc to work on subversion 1.7 - 
+  note that path.status(updates=1) will not properly work svn-17's status 
+  --xml output is broken.
 
 Changes between 1.4.4 and 1.4.5
 ==================================================
