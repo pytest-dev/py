@@ -270,6 +270,8 @@ def test_excinfo_no_python_sourcecode(tmpdir):
     for item in excinfo.traceback:
         print(item) #XXX: for some reason jinja.Template.render is printed in full
         item.source # shouldnt fail
+        if item.path.basename == 'test.txt':
+            assert str(item.source) == '{{ h()}}:'
 
 
 def test_entrysource_Queue_example():
