@@ -65,6 +65,19 @@ check_tokens = {
         '[section] #comment',
         [(0, 'section', None, None)]
     ),
+    'comment2': (
+        '; comment',
+        []
+    ),
+    'comment2 on value': (
+        'value = 1 ; comment',
+        [(0, None, 'value', '1')]
+    ),
+
+    'comment2 on section': (
+        '[section] ;comment',
+        [(0, 'section', None, None)]
+    ),
     'pseudo section syntax in value': (
         'name = value []',
         [(0, None, 'name', 'value []')]

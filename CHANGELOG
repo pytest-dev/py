@@ -8,6 +8,7 @@ Changes between 1.4.5 and 1.4.x
 - make trackeback recursion detection more resilent
   about the eval magic of a decorator library
 - add py.builtin.next
+- iniconfig: add support for ; as comment starter
 
 Changes between 1.4.4 and 1.4.5
 ==================================================
