@@ -1,5 +1,6 @@
 import py
 import os, sys
+import pytest
 from py._path.svnwc import InfoSvnWCCommand, XMLWCStatus, parse_wcinfotime
 from py._path import svnwc as svncommon
 from svntestbase import CommonSvnTests
@@ -105,6 +106,7 @@ class TestWCSvnCommandPath(CommonSvnTests):
         assert r.join('sampledir/otherfile').basename in [item.basename
                                                     for item in s.unchanged]
 
+    @pytest.mark.xfail(reason="svn-1.7 has buggy 'status --xml' output")
     def test_status_update(self, path1):
         r = path1
         try:
@@ -112,6 +114,7 @@ class TestWCSvnCommandPath(CommonSvnTests):
             s = r.status(updates=1, rec=1)
             # Comparing just the file names, because paths are unpredictable
             # on Windows. (long vs. 8.3 paths)
+            py.std.pprint.pprint(s.allpath())
             assert r.join('anotherfile').basename in [item.basename for
                                                     item in s.update_available]
             #assert len(s.update_available) == 1
@@ -122,7 +125,6 @@ class TestWCSvnCommandPath(CommonSvnTests):
         p = path1.join("samplefile")
         p.remove()
         p.ensure(dir=0)
-        p.add()
         try:
             s = path1.status()
             assert p.basename in [item.basename for item in s.replaced]
@@ -164,8 +166,6 @@ class TestWCSvnCommandPath(CommonSvnTests):
         otherrepo, otherrepourl, otherwc = repowc2
         d = path1.ensure('sampledir', dir=1)
         try:
-            d.remove()
-            d.add()
             d.update()
             d.propset('svn:externals', 'otherwc %s' % (otherwc.url,))
             d.update()
@@ -181,7 +181,7 @@ class TestWCSvnCommandPath(CommonSvnTests):
     def test_status_deleted(self, path1):
         d = path1.ensure('sampledir', dir=1)
         d.remove()
-        d.add()
+        d.ensure(dir=1)
         path1.commit()
         d.ensure('deletefile', dir=0)
         d.commit()
@@ -338,7 +338,7 @@ class TestWCSvnCommandPath(CommonSvnTests):
         somefile = root.join('somefile')
         somefile.ensure(file=True)
         # not yet added to repo
-        py.test.raises(py.process.cmdexec.Error, 'somefile.lock()')
+        py.test.raises((py.process.cmdexec.Error, ValueError), 'somefile.lock()')
         somefile.write('foo')
         somefile.commit('test')
         assert somefile.check(versioned=True)
