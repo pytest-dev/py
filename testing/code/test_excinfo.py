@@ -157,7 +157,7 @@ class TestTraceback_f_g_h:
     def test_traceback_messy_recursion(self):
         #XXX: simplified locally testable version
         decorator = py.test.importorskip('decorator').decorator
-        
+
         def log(f, *k, **kw):
             print('%s %s' % (k, kw))
             f(*k, **kw)
@@ -751,9 +751,11 @@ raise ValueError()
             assert 0
         """)
         repr = excinfo.getrepr(style='native')
-        assert repr.startswith('Traceback (most recent call last):\n  File')
-        assert repr.endswith('\nAssertionError: assert 0\n')
-        assert 'exec (source.compile())' in repr
+        assert "assert 0" in str(repr.reprcrash)
+        s = str(repr)
+        assert s.startswith('Traceback (most recent call last):\n  File')
+        assert s.endswith('\nAssertionError: assert 0')
+        assert 'exec (source.compile())' in s
         # python 2.4 fails to get the source line for the assert
         if py.std.sys.version_info >= (2, 5):
-            assert repr.count('assert 0') == 2
+            assert s.count('assert 0') == 2

@@ -283,7 +283,7 @@ class Traceback(list):
         """
         cache = {}
         for i, entry in enumerate(self):
-            # id for the code.raw is needed to work around 
+            # id for the code.raw is needed to work around
             # the strange metaprogramming in the decorator lib from pypi
             # which generates code objects that have hash/value equality
             #XXX needs a test
@@ -361,14 +361,16 @@ class ExceptionInfo(object):
             showlocals: show locals per traceback entry
             style: long|short|no|native traceback style
             tbfilter: hide entries (where __tracebackhide__ is true)
+
+            in case of style==native, tbfilter and showlocals is ignored.
         """
         if style == 'native':
-            import traceback
-            return ''.join(traceback.format_exception(
-                self.type,
-                self.value,
-                self.traceback[0]._rawentry,
-                ))
+            return ReprExceptionInfo(ReprTracebackNative(
+                py.std.traceback.format_exception(
+                    self.type,
+                    self.value,
+                    self.traceback[0]._rawentry,
+                )), self._getreprcrash())
 
         fmt = FormattedExcinfo(showlocals=showlocals, style=style,
             abspath=abspath, tbfilter=tbfilter, funcargs=funcargs)
@@ -611,6 +613,19 @@ class ReprTraceback(TerminalRepr):
             entry.toterminal(tw)
         if self.extraline:
             tw.line(self.extraline)
+
+class ReprTracebackNative(ReprTraceback):
+    def __init__(self, tblines):
+        self.style = "native"
+        self.reprentries = [ReprEntryNative(tblines)]
+        self.extraline = None
+
+class ReprEntryNative(TerminalRepr):
+    def __init__(self, tblines):
+        self.lines = tblines
+
+    def toterminal(self, tw):
+        tw.write("".join(self.lines))
 
 class ReprEntry(TerminalRepr):
     localssep = "_ "

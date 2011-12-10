@@ -1,6 +1,8 @@
 Changes between 1.4.5 and 1.4.x
 ==================================================
 
+- help to fix pytest issue99: unify output of 
+  ExceptionInfo.getrepr(style="native") with ...(style="long")
 - fix issue7: source.getstatementrange() now raises proper error
   if no valid statement can be found
 - fix issue8: fix code and tests of svnurl/svnwc to work on subversion 1.7 - 
