@@ -54,6 +54,11 @@ def test_tag_nested():
     u = unicode(x)
     assert u == '<hello><world/></hello>'
 
+def test_list_nested():
+    x = ns.hello([ns.world()]) #pass in a list here
+    u = unicode(x)
+    assert u == '<hello><world/></hello>'
+
 def test_tag_xmlname():
     class my(ns.hello):
         xmlname = 'world'
