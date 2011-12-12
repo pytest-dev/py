@@ -1,7 +1,7 @@
 import sys
 import types
 import py
-from py.builtin import set, frozenset, reversed, sorted, next
+from py.builtin import set, frozenset, reversed, sorted
 
 def test_enumerate():
     l = [0,1,2]
@@ -160,22 +160,3 @@ def test_getcode():
     code = py.builtin._getcode(test_getcode)
     assert isinstance(code, types.CodeType)
     assert py.builtin._getcode(4) is None
-
-def test_next():
-    it = iter([])
-    py.test.raises(StopIteraton, next, it)
-    it = iter('1')
-    n = next(it)
-    assert n ==  '1'
-    py.test.raises(StopIteraton, next, it)
-
-    class new_next(object):
-        def __next__(self):
-            return 1
-    assert next(new_next()) == 1
-
-    class old_next(object):
-        def next(self):
-            return 1
-    assert next(old_next) == 1
-
