@@ -14,6 +14,8 @@ Changes between 1.4.5 and 1.4.x
   about the eval magic of a decorator library
 - iniconfig: add support for ; as comment starter
 - properly handle lists in xmlgen on python3
+- normalize py.code.getfslineno(obj) to always return a (string, int) tuple
+  defaulting to ("", -1) respectively if no source code can be found for obj.
 
 Changes between 1.4.4 and 1.4.5
 ==================================================

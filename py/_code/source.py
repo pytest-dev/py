@@ -261,6 +261,9 @@ def compile_(source, filename=None, mode='exec', flags=
 
 
 def getfslineno(obj):
+    """ Return source location (path, lineno) for the given object.
+    If the source cannot be determined return ("", -1)
+    """
     try:
         code = py.code.Code(obj)
     except TypeError:
@@ -268,19 +271,19 @@ def getfslineno(obj):
             fn = (py.std.inspect.getsourcefile(obj) or
                   py.std.inspect.getfile(obj))
         except TypeError:
-            return None, None
+            return "", -1
 
         fspath = fn and py.path.local(fn) or None
+        lineno = -1
         if fspath:
             try:
                 _, lineno = findsource(obj)
             except IOError:
-                lineno = None
-        else:
-            lineno = None
+                pass
     else:
         fspath = code.path
         lineno = code.firstlineno
+    assert isinstance(lineno, int)
     return fspath, lineno
 
 #
@@ -293,7 +296,7 @@ def findsource(obj):
     except py.builtin._sysex:
         raise
     except:
-        return None, None
+        return "", -1
     source = Source()
     source.lines = [line.rstrip() for line in sourcelines]
     return source, lineno
