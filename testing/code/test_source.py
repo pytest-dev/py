@@ -238,7 +238,7 @@ class TestSourceParsingAndCompiling:
 
     def test_getstatementrange_with_syntaxerror_issue7(self):
         source = Source(":")
-        py.test.raises(ValueError, lambda: source.getstatementrange(0))
+        py.test.raises(IndexError, lambda: source.getstatementrange(0))
 
     @py.test.mark.skipif("sys.version_info < (2,6)")
     def test_compile_to_ast(self):

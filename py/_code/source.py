@@ -108,7 +108,7 @@ class Source(object):
     def getstatementrange(self, lineno, assertion=False):
         """ return (start, end) tuple which spans the minimal
             statement region which containing the given lineno.
-            raise a ValueError if no such statementrange can be found.
+            raise an IndexError if no such statementrange can be found.
         """
         # XXX there must be a better than these heuristic ways ...
         # XXX there may even be better heuristics :-)
@@ -142,7 +142,7 @@ class Source(object):
                 if trysource.isparseable():
                     return start, end
         if end is None:
-            raise ValueError("no valid source range around line %d " % (lineno,))
+            raise IndexError("no valid source range around line %d " % (lineno,))
         return start, end
 
     def getblockend(self, lineno):
