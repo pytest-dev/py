@@ -296,7 +296,7 @@ def findsource(obj):
     except py.builtin._sysex:
         raise
     except:
-        return "", -1
+        return None, -1
     source = Source()
     source.lines = [line.rstrip() for line in sourcelines]
     return source, lineno
