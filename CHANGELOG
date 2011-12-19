@@ -1,3 +1,8 @@
+Changes between 1.4.6 and NEXT
+==================================================
+
+- fix issue11 - own test failure with python3.3 / Thanks Benjamin Peterson
+
 Changes between 1.4.5 and 1.4.6
 ==================================================
 
