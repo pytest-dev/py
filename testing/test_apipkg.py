@@ -3,6 +3,9 @@ import sys
 import py
 import py._apipkg as apipkg
 import subprocess
+import types
+
+ModuleType = types.ModuleType
 #
 # test support for importing modules
 #
@@ -202,7 +205,7 @@ def parsenamespace(spec):
     return ns
 
 def test_initpkg_replaces_sysmodules(monkeypatch):
-    mod = type(sys)('hello')
+    mod = ModuleType('hello')
     monkeypatch.setitem(sys.modules, 'hello', mod)
     apipkg.initpkg('hello', {'x': 'os.path:abspath'})
     newmod = sys.modules['hello']
@@ -210,7 +213,7 @@ def test_initpkg_replaces_sysmodules(monkeypatch):
     assert newmod.x == py.std.os.path.abspath
 
 def test_initpkg_transfers_attrs(monkeypatch):
-    mod = type(sys)('hello')
+    mod = ModuleType('hello')
     mod.__version__ = 10
     mod.__file__ = "hello.py"
     mod.__loader__ = "loader"
@@ -225,7 +228,7 @@ def test_initpkg_transfers_attrs(monkeypatch):
     assert newmod.__doc__ == mod.__doc__
 
 def test_initpkg_nodoc(monkeypatch):
-    mod = type(sys)('hello')
+    mod = ModuleType('hello')
     mod.__file__ = "hello.py"
     monkeypatch.setitem(sys.modules, 'hello', mod)
     apipkg.initpkg('hello', {})
@@ -233,7 +236,7 @@ def test_initpkg_nodoc(monkeypatch):
     assert not newmod.__doc__
 
 def test_initpkg_overwrite_doc(monkeypatch):
-    hello = type(sys)('hello')
+    hello = ModuleType('hello')
     hello.__doc__ = "this is the documentation"
     monkeypatch.setitem(sys.modules, 'hello', hello)
     apipkg.initpkg('hello', {"__doc__": "sys:__doc__"})
@@ -242,7 +245,7 @@ def test_initpkg_overwrite_doc(monkeypatch):
     assert newhello.__doc__ == sys.__doc__
 
 def test_initpkg_not_transfers_not_existing_attrs(monkeypatch):
-    mod = type(sys)('hello')
+    mod = ModuleType('hello')
     mod.__file__ = "hello.py"
     monkeypatch.setitem(sys.modules, 'hello', mod)
     apipkg.initpkg('hello', {})
@@ -253,7 +256,7 @@ def test_initpkg_not_transfers_not_existing_attrs(monkeypatch):
     assert not hasattr(newmod, '__path__')
 
 def test_initpkg_defaults(monkeypatch):
-    mod = type(sys)('hello')
+    mod = ModuleType('hello')
     monkeypatch.setitem(sys.modules, 'hello', mod)
     apipkg.initpkg('hello', {})
     newmod = sys.modules['hello']
