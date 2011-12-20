@@ -1,4 +1,5 @@
 import py
+import pytest
 import sys
 from py.path import local
 import common
@@ -311,6 +312,13 @@ class TestImport:
         obj = path1.join('execfile.py').pyimport()
         assert obj.x == 42
         assert obj.__name__ == 'execfile'
+
+    def test_pyimport_renamed_dir_creates_mismatch(self, tmpdir):
+        p = tmpdir.ensure("a", "test_x123.py")
+        p.pyimport()
+        tmpdir.join("a").move(tmpdir.join("b"))
+        pytest.raises(tmpdir.ImportMismatchError,
+            lambda: tmpdir.join("b", "test_x123.py").pyimport())
 
     def test_pyimport_messy_name(self, tmpdir):
         # http://bitbucket.org/hpk42/py-trunk/issue/129
