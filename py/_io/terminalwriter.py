@@ -105,6 +105,8 @@ class TerminalWriter(object):
                      Blue=44, Purple=45, Cyan=46, White=47,
                      bold=1, light=2, blink=5, invert=7)
 
+    _newline = None   # the last line printed
+
     # XXX deprecate stringio argument
     def __init__(self, file=None, stringio=False, encoding=None):
         if file is None:
@@ -180,8 +182,24 @@ class TerminalWriter(object):
         return s
 
     def line(self, s='', **kw):
+        if self._newline == False:
+            self.write("\n")
         self.write(s, **kw)
         self.write('\n')
+        self._newline = True
+
+    def reline(self, line, **opts):
+        if not self.hasmarkup:
+            raise ValueError("cannot use rewrite-line without terminal")
+        if not self._newline:
+            self.write("\r")
+        self.write(line, **opts)
+        lastlen = getattr(self, '_lastlinelen', None)
+        self._lastlinelen = lenlastline = len(line)
+        if lenlastline < lastlen:
+            self.write(" " * (lastlen - lenlastline + 1))
+        self._newline = False
+
 
 class Win32ConsoleWriter(TerminalWriter):
     def write(self, s, **kw):

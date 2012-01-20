@@ -2,6 +2,7 @@ import py
 import os, sys
 from py._io import terminalwriter
 import codecs
+import pytest
 
 def test_get_terminal_width():
     x = py.io.get_terminal_width
@@ -162,6 +163,26 @@ class TestTerminalWriter:
         tw.sep("-", "hello")
         l = tw.getlines()
         assert len(l[0]) == len(l[1])
+
+    def test_reline(self, tw):
+        tw.line("hello")
+        tw.hasmarkup = False
+        pytest.raises(ValueError, lambda: tw.reline("x"))
+        tw.hasmarkup = True
+        tw.reline("0 1 2")
+        l = "".join(tw.getlines()).split("\n")
+        assert len(l) == 2
+        tw.reline("0 1 3")
+        l = "".join(tw.getlines()).split("\n")
+        assert len(l) == 2
+        assert l[1].endswith("\r0 1 3")
+        tw.line("something")
+        l = "".join(tw.getlines()).split("\n")
+        assert len(l) == 4
+        assert l[-1] == ""
+        out = "\n".join(l)
+        assert out.endswith("\nsomething\n")
+
 
 
 def test_attr_hasmarkup():
