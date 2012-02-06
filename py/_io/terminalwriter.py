@@ -194,10 +194,17 @@ class TerminalWriter(object):
         if not self._newline:
             self.write("\r")
         self.write(line, **opts)
-        lastlen = getattr(self, '_lastlinelen', None)
-        self._lastlinelen = lenlastline = len(line)
-        if lenlastline < lastlen:
-            self.write(" " * (lastlen - lenlastline + 1))
+        # see if we need to fill up some spaces at the end
+        # xxx have a more exact lastlinelen working from self.write?
+        lenline = len(line)
+        try:
+            lastlen = self._lastlinelen
+        except AttributeError:
+            pass
+        else:
+            if lenline < lastlen:
+                self.write(" " * (lastlen - lenline + 1))
+        self._lastlinelen = lenline
         self._newline = False
 
 
