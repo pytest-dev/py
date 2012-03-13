@@ -1,3 +1,8 @@
+Changes between 1.4.7 and 1.4.8
+==================================================
+
+- fix issue 13 - correct handling of the tag name object in xmlgen
+
 Changes between 1.4.6 and 1.4.7
 ==================================================
 

@@ -122,11 +122,13 @@ class SimpleUnicodeVisitor(object):
                 if visitmethod is not None:
                     break
             else:
-                visitmethod = self.object
+                visitmethod = self.__object
             self.cache[cls] = visitmethod
         visitmethod(node)
 
-    def object(self, obj):
+    # the default fallback handler is marked private
+    # to avoid clashes with the tag name object
+    def __object(self, obj):
         #self.write(obj)
         self.write(escape(unicode(obj)))
 

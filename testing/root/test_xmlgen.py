@@ -134,3 +134,6 @@ def test_inline():
     assert (h.unicode(indent=2) ==
             '<div><span>foo</span><span>bar</span></div>')
 
+def test_object_tags():
+    o = html.object(html.object())
+    assert o.unicode(indent=0) == '<object><object></object></object>'
