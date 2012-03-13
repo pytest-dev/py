@@ -184,7 +184,11 @@ class SimpleUnicodeVisitor(object):
             value = getattr(attrs, name)
             if name.endswith('_'):
                 name = name[:-1]
-            return ' %s="%s"' % (name, escape(unicode(value)))
+            if isinstance(value, raw):
+                insert = value.uniobj
+            else:
+                insert = escape(unicode(value))
+            return ' %s="%s"' % (name, insert)
 
     def getstyle(self, tag):
         """ return attribute list suitable for styling. """

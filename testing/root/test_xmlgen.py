@@ -1,6 +1,6 @@
 
 import py
-from py._xmlgen import unicode, html
+from py._xmlgen import unicode, html, raw
 
 class ns(py.xml.Namespace):
     pass
@@ -46,6 +46,10 @@ def test_tag_with_subclassed_attr_simple():
     x = my()
     assert x.attr.hello == 'world'
     assert unicode(x) == '<my hello="world"/>'
+
+def test_tag_with_raw_attr():
+    x = html.object(data=raw('&'))
+    assert unicode(x) == '<object data="&"></object>'
 
 def test_tag_nested():
     x = ns.hello(ns.world())
