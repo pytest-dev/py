@@ -52,7 +52,7 @@ class Tag(list):
     def unicode(self, indent=2):
         l = []
         SimpleUnicodeVisitor(l.append, indent).visit(self)
-        return "".join(l)
+        return u("").join(l)
 
     def __repr__(self):
         name = self.__class__.__name__
