@@ -219,6 +219,15 @@ class TestStdCapture:
         out, err = cap.readouterr()
         assert out == py.builtin._totext("hx\xc4\x85\xc4\x87\n", "utf8")
 
+    @py.test.mark.skipif('sys.version_info >= (3,)',
+                      reason='text output different for bytes on python3')
+    def test_capturing_readouterr_decode_error_handling(self):
+        cap = self.getcapture()
+        # triggered a internal error in pytest
+        print('\xa6')
+        out, err = cap.readouterr()
+        assert out == py.builtin._totext('\ufffd\n', 'unicode-escape')
+
     def test_capturing_mixed(self):
         cap = self.getcapture(mixed=True)
         sys.stdout.write("hello ")
