@@ -133,6 +133,15 @@ def test_callable():
 def test_totext():
     py.builtin._totext("hello", "UTF-8")
 
+def test_totext_badutf8():
+    # this was in printouts within the pytest testsuite
+    # totext would fail
+    if sys.version_info >= (3,):
+        errors = 'surrogateescape'
+    else: # old python has crappy error handlers
+        errors = 'replace'
+    py.builtin._totext("\xa6", "UTF-8", errors)
+
 def test_reraise():
     from py.builtin import _reraise
     try:
