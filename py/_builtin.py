@@ -115,7 +115,10 @@ if sys.version_info >= (3, 0):
     _basestring = str
     def _totext(obj, encoding=None, errors=None):
         if isinstance(obj, bytes):
-            obj = obj.decode(encoding, errors)
+            if errors is None:
+                obj = obj.decode(encoding)
+            else:
+                obj = obj.decode(encoding, errors)
         elif not isinstance(obj, str):
             obj = str(obj)
         return obj
