@@ -90,9 +90,10 @@ class TestSvnAuth(object):
                                          '--no-auth-cache --non-interactive')
 
 class svnwc_no_svn(py.path.svnwc):
-    def __init__(self, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):
+        self = super(svnwc_no_svn, cls).__new__(cls, *args, **kwargs)
         self.commands = []
-        super(svnwc_no_svn, self).__init__(*args, **kwargs)
+        return self
 
     def _svn(self, *args):
         self.commands.append(args)
@@ -130,9 +131,10 @@ class TestSvnWCAuth(object):
 class svnurl_no_svn(py.path.svnurl):
     cmdexec_output = 'test'
     popen_output = 'test'
-    def __init__(self, *args, **kwargs):
-        py.path.svnurl.__init__(self, *args, **kwargs)
+    def __new__(cls, *args, **kwargs):
+        self = super(svnurl_no_svn, cls).__new__(cls, *args, **kwargs)
         self.commands = []
+        return self
 
     def _cmdexec(self, cmd):
         self.commands.append(cmd)
