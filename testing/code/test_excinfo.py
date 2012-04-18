@@ -5,6 +5,13 @@ queue = py.builtin._tryimport('queue', 'Queue')
 
 failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
 
+try:
+    import importlib
+except ImportError:
+    invalidate_import_caches = None
+else:
+    invalidate_import_caches = getattr(importlib, "invalidate_caches", None)
+
 class TWMock:
     def __init__(self):
         self.lines = []
@@ -304,6 +311,8 @@ class TestFormattedExcinfo:
             modpath = tmpdir.join("mod.py")
             tmpdir.ensure("__init__.py")
             modpath.write(source)
+            if invalidate_import_caches is not None:
+                invalidate_import_caches()
             return modpath.pyimport()
         return importasmod
 
