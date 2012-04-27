@@ -517,7 +517,8 @@ class LocalPath(FSBase):
             if pkgpath is not None:
                 if ensuresyspath:
                     self._prependsyspath(pkgpath.dirpath())
-                pkg = __import__(pkgpath.basename, None, None, [])
+                __import__(pkgpath.basename)
+                pkg = sys.modules[pkgpath.basename]
                 names = self.new(ext='').relto(pkgpath.dirpath())
                 names = names.split(self.sep)
                 if names and names[-1] == "__init__":
@@ -528,7 +529,8 @@ class LocalPath(FSBase):
                 if ensuresyspath:
                     self._prependsyspath(self.dirpath())
                 modname = self.purebasename
-            mod = __import__(modname, None, None, ['__doc__'])
+            __import__(modname)
+            mod = sys.modules[modname]
             if self.basename == "__init__.py":
                 return mod # we don't check anything as we might
                        # we in a namespace package ... too icky to check

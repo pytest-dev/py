@@ -231,7 +231,9 @@ def _tryimport(*names):
     assert names
     for name in names:
         try:
-            return __import__(name, None, None, '__doc__')
+            __import__(name)
         except ImportError:
             excinfo = sys.exc_info()
+        else:
+            return sys.modules[name]
     _reraise(*excinfo)
