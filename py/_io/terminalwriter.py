@@ -239,10 +239,6 @@ class Win32ConsoleWriter(TerminalWriter):
             if oldcolors:
                 SetConsoleTextAttribute(handle, oldcolors)
 
-    def line(self, s="", **kw):
-        self.write(s, **kw) # works better for resetting colors
-        self.write("\n")
-
 class WriteFile(object):
     def __init__(self, writemethod, encoding=None):
         self.encoding = encoding
