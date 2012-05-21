@@ -8,7 +8,7 @@ object to fs-like object trees (reading from and writing to files, adding
 files/directories, examining the types and structure, etc.), and out-of-the-box
 provides a number of implementations of this API.
 
-py.test.local - local file system path
+py.path.local - local file system path
 ===============================================
 
 .. _`local`:
