@@ -4,6 +4,7 @@ Changes between 1.4.7 and 1.4.8
 - fix issue 13 - correct handling of the tag name object in xmlgen
 - fix issue 14 - support raw attribute values in xmlgen
 - fix windows terminalwriter printing/re-line problem
+- update distribute_setup.py to 0.6.27
 
 Changes between 1.4.6 and 1.4.7
 ==================================================
