@@ -5,6 +5,8 @@ __version__ = "0.2.dev2"
 
 __all__ = ['IniConfig', 'ParseError']
 
+COMMENTCHARS = "#;"
+
 class ParseError(Exception):
     def __init__(self, path, lineno, msg):
         Exception.__init__(self, path, lineno, msg)
@@ -101,15 +103,21 @@ class IniConfig(object):
         return result
 
     def _parseline(self, line, lineno):
-        # comments
-        line = line.split('#')[0].rstrip()
-        line = line.split(';')[0].rstrip()
         # blank lines
+        if iscommentline(line):
+            line = ""
+        else:
+            line = line.rstrip()
         if not line:
             return None, None
         # section
-        if line[0] == '[' and line[-1] == ']':
-            return line[1:-1], None
+        if line[0] == '[':
+            realline = line
+            for c in COMMENTCHARS:
+                line = line.split(c)[0].rstrip()
+            if line[-1] == "]":
+                return line[1:-1], None
+            return None, realline.strip()
         # value
         elif not line[0].isspace():
             try:
@@ -148,3 +156,7 @@ class IniConfig(object):
 
     def __contains__(self, arg):
         return arg in self.sections
+
+def iscommentline(line):
+    c = line.lstrip()[:1]
+    return c in COMMENTCHARS

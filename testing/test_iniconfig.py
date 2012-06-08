@@ -1,5 +1,7 @@
 import py
+import pytest
 from py._iniconfig import IniConfig, ParseError, __all__ as ALL
+from py._iniconfig import iscommentline
 from textwrap import dedent
 
 def pytest_generate_tests(metafunc):
@@ -57,7 +59,7 @@ check_tokens = {
         []
     ),
     'comment on value': (
-        'value = 1 # comment',
+        'value = 1',
         [(0, None, 'value', '1')]
     ),
 
@@ -68,10 +70,6 @@ check_tokens = {
     'comment2': (
         '; comment',
         []
-    ),
-    'comment2 on value': (
-        'value = 1 ; comment',
-        [(0, None, 'value', '1')]
     ),
 
     'comment2 on section': (
@@ -100,7 +98,7 @@ check_tokens = {
     ),
 
 }
-   
+
 def parse(input):
     # only for testing purposes - _parse() does not use state except path
     ini = object.__new__(IniConfig)
@@ -184,7 +182,7 @@ def test_iniconfig_lineof():
     assert config.lineof('section2') == 3
     assert config.lineof('section', 'value') == 2
     assert config.lineof('section2','value') == 5
-    
+
     assert config['section'].lineof('value') == 2
     assert config['section2'].lineof('value') == 5
 
@@ -288,3 +286,14 @@ def test_example_pypirc():
 
 def test_api_import():
     assert ALL == ['IniConfig', 'ParseError']
+
+@pytest.mark.parametrize("line", [
+    "#qwe",
+    "  #qwe",
+    ";qwe",
+    " ;qwe",
+])
+def test_iscommentline_true(line):
+    assert iscommentline(line)
+
+
