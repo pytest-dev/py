@@ -3,6 +3,7 @@ Changes between 1.4.8 and 1.4.9.DEV
 
 - changed iniconfig parsing to better conform, now the chars ";"
   and "#" only mark a comment at the stripped start of a line
+- include recent apipkg-1.2
 
 Changes between 1.4.7 and 1.4.8
 ==================================================
