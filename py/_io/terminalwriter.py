@@ -105,8 +105,6 @@ class TerminalWriter(object):
                      Blue=44, Purple=45, Cyan=46, White=47,
                      bold=1, light=2, blink=5, invert=7)
 
-    _newline = None   # the last line printed
-
     # XXX deprecate stringio argument
     def __init__(self, file=None, stringio=False, encoding=None):
         if file is None:
@@ -120,6 +118,7 @@ class TerminalWriter(object):
         self._file = file
         self.fullwidth = get_terminal_width()
         self.hasmarkup = should_do_markup(file)
+        self._lastlen = 0
 
     def _escaped(self, text, esc):
         if esc and self.hasmarkup:
@@ -182,31 +181,22 @@ class TerminalWriter(object):
         return s
 
     def line(self, s='', **kw):
-        if self._newline == False:
-            self.write("\n")
         self.write(s, **kw)
+        self._checkfill(s)
         self.write('\n')
-        self._newline = True
 
-    def reline(self, line, **opts):
+    def reline(self, line, **kw):
         if not self.hasmarkup:
             raise ValueError("cannot use rewrite-line without terminal")
-        if not self._newline:
-            self.write("\r")
-        self.write(line, **opts)
-        # see if we need to fill up some spaces at the end
-        # xxx have a more exact lastlinelen working from self.write?
-        lenline = len(line)
-        try:
-            lastlen = self._lastlinelen
-        except AttributeError:
-            pass
-        else:
-            if lenline < lastlen:
-                self.write(" " * (lastlen - lenline + 1))
-        self._lastlinelen = lenline
-        self._newline = False
+        self.write(line, **kw)
+        self._checkfill(line)
+        self.write('\r')
+        self._lastlen = len(line)
 
+    def _checkfill(self, line):
+        diff2last = self._lastlen - len(line)
+        if diff2last > 0:
+            self.write(" " * diff2last)
 
 class Win32ConsoleWriter(TerminalWriter):
     def write(self, s, **kw):

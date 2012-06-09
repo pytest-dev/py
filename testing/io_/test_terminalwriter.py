@@ -106,6 +106,7 @@ class TestTerminalWriter:
                 io.seek(0)
                 return io.readlines()
         tw.getlines = getlines
+        tw.getvalue = lambda: "".join(getlines())
         return tw
 
     def test_line(self, tw):
@@ -170,18 +171,19 @@ class TestTerminalWriter:
         pytest.raises(ValueError, lambda: tw.reline("x"))
         tw.hasmarkup = True
         tw.reline("0 1 2")
-        l = "".join(tw.getlines()).split("\n")
+        tw.getlines()
+        l = tw.getvalue().split("\n")
         assert len(l) == 2
         tw.reline("0 1 3")
-        l = "".join(tw.getlines()).split("\n")
+        l = tw.getvalue().split("\n")
         assert len(l) == 2
-        assert l[1].endswith("\r0 1 3")
-        tw.line("something")
-        l = "".join(tw.getlines()).split("\n")
-        assert len(l) == 4
+        assert l[1].endswith("0 1 3\r")
+        tw.line("so")
+        l = tw.getvalue().split("\n")
+        assert len(l) == 3
         assert l[-1] == ""
-        out = "\n".join(l)
-        assert out.endswith("\nsomething\n")
+        assert l[1] == ("0 1 2\r0 1 3\rso   ")
+        assert l[0] == "hello"
 
 
 
