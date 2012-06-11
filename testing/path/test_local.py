@@ -213,6 +213,14 @@ class TestLocalPath(common.CommonFSTests):
         # check that breadth comes last
         assert l[2] == p3
 
+    def test_visit_rec_fnmatch(self, tmpdir):
+        p1 = tmpdir.ensure("a","123")
+        p2 = tmpdir.ensure(".b","345")
+        l = list(tmpdir.visit("???", rec="[!.]*"))
+        assert len(l) == 1
+        # check that breadth comes last
+        assert l[0] == p1
+
 class TestExecutionOnWindows:
     pytestmark = win32only
 
