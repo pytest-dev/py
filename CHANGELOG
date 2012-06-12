@@ -1,4 +1,4 @@
-Changes between 1.4.8 and 1.4.9.DEV
+Changes between 1.4.8 and 1.4.9
 ==================================================
 
 - fix bug of path.visit() which would not recognize glob-style patterns
