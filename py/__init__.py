@@ -10,7 +10,7 @@ dictionary or an import path.
 """
 __version__ = '1.4.9'
 
-from py import _apipkg
+import apipkg as _apipkg
 
 # so that py.error.* instances are picklable
 import sys
