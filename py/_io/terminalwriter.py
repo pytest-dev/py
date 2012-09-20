@@ -171,8 +171,8 @@ class TerminalWriter(object):
 
     def _getbytestring(self, s):
         # XXX review this and the whole logic
-        if self.encoding and sys.version_info[0] < 3 and isinstance(s, unicode):
-            return s.encode(self.encoding)
+        if sys.version_info[0] < 3 and isinstance(s, unicode):
+            return s.encode(self.encoding or "utf8")
         elif not isinstance(s, str):
             try:
                 return str(s)

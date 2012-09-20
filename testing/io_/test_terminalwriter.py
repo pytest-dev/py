@@ -1,3 +1,5 @@
+# coding=utf8
+
 import py
 import os, sys
 from py._io import terminalwriter
@@ -75,6 +77,21 @@ def test_unicode_encoding():
         tw = py.io.TerminalWriter(l.append, encoding=encoding)
         tw.line(msg)
         assert l[0].strip() == msg.encode(encoding)
+
+def test_unicode_on_file_with_no_encoding(tmpdir, monkeypatch):
+    try:
+        bytes
+    except NameError:
+        bytes = str
+    msg = py.builtin._totext('öl', "utf8")
+    #pytest.raises(UnicodeEncodeError, lambda: bytes(msg))
+    f = py.std.codecs.open(str(tmpdir.join("x")), "w", None)
+    tw = py.io.TerminalWriter(f, encoding=None)
+    tw.encoding = None
+    tw.line(msg)
+    f.close()
+    s = tmpdir.join("x").open("rb").read().strip()
+    assert s == msg.encode("utf8")
 
 class TestTerminalWriter:
     def pytest_generate_tests(self, metafunc):
