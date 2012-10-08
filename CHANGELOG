@@ -3,6 +3,7 @@ Changes between 1.4.9 and 1.4.10.dev
 
 - terminalwriter: default to encode to UTF8 if no encoding is defined
   on the output stream
+- issue22: improve heuristic for finding the statementrange in exceptions
 
 Changes between 1.4.8 and 1.4.9
 ==================================================

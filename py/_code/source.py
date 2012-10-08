@@ -117,7 +117,6 @@ class Source(object):
 
         # 1. find the start of the statement
         from codeop import compile_command
-        end = None
         for start in range(lineno, -1, -1):
             if assertion:
                 line = self.lines[start]
@@ -127,8 +126,9 @@ class Source(object):
                 if "assert" not in line and "raise" not in line:
                     continue
             trylines = self.lines[start:lineno+1]
-            # quick hack to indent the source and get it as a string in one go
-            trylines.insert(0, 'if xxx:')
+            # quick hack to prepare parsing an indented line with
+            # compile_command() (which errors on "return" outside defs)
+            trylines.insert(0, 'def xxx():')
             trysource = '\n '.join(trylines)
             #              ^ space here
             try:
@@ -141,9 +141,7 @@ class Source(object):
                 trysource = self[start:end]
                 if trysource.isparseable():
                     return start, end
-        if end is None:
-            raise IndexError("no valid source range around line %d " % (lineno,))
-        return start, end
+        raise IndexError("no valid source range around line %d " % (lineno,))
 
     def getblockend(self, lineno):
         # XXX
