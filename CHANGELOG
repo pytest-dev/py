@@ -1,4 +1,4 @@
-Changes between 1.4.9 and 1.4.10.dev
+Changes between 1.4.9 and 1.4.10
 ==================================================
 
 - terminalwriter: default to encode to UTF8 if no encoding is defined
