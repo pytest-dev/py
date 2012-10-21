@@ -261,7 +261,10 @@ class TestSvnURLAuth(object):
         u.propget('foo')
         assert '--username="foo" --password="bar"' in u.commands[0]
 
-class pytest_funcarg__setup:
+def pytest_funcarg__setup(request):
+    return Setup(request)
+
+class Setup:
     def __init__(self, request):
         if not svnbin:
             py.test.skip("svn binary required")
