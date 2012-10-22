@@ -12,9 +12,9 @@ contain py.test which is now its own package, see http://pytest.org
 
 For questions and more information please visit http://pylib.org
 
-Bugs and issues: http://bitbucket.org/hpk42/pylib/issues/
+Bugs and issues: http://bitbucket.org/hpk42/py/issues/
 
 Mailing lists and more contact points: http://pylib.org/contact.html
 
-(c) Holger Krekel and others, 2004-2011
+(c) Holger Krekel and others, 2004-2012
 

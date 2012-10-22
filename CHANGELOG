@@ -2,6 +2,7 @@ Changes between 1.4.10 and 1.4.11.dev
 ==================================================
 
 - fix an internal test to not use class-denoted pytest_funcarg__
+- fix a link to bug tracker
 
 
 Changes between 1.4.9 and 1.4.10
