@@ -162,7 +162,7 @@ class TerminalWriter(object):
 
     def write(self, s, **kw):
         if s:
-            if not isinstance(self._file, WriteFile):
+            if not isinstance(self._file, WriteFile) and not getattr(self._file, "encoding", None):
                 s = self._getbytestring(s)
                 if self.hasmarkup and kw:
                     s = self.markup(s, **kw)
@@ -172,7 +172,7 @@ class TerminalWriter(object):
     def _getbytestring(self, s):
         # XXX review this and the whole logic
         if sys.version_info[0] < 3 and isinstance(s, unicode):
-            return s.encode(self.encoding or "utf8")
+            return s.encode(self.encoding or "utf8", "replace")
         elif not isinstance(s, str):
             try:
                 return str(s)
@@ -236,7 +236,7 @@ class WriteFile(object):
 
     def write(self, data):
         if self.encoding:
-            data = data.encode(self.encoding)
+            data = data.encode(self.encoding, "replace")
         self._writemethod(data)
 
     def flush(self):
