@@ -7,6 +7,7 @@ Helper functions for writing to terminals and files.
 
 import sys, os
 import py
+py3k = sys.version_info[0] >= 3
 
 win32_and_ctypes = False
 if sys.platform == "win32":
@@ -160,25 +161,18 @@ class TerminalWriter(object):
 
         self.line(line, **kw)
 
-    def write(self, s, **kw):
-        if s:
-            if not isinstance(self._file, WriteFile) and not getattr(self._file, "encoding", None):
-                s = self._getbytestring(s)
-                if self.hasmarkup and kw:
-                    s = self.markup(s, **kw)
-            self._file.write(s)
-            self._file.flush()
-
-    def _getbytestring(self, s):
-        # XXX review this and the whole logic
-        if sys.version_info[0] < 3 and isinstance(s, unicode):
-            return s.encode(self.encoding or "utf8", "replace")
-        elif not isinstance(s, str):
+    def write(self, msg, **kw):
+        if msg:
+            if self.hasmarkup and kw:
+                markupmsg = self.markup(msg, **kw)
+            else:
+                markupmsg = msg
             try:
-                return str(s)
+                self._file.write(markupmsg)
             except UnicodeEncodeError:
-                return "<print-error '%s' object>" % type(s).__name__
-        return s
+                msg = msg.encode("unicode-escape").decode("ascii")
+                self._file.write(msg)
+            self._file.flush()
 
     def line(self, s='', **kw):
         self.write(s, **kw)

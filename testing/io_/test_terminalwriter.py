@@ -1,4 +1,3 @@
-# coding=utf8
 
 import py
 import os, sys
@@ -78,24 +77,18 @@ def test_unicode_encoding():
         tw.line(msg)
         assert l[0].strip() == msg.encode(encoding)
 
-@pytest.mark.parametrize("encoding", [None, "ascii"])
-def test_unicode_on_file_with_no_encoding(tmpdir, monkeypatch, encoding):
-    try:
-        bytes
-    except NameError:
-        bytes = str
-    msg = py.builtin._totext('öl', "utf8")
+@pytest.mark.parametrize("encoding", ["ascii"])
+def test_unicode_on_file_with_ascii_encoding(tmpdir, monkeypatch, encoding):
+    msg = py.builtin._totext('hell\xf6', "latin1")
     #pytest.raises(UnicodeEncodeError, lambda: bytes(msg))
-    f = py.std.codecs.open(str(tmpdir.join("x")), "w", encoding, errors="replace")
-    tw = py.io.TerminalWriter(f, encoding=None)
-    tw.encoding = None
+    f = py.std.codecs.open(str(tmpdir.join("x")), "w", encoding)
+    tw = py.io.TerminalWriter(f)
     tw.line(msg)
     f.close()
     s = tmpdir.join("x").open("rb").read().strip()
-    if encoding is None:
-        assert s == msg.encode(f.encoding or "utf-8")
-    else:
-        assert s.decode(encoding) == '?l'
+    assert encoding == "ascii"
+    assert s == msg.encode("unicode-escape")
+
 
 class TestTerminalWriter:
     def pytest_generate_tests(self, metafunc):
