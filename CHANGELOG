@@ -2,10 +2,9 @@ Changes between 1.4.10 and 1.4.11.dev
 ==================================================
 
 - fix an internal test to not use class-denoted pytest_funcarg__
-- fix a link to bug tracker
+- fix a doc link to bug tracker
 - try to make terminal.write() printing more robust against
   unicodeencode/decode problems, amend according test
-
 
 Changes between 1.4.9 and 1.4.10
 ==================================================
