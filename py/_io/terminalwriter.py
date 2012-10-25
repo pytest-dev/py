@@ -8,6 +8,7 @@ Helper functions for writing to terminals and files.
 import sys, os
 import py
 py3k = sys.version_info[0] >= 3
+from py.builtin import text, bytes
 
 win32_and_ctypes = False
 if sys.platform == "win32":
@@ -163,6 +164,8 @@ class TerminalWriter(object):
 
     def write(self, msg, **kw):
         if msg:
+            if not isinstance(msg, (bytes, text)):
+                msg = text(msg)
             if self.hasmarkup and kw:
                 markupmsg = self.markup(msg, **kw)
             else:

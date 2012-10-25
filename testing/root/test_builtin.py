@@ -133,6 +133,14 @@ def test_callable():
 def test_totext():
     py.builtin._totext("hello", "UTF-8")
 
+def test_bytes_text():
+    if sys.version_info[0] < 3:
+        assert py.builtin.text == unicode
+        assert py.builtin.bytes == str
+    else:
+        assert py.builtin.text == str
+        assert py.builtin.bytes == bytes
+
 def test_totext_badutf8():
     # this was in printouts within the pytest testsuite
     # totext would fail

@@ -128,6 +128,10 @@ if sys.version_info >= (3, 0):
     def _istext(x):
         return isinstance(x, str)
 
+    text = str
+    bytes = bytes
+
+
     def _getimself(function):
         return getattr(function, '__self__', None)
 
@@ -160,6 +164,8 @@ else:
     import __builtin__ as builtins
     _totext = unicode
     _basestring = basestring
+    text = unicode
+    bytes = str
     execfile = execfile
     callable = callable
     def _isbytes(x):

@@ -5,6 +5,8 @@ Changes between 1.4.10 and 1.4.11.dev
 - fix a doc link to bug tracker
 - try to make terminal.write() printing more robust against
   unicodeencode/decode problems, amend according test
+- introduce py.builtin.text and py.builtin.bytes
+  to point to respective str/unicode (py2) and bytes/str (py3) types
 
 Changes between 1.4.9 and 1.4.10
 ==================================================
