@@ -1,6 +1,8 @@
 Changes between 1.4.10 and 1.4.11.dev
 ==================================================
 
+- use _ast to determine statement ranges when printing tracebacks -
+  avoids multi-second delays on some large test modules
 - fix an internal test to not use class-denoted pytest_funcarg__
 - fix a doc link to bug tracker
 - try to make terminal.write() printing more robust against

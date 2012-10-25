@@ -178,10 +178,12 @@ class TestSourceParsingAndCompiling:
 
     def test_getstatementrange_triple_quoted(self):
         #print str(self.source)
-        source = Source("""'''
-        '''""")
+        source = Source("""hello('''
+        ''')""")
+        s = source.getstatement(0)
+        assert s == str(source)
         s = source.getstatement(1)
-        assert eval(str(s))
+        assert s == str(source)
 
     def test_getstatementrange_within_constructs(self):
         source = Source("""\
@@ -194,12 +196,13 @@ class TestSourceParsingAndCompiling:
                 42
         """)
         assert len(source) == 7
-        assert source.getstatementrange(0) == (0, 7)
-        assert source.getstatementrange(1) == (1, 5)
+        # check all lineno's that could occur in a traceback
+        #assert source.getstatementrange(0) == (0, 7)
+        #assert source.getstatementrange(1) == (1, 5)
         assert source.getstatementrange(2) == (2, 3)
-        assert source.getstatementrange(3) == (1, 5)
+        assert source.getstatementrange(3) == (3, 4)
         assert source.getstatementrange(4) == (4, 5)
-        assert source.getstatementrange(5) == (0, 7)
+        #assert source.getstatementrange(5) == (0, 7)
         assert source.getstatementrange(6) == (6, 7)
 
     def test_getstatementrange_bug(self):
@@ -238,7 +241,7 @@ class TestSourceParsingAndCompiling:
 
     def test_getstatementrange_with_syntaxerror_issue7(self):
         source = Source(":")
-        py.test.raises(IndexError, lambda: source.getstatementrange(0))
+        py.test.raises(SyntaxError, lambda: source.getstatementrange(0))
 
     @py.test.mark.skipif("sys.version_info < (2,6)")
     def test_compile_to_ast(self):
@@ -455,3 +458,123 @@ def test_code_of_object_instance_with_call():
         def __call__(self):
             pass
     py.test.raises(TypeError, lambda: py.code.Code(Hello))
+
+
+def getstatement(lineno, source):
+    from py._code.source import getstatementrange_ast
+    source = py.code.Source(source, deindent=False)
+    start, end = getstatementrange_ast(lineno, source)
+    return source[start:end]
+
+def test_oneline():
+    source = getstatement(0, "raise ValueError")
+    assert str(source) == "raise ValueError"
+
+def test_oneline_and_comment():
+    source = getstatement(0, "raise ValueError\n#hello")
+    assert str(source) == "raise ValueError"
+
+def XXXtest_multiline():
+    source = getstatement(0, """\
+raise ValueError(
+    23
+)
+x = 3
+""")
+    assert str(source) == "raise ValueError(\n    23\n)"
+
+class TestTry:
+    source = """\
+try:
+    raise ValueError
+except Something:
+    raise IndexError(1)
+else:
+    raise KeyError()
+"""
+
+    def test_body(self):
+        source = getstatement(1, self.source)
+        assert str(source) == "    raise ValueError"
+
+    def test_except_line(self):
+        source = getstatement(2, self.source)
+        assert str(source) == "except Something:"
+
+    def test_except_body(self):
+        source = getstatement(3, self.source)
+        assert str(source) == "    raise IndexError(1)"
+
+    def test_else(self):
+        source = getstatement(5, self.source)
+        assert str(source) == "    raise KeyError()"
+
+class TestTryFinally:
+    source = """\
+try:
+    raise ValueError
+finally:
+    raise IndexError(1)
+"""
+
+    def test_body(self):
+        source = getstatement(1, self.source)
+        assert str(source) == "    raise ValueError"
+
+    def test_finally(self):
+        source = getstatement(3, self.source)
+        assert str(source) == "    raise IndexError(1)"
+
+
+
+class TestIf:
+    source = """\
+if 1:
+    y = 3
+elif False:
+    y = 5
+else:
+    y = 7
+"""
+
+    def test_body(self):
+        source = getstatement(1, self.source)
+        assert str(source) == "    y = 3"
+
+    def test_elif_clause(self):
+        source = getstatement(2, self.source)
+        assert str(source) == "elif False:"
+
+    def test_elif(self):
+        source = getstatement(3, self.source)
+        assert str(source) == "    y = 5"
+
+    def test_else(self):
+        source = getstatement(5, self.source)
+        assert str(source) == "    y = 7"
+
+def test_semicolon():
+    s = """\
+hello ; pytest.skip()
+"""
+    source = getstatement(0, s)
+    assert str(source) == s.strip()
+
+def test_def_online():
+    s = """\
+def func(): raise ValueError(42)
+
+def something():
+    pass
+"""
+    source = getstatement(0, s)
+    assert str(source) == "def func(): raise ValueError(42)"
+
+def XXX_test_expression_multiline():
+    source = """\
+something
+'''
+'''"""
+    result = getstatement(1, source)
+    assert str(result) == "'''\n'''"
+

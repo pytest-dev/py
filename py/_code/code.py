@@ -166,20 +166,12 @@ class TracebackEntry(object):
         if source is None:
             return None
         start = self.getfirstlinesource()
-        end = self.lineno
         try:
-            _, end = source.getstatementrange(end)
-        except (IndexError, ValueError):
+            _, end = source.getstatementrange(self.lineno)
+        except SyntaxError:
             end = self.lineno + 1
-        # heuristic to stop displaying source on e.g.
-        #   if something:  # assume this causes a NameError
-        #      # _this_ lines and the one
-               #        below we don't want from entry.getsource()
-        for i in range(self.lineno, end):
-            if source[i].rstrip().endswith(':'):
-                end = i + 1
-                break
         return source[start:end]
+
     source = property(getsource)
 
     def ishidden(self):
