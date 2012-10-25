@@ -111,7 +111,8 @@ class Source(object):
         """
         if not (0 <= lineno < len(self)):
             raise IndexError("lineno out of range")
-        return getstatementrange_ast(lineno, self)
+        ast, start, end = getstatementrange_ast(lineno, self)
+        return start, end
 
     def deindent(self, offset=None):
         """ return a new source object deindented by offset.
@@ -357,10 +358,10 @@ def getnodelist(node):
     #print "returning nodelist", l
     return l
 
-def getstatementrange_ast(lineno, source):
-    content = "\n".join(source.lines)
-    #print "compiling lines", len(source.lines)
-    astnode = compile(content, "source", "exec", 1024)  # 1024 for AST
+def getstatementrange_ast(lineno, source, astnode=None):
+    if astnode is None:
+        content = "\n".join(source.lines)
+        astnode = compile(content, "source", "exec", 1024)  # 1024 for AST
     start, end = get_statement_startend(lineno, getnodelist(astnode))
     # we need to correct the end:
     # - ast-parsing strips comments
@@ -375,5 +376,5 @@ def getstatementrange_ast(lineno, source):
             end -= 1
         else:
             break
-    return start, end
+    return astnode, start, end
 

@@ -463,7 +463,7 @@ def test_code_of_object_instance_with_call():
 def getstatement(lineno, source):
     from py._code.source import getstatementrange_ast
     source = py.code.Source(source, deindent=False)
-    start, end = getstatementrange_ast(lineno, source)
+    ast, start, end = getstatementrange_ast(lineno, source)
     return source[start:end]
 
 def test_oneline():

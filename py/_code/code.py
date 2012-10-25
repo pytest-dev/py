@@ -160,16 +160,28 @@ class TracebackEntry(object):
         # on Jython this firstlineno can be -1 apparently
         return max(self.frame.code.firstlineno, 0)
 
-    def getsource(self):
+    def getsource(self, astcache=None):
         """ return failing source code. """
+        # we use the passed in astcache to not reparse asttrees
+        # within exception info printing
+        from py._code.source import getstatementrange_ast
         source = self.frame.code.fullsource
         if source is None:
             return None
+        key = astnode = None
+        if astcache is not None:
+            key = self.frame.code.path
+            if key is not None:
+                astnode = astcache.get(key, None)
         start = self.getfirstlinesource()
         try:
-            _, end = source.getstatementrange(self.lineno)
+            astnode, _, end = getstatementrange_ast(self.lineno, source,
+                                                    astnode=astnode)
         except SyntaxError:
             end = self.lineno + 1
+        else:
+            if key is not None:
+                astcache[key] = astnode
         return source[start:end]
 
     source = property(getsource)
@@ -391,6 +403,7 @@ class FormattedExcinfo(object):
         self.tbfilter = tbfilter
         self.funcargs = funcargs
         self.abspath = abspath
+        self.astcache = {}
 
     def _getindent(self, source):
         # figure out indent for given source
@@ -408,7 +421,7 @@ class FormattedExcinfo(object):
         return 4 + (len(s) - len(s.lstrip()))
 
     def _getentrysource(self, entry):
-        source = entry.getsource()
+        source = entry.getsource(self.astcache)
         if source is not None:
             source = source.deindent()
         return source
