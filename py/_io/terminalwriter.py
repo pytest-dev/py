@@ -196,8 +196,10 @@ class TerminalWriter(object):
             self.write(" " * diff2last)
 
 class Win32ConsoleWriter(TerminalWriter):
-    def write(self, s, **kw):
-        if s:
+    def write(self, msg, **kw):
+        if msg:
+            if not isinstance(msg, (bytes, text)):
+                msg = text(s)
             oldcolors = None
             if self.hasmarkup and kw:
                 handle = GetStdHandle(STD_OUTPUT_HANDLE)
@@ -219,9 +221,11 @@ class Win32ConsoleWriter(TerminalWriter):
                     attr |= oldcolors & 0x0007
 
                 SetConsoleTextAttribute(handle, attr)
-            if not isinstance(self._file, WriteFile):
-                s = self._getbytestring(s)
-            self._file.write(s)
+            try:
+                self._file.write(msg)
+            except UnicodeEncodeError:
+                msg = msg.encode("unicode-escape").decode("ascii")
+                self._file.write(msg)
             self._file.flush()
             if oldcolors:
                 SetConsoleTextAttribute(handle, oldcolors)
