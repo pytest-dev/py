@@ -1,5 +1,6 @@
 import py
 import sys, os.path
+from inspect import CO_VARARGS, CO_VARKEYWORDS
 
 builtin_repr = repr
 
@@ -49,12 +50,19 @@ class Code(object):
         # return source only for that part of code
         return py.code.Source(self.raw)
 
-    def getargs(self):
+    def getargs(self, var=False):
         """ return a tuple with the argument names for the code object
+
+            if 'var' is set True also return the names of the variable and
+            keyword arguments when present
         """
         # handfull shortcut for getting args
         raw = self.raw
-        return raw.co_varnames[:raw.co_argcount]
+        argcount = raw.co_argcount
+        if var:
+            argcount += raw.co_flags & CO_VARARGS
+            argcount += raw.co_flags & CO_VARKEYWORDS
+        return raw.co_varnames[:argcount]
 
 class Frame(object):
     """Wrapper around a Python frame holding f_locals and f_globals
@@ -102,11 +110,14 @@ class Frame(object):
     def is_true(self, object):
         return object
 
-    def getargs(self):
+    def getargs(self, var=False):
         """ return a list of tuples (name, value) for all arguments
+
+            if 'var' is set True also include the variable and keyword
+            arguments when present
         """
         retval = []
-        for arg in self.code.getargs():
+        for arg in self.code.getargs(var):
             try:
                 retval.append((arg, self.f_locals[arg]))
             except KeyError:
@@ -432,7 +443,7 @@ class FormattedExcinfo(object):
     def repr_args(self, entry):
         if self.funcargs:
             args = []
-            for argname, argvalue in entry.frame.getargs():
+            for argname, argvalue in entry.frame.getargs(var=True):
                 args.append((argname, self._saferepr(argvalue)))
             return ReprFuncArgs(args)
 

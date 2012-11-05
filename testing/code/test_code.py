@@ -104,3 +104,48 @@ def test_unicode_or_repr():
     s = unicode_or_repr(A())
     assert 'print-error' in s
     assert 'ValueError' in s
+
+
+def test_code_getargs():
+    def f1(x):
+        pass
+    c1 = py.code.Code(f1)
+    assert c1.getargs(var=True) == ('x',)
+
+    def f2(x, *y):
+        pass
+    c2 = py.code.Code(f2)
+    assert c2.getargs(var=True) == ('x', 'y')
+
+    def f3(x, **z):
+        pass
+    c3 = py.code.Code(f3)
+    assert c3.getargs(var=True) == ('x', 'z')
+
+    def f4(x, *y, **z):
+        pass
+    c4 = py.code.Code(f4)
+    assert c4.getargs(var=True) == ('x', 'y', 'z')
+
+
+def test_frame_getargs():
+    def f1(x):
+        return sys._getframe(0)
+    fr1 = py.code.Frame(f1('a'))
+    assert fr1.getargs(var=True) == [('x', 'a')]
+
+    def f2(x, *y):
+        return sys._getframe(0)
+    fr2 = py.code.Frame(f2('a', 'b', 'c'))
+    assert fr2.getargs(var=True) == [('x', 'a'), ('y', ('b', 'c'))]
+
+    def f3(x, **z):
+        return sys._getframe(0)
+    fr3 = py.code.Frame(f3('a', b='c'))
+    assert fr3.getargs(var=True) == [('x', 'a'), ('z', {'b': 'c'})]
+
+    def f4(x, *y, **z):
+        return sys._getframe(0)
+    fr4 = py.code.Frame(f4('a', 'b', c='d'))
+    assert fr4.getargs(var=True) == [('x', 'a'), ('y', ('b',)),
+                                     ('z', {'c': 'd'})]
