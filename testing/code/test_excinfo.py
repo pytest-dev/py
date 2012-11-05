@@ -4,6 +4,7 @@ from py._code.code import FormattedExcinfo, ReprExceptionInfo
 queue = py.builtin._tryimport('queue', 'Queue')
 
 failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
+from test_source import astonly
 
 try:
     import importlib
@@ -91,6 +92,7 @@ class TestTraceback_f_g_h:
         assert s.startswith("def f():")
         assert s.endswith("raise ValueError")
 
+    @astonly
     @failsonjython
     def test_traceback_entry_getsource_in_construct(self):
         source = py.code.Source("""\
@@ -108,7 +110,7 @@ class TestTraceback_f_g_h:
             print (tb[-1].getsource())
             s = str(tb[-1].getsource())
             assert s.startswith("def xyz():\n    try:")
-            assert s.endswith("except somenoname:")
+            assert s.strip().endswith("except somenoname:")
 
     def test_traceback_cut(self):
         co = py.code.Code(f)

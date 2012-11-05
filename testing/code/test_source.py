@@ -2,6 +2,12 @@ from py.code import Source
 import py
 import sys
 
+from py._code.source import _ast
+if _ast is not None:
+    astonly = py.test.mark.nothing
+else:
+    astonly = py.test.mark.xfail("True", reason="only works with AST-compile")
+
 failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
 
 def test_source_str_function():
@@ -185,6 +191,7 @@ class TestSourceParsingAndCompiling:
         s = source.getstatement(1)
         assert s == str(source)
 
+    @astonly
     def test_getstatementrange_within_constructs(self):
         source = Source("""\
             try:
@@ -484,6 +491,7 @@ x = 3
     assert str(source) == "raise ValueError(\n    23\n)"
 
 class TestTry:
+    pytestmark = astonly
     source = """\
 try:
     raise ValueError
@@ -528,6 +536,7 @@ finally:
 
 
 class TestIf:
+    pytestmark = astonly
     source = """\
 if 1:
     y = 3
