@@ -261,8 +261,8 @@ newline will be removed from the end of each line. """
             current = current.dirpath()
             if last == current:
                 break
-            l.insert(0, current)
-        if reverse:
+            l.append(current)
+        if not reverse:
             l.reverse()
         return l
 
