@@ -1,4 +1,4 @@
-Changes between 1.4.11 and 1.4.12.dev
+Changes between 1.4.11 and 1.4.12
 ==================================================
 
 - fix python2.4 support - for pre-AST interpreters re-introduce 

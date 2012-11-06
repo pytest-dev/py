@@ -199,7 +199,7 @@ class Win32ConsoleWriter(TerminalWriter):
     def write(self, msg, **kw):
         if msg:
             if not isinstance(msg, (bytes, text)):
-                msg = text(s)
+                msg = text(msg)
             oldcolors = None
             if self.hasmarkup and kw:
                 handle = GetStdHandle(STD_OUTPUT_HANDLE)
