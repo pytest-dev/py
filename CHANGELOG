@@ -1,3 +1,9 @@
+Changes between 1.4.12 and 1.4.13.dev
+==================================================
+
+- try to refine detection of file arguments to help with
+  use of TerminalWriter/pytest in PyScripter environment
+
 Changes between 1.4.11 and 1.4.12
 ==================================================
 
