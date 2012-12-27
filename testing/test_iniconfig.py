@@ -85,12 +85,12 @@ check_tokens = {
         [(0, None, 'value', 'x = 3')]
     ),
     'use of colon for name-values': (
-        'name: y=5',
-        [(0, None, 'name', 'y=5')]
+        'name: y',
+        [(0, None, 'name', 'y')]
     ),
     'use of colon without space': (
-        'value:xyz=5',
-        [(0, None, 'value:xyz', '5')]
+        'value:y=5',
+        [(0, None, 'value', 'y=5')]
     ),
     'equality gets precedence': (
         'value=xyz:5',

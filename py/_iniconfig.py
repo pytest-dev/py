@@ -122,11 +122,11 @@ class IniConfig(object):
         elif not line[0].isspace():
             try:
                 name, value = line.split('=', 1)
-                if ": " in name:
+                if ":" in name:
                     raise ValueError()
             except ValueError:
                 try:
-                    name, value = line.split(": ", 1)
+                    name, value = line.split(":", 1)
                 except ValueError:
                     self._raise(lineno, 'unexpected line: %r' % line)
             return name.strip(), value.strip()
