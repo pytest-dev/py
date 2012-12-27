@@ -13,7 +13,7 @@ def main():
         description='library with cross-python path, ini-parsing, io, code, log facilities',
         long_description = open('README.txt').read(),
         version='1.4.12',
-        url='http://pylib.org',
+        url='http://pylib.readthedocs.org/',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
         author='holger krekel, Guido Wesdorp, Carl Friedrich Bolz, Armin Rigo, Maciej Fijalkowski & others',
