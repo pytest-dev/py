@@ -114,7 +114,8 @@ class TerminalWriter(object):
                 self.stringio = file = py.io.TextIO()
             else:
                 file = py.std.sys.stdout
-        elif hasattr(file, '__call__'):
+        elif py.builtin.callable(file) and not (
+             hasattr(file, "write") and hasattr(file, "flush")):
             file = WriteFile(file, encoding=encoding)
         self.encoding = encoding or getattr(file, 'encoding', "utf-8")
         self._file = file

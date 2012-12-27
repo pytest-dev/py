@@ -200,6 +200,22 @@ class TestTerminalWriter:
         assert l[0] == "hello"
 
 
+def test_terminal_with_callable_write_and_flush():
+    l = set()
+    class fil:
+        flush = lambda self: l.add("1")
+        write = lambda self, x: l.add("1")
+        __call__ = lambda self, x: l.add("2")
+
+    tw = py.io.TerminalWriter(fil())
+    tw.line("hello")
+    assert l == set(["1"])
+    del fil.flush
+    l.clear()
+    tw = py.io.TerminalWriter(fil())
+    tw.line("hello")
+    assert l == set(["2"])
+
 
 def test_attr_hasmarkup():
     tw = py.io.TerminalWriter(stringio=True)
