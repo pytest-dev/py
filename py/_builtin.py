@@ -107,6 +107,12 @@ except NameError:
 
 _sysex = (KeyboardInterrupt, SystemExit, MemoryError, GeneratorExit)
 
+try:
+    callable = callable
+except NameError:
+    def callable(obj):
+        return hasattr(obj, "__call__")
+
 if sys.version_info >= (3, 0):
     exec ("print_ = print ; exec_=exec")
     import builtins
@@ -156,9 +162,6 @@ if sys.version_info >= (3, 0):
             fp.close()
         co = compile(source, fn, "exec", dont_inherit=True)
         exec_(co, globs, locs)
-
-    def callable(obj):
-        return hasattr(obj, "__call__")
 
 else:
     import __builtin__ as builtins
