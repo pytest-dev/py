@@ -179,7 +179,7 @@ class TestLocalPath(common.CommonFSTests):
     def test_init_from_path(self, tmpdir):
         l = local()
         l2 = local(l)
-        assert l2 is l
+        assert l2 == l
 
         wc = py.path.svnwc('.')
         l3 = local(wc)

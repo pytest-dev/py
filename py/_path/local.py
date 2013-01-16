@@ -114,7 +114,7 @@ class LocalPath(FSBase):
             st = self.path.lstat()
             return stat.S_ISLNK(st.mode)
 
-    def __new__(cls, path=None):
+    def __init__(self, path=None):
         """ Initialize and return a local Path instance.
 
         Path can be relative to the current directory.
@@ -123,21 +123,16 @@ class LocalPath(FSBase):
         Note also that passing in a local path object will simply return
         the exact same path object. Use new() to get a new copy.
         """
-        if isinstance(path, common.PathBase):
-            if path.__class__ == cls:
-                return path
-            path = path.strpath
-        # initialize the path
-        self = object.__new__(cls)
-        if not path:
+        if path is None:
             self.strpath = os.getcwd()
+        elif isinstance(path, common.PathBase):
+            self.strpath = path.strpath
         elif isinstance(path, py.builtin._basestring):
             self.strpath = os.path.abspath(os.path.normpath(str(path)))
         else:
             raise ValueError("can only pass None, Path instances "
                              "or non-empty strings to LocalPath")
         assert isinstance(self.strpath, str)
-        return self
 
     def __hash__(self):
         return hash(self.strpath)
