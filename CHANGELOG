@@ -1,6 +1,8 @@
 Changes between 1.4.12 and 1.4.13.dev
 ==================================================
 
+- add isdir/isfile/islink to path.stat() objects allowing to perform
+  multiple checks without calling out multiple times
 - drop py.path.local.__new__ in favour of a simpler __init__
 
 - iniconfig: allow "name:value" settings in config files, no space after

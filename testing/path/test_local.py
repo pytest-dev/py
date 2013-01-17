@@ -1,6 +1,6 @@
 import py
 import pytest
-import sys
+import os, sys
 from py.path import local
 import common
 
@@ -592,6 +592,21 @@ class TestPOSIXLocalPath:
         assert owner == stat.owner
         assert gid == stat.gid
         assert group == stat.group
+
+    def test_stat_helpers(self, tmpdir, monkeypatch):
+        path1 = tmpdir.ensure("file")
+        stat1 = path1.stat()
+        stat2 = tmpdir.stat()
+        assert stat1.isfile()
+        assert stat2.isdir()
+        assert not stat1.islink()
+        assert not stat2.islink()
+
+    def test_stat_non_raising(self, tmpdir):
+        path1 = tmpdir.join("file")
+        pytest.raises(py.error.ENOENT, lambda: path1.stat())
+        res = path1.stat(raising=False)
+        assert res is None
 
     def test_atime(self, tmpdir):
         import time

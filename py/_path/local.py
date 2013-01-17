@@ -15,14 +15,15 @@ class Stat(object):
         self.path = path
         self._osstatresult = osstatresult
 
+    @property
     def owner(self):
         if iswin32:
             raise NotImplementedError("XXX win32")
         import pwd
         entry = py.error.checked_call(pwd.getpwuid, self.uid)
         return entry[0]
-    owner = property(owner, None, None, "owner of path")
 
+    @property
     def group(self):
         """ return group name of file. """
         if iswin32:
@@ -30,7 +31,16 @@ class Stat(object):
         import grp
         entry = py.error.checked_call(grp.getgrgid, self.gid)
         return entry[0]
-    group = property(group)
+
+    def isdir(self):
+        return stat.S_ISDIR(self.mode)
+
+    def isfile(self):
+        return stat.S_ISREG(self.mode)
+
+    def islink(self):
+        st = self.path.lstat()
+        return stat.S_ISLNK(st.mode)
 
 class PosixPath(common.PathBase):
     def chown(self, user, group, rec=0):
@@ -414,9 +424,16 @@ class LocalPath(FSBase):
                 p.open('w').close()
             return p
 
-    def stat(self):
+    def stat(self, raising=True):
         """ Return an os.stat() tuple. """
-        return Stat(self, py.error.checked_call(os.stat, self.strpath))
+        if raising == True:
+            return Stat(self, py.error.checked_call(os.stat, self.strpath))
+        try:
+            return Stat(self, os.stat(self.strpath))
+        except KeyboardInterrupt:
+            raise
+        except Exception:
+            return None
 
     def lstat(self):
         """ Return an os.lstat() tuple. """
