@@ -597,7 +597,7 @@ class LocalPath(FSBase):
                                            stdout, stderr,)
         return stdout
 
-    def sysfind(cls, name, checker=None):
+    def sysfind(cls, name, checker=None, paths=None):
         """ return a path object found by looking at the systems
             underlying PATH specification. If the checker is not None
             it will be invoked to filter matching paths.  If a binary
@@ -610,21 +610,23 @@ class LocalPath(FSBase):
             if p.check(file=1):
                 return p
         else:
-            if iswin32:
-                paths = py.std.os.environ['Path'].split(';')
-                if '' not in paths and '.' not in paths:
-                    paths.append('.')
-                try:
-                    systemroot = os.environ['SYSTEMROOT']
-                except KeyError:
-                    pass
+            if paths is None:
+                if iswin32:
+                    paths = py.std.os.environ['Path'].split(';')
+                    if '' not in paths and '.' not in paths:
+                        paths.append('.')
+                    try:
+                        systemroot = os.environ['SYSTEMROOT']
+                    except KeyError:
+                        pass
+                    else:
+                        paths = [re.sub('%SystemRoot%', systemroot, path)
+                                 for path in paths]
                 else:
-                    paths = [re.sub('%SystemRoot%', systemroot, path)
-                             for path in paths]
-                tryadd = [''] + os.environ['PATHEXT'].split(os.pathsep)
-            else:
-                paths = py.std.os.environ['PATH'].split(':')
-                tryadd = ('',)
+                    paths = py.std.os.environ['PATH'].split(':')
+            tryadd = ['']
+            if iswin32:
+                tryadd += os.environ['PATHEXT'].split(os.pathsep)
 
             for x in paths:
                 for addext in tryadd:

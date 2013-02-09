@@ -221,21 +221,21 @@ class TestLocalPath(common.CommonFSTests):
         # check that breadth comes last
         assert l[0] == p1
 
+    def test_sysfind(self):
+        name = sys.platform == "win32" and "cmd" or "test"
+        x = py.path.local.sysfind(name)
+        assert x.check(file=1)
+        assert py.path.local.sysfind('jaksdkasldqwe') is None
+        assert py.path.local.sysfind(name, paths=[]) is None
+        x2 = py.path.local.sysfind(name, paths=[x.dirpath()])
+        assert x2 == x
+
+
 class TestExecutionOnWindows:
     pytestmark = win32only
 
-    def test_sysfind(self):
-        x = py.path.local.sysfind('cmd')
-        assert x.check(file=1)
-        assert py.path.local.sysfind('jaksdkasldqwe') is None
-
 class TestExecution:
     pytestmark = skiponwin32
-
-    def test_sysfind(self):
-        x = py.path.local.sysfind('test')
-        assert x.check(file=1)
-        assert py.path.local.sysfind('jaksdkasldqwe') is None
 
     def test_sysfind_no_permisson_ignored(self, monkeypatch, tmpdir):
         noperm = tmpdir.ensure('noperm', dir=True)
