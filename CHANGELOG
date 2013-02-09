@@ -7,7 +7,9 @@ Changes between 1.4.12 and 1.4.13.dev
 
 - iniconfig: allow "name:value" settings in config files, no space after
   "name" required
-  
+- fix issue 27 - NameError in unlikely untested case of saferepr
+
+
 Changes between 1.4.11 and 1.4.12
 ==================================================
 

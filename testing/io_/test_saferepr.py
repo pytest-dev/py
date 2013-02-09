@@ -42,6 +42,10 @@ class TestSafeRepr:
         else:
             assert 'TypeError' in saferepr(BrokenRepr("string"))
 
+        s2 = saferepr(BrokenRepr(BrokenReprException('omg even worse')))
+        assert 'NameError' not in s2
+        assert 'unknown' in s2
+
     def test_big_repr(self):
         from py._io.saferepr import SafeRepr
         assert len(saferepr(range(1000))) <= \
