@@ -1,6 +1,9 @@
 Changes between 1.4.12 and 1.4.13.dev
 ==================================================
 
+- for local paths you can pass "mode=True" to a copy()
+  in order to copy permission bits (underlying mechanism
+  is using shutil.copymode)
 - add paths arguments to py.path.local.sysfind to restrict
   search to the diretories in the path.
 - add isdir/isfile/islink to path.stat() objects allowing to perform

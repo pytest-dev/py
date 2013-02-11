@@ -670,6 +670,16 @@ class TestPOSIXLocalPath:
             for x,y in oldmodes.items():
                 x.chmod(y)
 
+    def test_copy_archiving(self, tmpdir):
+        f = tmpdir.ensure("a", "file1")
+        a = f.dirpath()
+        oldmode = f.stat().mode
+        newmode = oldmode ^ 1
+        f.chmod(newmode)
+        b = tmpdir.join("b")
+        a.copy(b, mode=True)
+        assert b.join(f.basename).stat().mode == newmode
+
     @failsonjython
     def test_chown_identity(self, path1):
         owner = path1.stat().owner
@@ -692,3 +702,4 @@ class TestPOSIXLocalPath:
         owner = path1.stat().owner
         group = path1.stat().group
         path1.chown(owner, group)
+
