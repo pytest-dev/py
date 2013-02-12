@@ -1,6 +1,8 @@
 Changes between 1.4.12 and 1.4.13.dev
 ==================================================
 
+- fix getting statementrange/compiling a file ending
+  in a comment line without newline (on python2.5)
 - for local paths you can pass "mode=True" to a copy()
   in order to copy permission bits (underlying mechanism
   is using shutil.copymode)

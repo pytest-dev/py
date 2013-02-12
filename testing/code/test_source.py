@@ -477,6 +477,14 @@ def test_oneline():
     source = getstatement(0, "raise ValueError")
     assert str(source) == "raise ValueError"
 
+def test_comment_and_no_newline_at_end():
+    from py._code.source import getstatementrange_ast
+    source = Source(['def test_basic_complex():',
+                     '    assert 1 == 2',
+                     '# vim: filetype=pyopencl:fdm=marker'])
+    ast, start, end = getstatementrange_ast(1, source)
+    assert end == 2
+
 def test_oneline_and_comment():
     source = getstatement(0, "raise ValueError\n#hello")
     assert str(source) == "raise ValueError"
