@@ -361,7 +361,7 @@ def getnodelist(node):
 def getstatementrange_ast(lineno, source, assertion=False, astnode=None):
     if astnode is None:
         content = str(source)
-        if sys.version_info < (2,6):
+        if sys.version_info < (2,7):
             content += "\n"
         try:
             astnode = compile(content, "source", "exec", 1024)  # 1024 for AST
