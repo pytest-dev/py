@@ -99,7 +99,7 @@ def dupfile(f, mode=None, buffering=0, raising=False, encoding=None):
     """
     try:
         fd = f.fileno()
-        mode = mode and mode or f.mode
+        mode = mode or f.mode
     except AttributeError:
         if raising:
             raise
