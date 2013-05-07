@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import os, sys
 import py
 
@@ -91,6 +93,19 @@ def test_dupfile(tmpfile):
     s = tmpfile.read()
     assert "01234" in repr(s)
     tmpfile.close()
+
+def test_dupfile_no_mode():
+    """
+    dupfile should trap an AttributeError and return f if no mode is supplied.
+    """
+    class SomeFileWrapper(object):
+        "An object with a fileno method but no mode attribute"
+        def fileno(self):
+            return 1
+    tmpfile = SomeFileWrapper()
+    assert py.io.dupfile(tmpfile) is tmpfile
+    with py.test.raises(AttributeError):
+        py.io.dupfile(tmpfile, raises=True)
 
 def lsof_check(func):
     pid = os.getpid()
