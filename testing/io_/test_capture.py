@@ -105,7 +105,7 @@ def test_dupfile_no_mode():
     tmpfile = SomeFileWrapper()
     assert py.io.dupfile(tmpfile) is tmpfile
     with py.test.raises(AttributeError):
-        py.io.dupfile(tmpfile, raises=True)
+        py.io.dupfile(tmpfile, raising=True)
 
 def lsof_check(func):
     pid = os.getpid()

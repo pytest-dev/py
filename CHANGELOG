@@ -1,4 +1,10 @@
-Changes between 1.4.12 and 1.4.13.dev
+Changes between 1.4.13 and 1.4.14
+==================================================
+
+- fix dupfile to work with files that don't
+  carry a mode. Thanks Jason R. Coombs.
+
+Changes between 1.4.12 and 1.4.13
 ==================================================
 
 - fix getting statementrange/compiling a file ending
