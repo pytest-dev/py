@@ -99,12 +99,12 @@ def dupfile(f, mode=None, buffering=0, raising=False, encoding=None):
     """
     try:
         fd = f.fileno()
+        mode = mode and mode or f.mode
     except AttributeError:
         if raising:
             raise
         return f
     newfd = os.dup(fd)
-    mode = mode and mode or f.mode
     if sys.version_info >= (3,0):
         if encoding is not None:
             mode = mode.replace("b", "")
