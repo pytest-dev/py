@@ -163,7 +163,7 @@ Associating producers and consumers
 
 Each log producer may have at most one log consumer associated with
 it.  A log producer gets associated with a log consumer through a
-``py.log.set_consumer()`` call.  That function accepts two arguments,
+``py.log.setconsumer()`` call.  That function accepts two arguments,
 the first identifying a producer (a tuple of keyword strings or a single
 space-separated string of keywords), the second specifying the precise
 consumer to use for that producer.  Until this function is called for a
