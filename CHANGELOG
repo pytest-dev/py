@@ -1,3 +1,9 @@
+Changes between 1.4.14 and 1.4.15.dev
+==================================================
+
+- fix an edge case with fnmatch where a glob style pattern appeared
+  in an absolute path.
+
 Changes between 1.4.13 and 1.4.14
 ==================================================
 

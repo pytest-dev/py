@@ -221,6 +221,12 @@ class TestLocalPath(common.CommonFSTests):
         # check that breadth comes last
         assert l[0] == p1
 
+    def test_fnmatch_file_abspath(self, tmpdir):
+        b = tmpdir.join("a", "b")
+        assert b.fnmatch(os.sep.join("ab"))
+        pattern = os.sep.join([str(tmpdir), "*", "b"])
+        assert b.fnmatch(pattern)
+
     def test_sysfind(self):
         name = sys.platform == "win32" and "cmd" or "test"
         x = py.path.local.sysfind(name)

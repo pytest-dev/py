@@ -370,6 +370,7 @@ class FNMatcher:
             name = path.basename
         else:
             name = str(path) # path.strpath # XXX svn?
-            pattern = '*' + path.sep + pattern
+            if not os.path.isabs(pattern):
+                pattern = '*' + path.sep + pattern
         return py.std.fnmatch.fnmatch(name, pattern)
 
