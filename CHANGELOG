@@ -1,6 +1,9 @@
 Changes between 1.4.14 and 1.4.15.dev
 ==================================================
 
+- majorly speed up some common calling patterns with
+  LocalPath.listdir()/join/check/stat functions considerably.
+
 - fix an edge case with fnmatch where a glob style pattern appeared
   in an absolute path.
 

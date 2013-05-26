@@ -646,7 +646,7 @@ class TestPOSIXLocalPath:
     def test_join_to_root(self, path1):
         root = path1.parts()[0]
         assert len(str(root)) == 1
-        assert str(root.join('a')) == '/a'
+        assert str(root.join('a')) == '//a'  # posix allows two slashes
 
     def test_join_root_to_root_with_no_abs(self, path1):
         nroot = path1.join('/')

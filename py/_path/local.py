@@ -4,8 +4,17 @@ local path implementation.
 import sys, os, stat, re, atexit
 import py
 from py._path import common
+from stat import S_ISLNK, S_ISDIR, S_ISREG
+
+from os.path import normpath, isabs, exists, isdir, isfile
 
 iswin32 = sys.platform == "win32" or (getattr(os, '_name', False) == 'nt')
+
+if sys.version_info > (3,0):
+    def map_as_list(func, iter):
+        return list(map(func, iter))
+else:
+    map_as_list = map
 
 class Stat(object):
     def __getattr__(self, name):
@@ -33,14 +42,14 @@ class Stat(object):
         return entry[0]
 
     def isdir(self):
-        return stat.S_ISDIR(self.mode)
+        return S_ISDIR(self._osstatresult.st_mode)
 
     def isfile(self):
-        return stat.S_ISREG(self.mode)
+        return S_ISREG(self._osstatresult.st_mode)
 
     def islink(self):
         st = self.path.lstat()
-        return stat.S_ISLNK(st.mode)
+        return S_ISLNK(self._osstatresult.st_mode)
 
 class PosixPath(common.PathBase):
     def chown(self, user, group, rec=0):
@@ -112,17 +121,17 @@ class LocalPath(FSBase):
                 return self._statcache
 
         def dir(self):
-            return stat.S_ISDIR(self._stat().mode)
+            return S_ISDIR(self._stat().mode)
 
         def file(self):
-            return stat.S_ISREG(self._stat().mode)
+            return S_ISREG(self._stat().mode)
 
         def exists(self):
             return self._stat()
 
         def link(self):
             st = self.path.lstat()
-            return stat.S_ISLNK(st.mode)
+            return S_ISLNK(st.mode)
 
     def __init__(self, path=None):
         """ Initialize and return a local Path instance.
@@ -138,7 +147,7 @@ class LocalPath(FSBase):
         elif isinstance(path, common.PathBase):
             self.strpath = path.strpath
         elif isinstance(path, py.builtin._basestring):
-            self.strpath = os.path.abspath(os.path.normpath(str(path)))
+            self.strpath = os.path.abspath(normpath(str(path)))
         else:
             raise ValueError("can only pass None, Path instances "
                              "or non-empty strings to LocalPath")
@@ -226,6 +235,9 @@ class LocalPath(FSBase):
                                      xxx   ext
         """
         obj = object.__new__(self.__class__)
+        if not kw:
+            obj.strpath = self.strpath
+            return obj
         drive, dirname, basename, purebasename,ext = self._getbyspec(
              "drive,dirname,basename,purebasename,ext")
         if 'basename' in kw:
@@ -247,7 +259,7 @@ class LocalPath(FSBase):
         else:
             kw.setdefault('dirname', dirname)
         kw.setdefault('sep', self.sep)
-        obj.strpath = os.path.normpath(
+        obj.strpath = normpath(
             "%(dirname)s%(sep)s%(basename)s" % kw)
         return obj
 
@@ -286,46 +298,69 @@ class LocalPath(FSBase):
         components.  if abs=1 is used restart from root if any
         of the args is an absolute path.
         """
-        if not args:
-            return self
-        strpath = self.strpath
         sep = self.sep
-        strargs = [str(x) for x in args]
-        if kwargs.get('abs', 0):
-            for i in range(len(strargs)-1, -1, -1):
-                if os.path.isabs(strargs[i]):
-                    strpath = strargs[i]
-                    strargs = strargs[i+1:]
+        strargs = map_as_list(str, args)
+        strpath = self.strpath
+        if kwargs.get('abs'):
+            newargs = []
+            for arg in reversed(strargs):
+                if isabs(arg):
+                    strpath = arg
+                    strargs = newargs
                     break
+                newargs.insert(0, arg)
         for arg in strargs:
             arg = arg.strip(sep)
             if iswin32:
                 # allow unix style paths even on windows.
                 arg = arg.strip('/')
                 arg = arg.replace('/', sep)
-            if arg:
-                if not strpath.endswith(sep):
-                    strpath += sep
-                strpath += arg
-        obj = self.new()
-        obj.strpath = os.path.normpath(strpath)
+            strpath = strpath + sep + arg
+        obj = object.__new__(self.__class__)
+        obj.strpath = normpath(strpath)
         return obj
 
     def open(self, mode='r'):
         """ return an opened file with the given mode. """
         return py.error.checked_call(open, self.strpath, mode)
 
+    def _fastjoin(self, name):
+        child = object.__new__(self.__class__)
+        child.strpath = self.strpath + self.sep + name
+        return child
+
+    _fastcheck = set("file dir link")
+    def check(self, **kw):
+        if not kw:
+            return exists(self.strpath)
+        if len(kw) == 1:
+            if "dir" in kw:
+                return not kw["dir"] ^ isdir(self.strpath)
+            if "file" in kw:
+                return not kw["file"] ^ isfile(self.strpath)
+        return super(LocalPath, self).check(**kw)
+
+    _patternchars = set("*?[" + os.path.sep)
     def listdir(self, fil=None, sort=None):
         """ list directory contents, possibly filter by the given fil func
             and possibly sorted.
         """
+        if fil is None and sort is None:
+            names = py.error.checked_call(os.listdir, self.strpath)
+            return map_as_list(self._fastjoin, names)
         if isinstance(fil, str):
+            if self._patternchars.isdisjoint(fil):
+                child = self._fastjoin(fil)
+                if os.path.exists(child.strpath):
+                    return [new]
+                return []
             fil = common.FNMatcher(fil)
+        names = py.error.checked_call(os.listdir, self.strpath)
         res = []
-        for name in py.error.checked_call(os.listdir, self.strpath):
-            childurl = self.join(name)
-            if fil is None or fil(childurl):
-                res.append(childurl)
+        for name in names:
+            child = self._fastjoin(name)
+            if fil is None or fil(child):
+                res.append(child)
         self._sortlist(res, sort)
         return res
 
@@ -587,9 +622,9 @@ class LocalPath(FSBase):
             The process is directly invoked and not through a system shell.
         """
         from subprocess import Popen, PIPE
-        argv = map(str, argv)
+        argv = map_as_list(str, argv)
         popen_opts['stdout'] = popen_opts['stderr'] = PIPE
-        proc = Popen([str(self)] + list(argv), **popen_opts)
+        proc = Popen([str(self)] + argv, **popen_opts)
         stdout, stderr = proc.communicate()
         ret = proc.wait()
         if py.builtin._isbytes(stdout):

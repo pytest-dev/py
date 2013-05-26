@@ -364,6 +364,7 @@ class Visitor:
 class FNMatcher:
     def __init__(self, pattern):
         self.pattern = pattern
+
     def __call__(self, path):
         pattern = self.pattern
         if pattern.find(path.sep) == -1:
