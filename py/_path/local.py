@@ -352,7 +352,7 @@ class LocalPath(FSBase):
             if self._patternchars.isdisjoint(fil):
                 child = self._fastjoin(fil)
                 if os.path.exists(child.strpath):
-                    return [new]
+                    return [child]
                 return []
             fil = common.FNMatcher(fil)
         names = py.error.checked_call(os.listdir, self.strpath)

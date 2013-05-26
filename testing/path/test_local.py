@@ -460,6 +460,10 @@ def test_samefile(tmpdir):
         p2 = p.__class__(str(p).upper())
         assert p1.samefile(p2)
 
+def test_listdir_single_arg(tmpdir):
+    tmpdir.ensure("hello")
+    assert tmpdir.listdir("hello")[0].basename == "hello"
+
 def test_mkdtemp_rootdir(tmpdir):
     dtmp = local.mkdtemp(rootdir=tmpdir)
     assert tmpdir.listdir() == [dtmp]
