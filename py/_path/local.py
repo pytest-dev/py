@@ -349,7 +349,7 @@ class LocalPath(FSBase):
             names = py.error.checked_call(os.listdir, self.strpath)
             return map_as_list(self._fastjoin, names)
         if isinstance(fil, str):
-            if self._patternchars.isdisjoint(fil):
+            if not self._patternchars.intersection(fil):
                 child = self._fastjoin(fil)
                 if os.path.exists(child.strpath):
                     return [child]

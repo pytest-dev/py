@@ -1,4 +1,4 @@
-Changes between 1.4.14 and 1.4.15.dev
+Changes between 1.4.14 and 1.4.15
 ==================================================
 
 - majorly speed up some common calling patterns with
