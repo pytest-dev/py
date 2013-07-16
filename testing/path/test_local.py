@@ -92,6 +92,17 @@ class TestLocalPath(common.CommonFSTests):
         assert path3 != path2
         assert path2 != path3
 
+    def test_gt_with_strings(self, path1):
+        path2 = path1.join('sampledir')
+        path3 = str(path1.join("ttt"))
+        assert path3 > path2
+        assert path2 < path3
+        assert path2 < "ttt"
+        assert "ttt" > path2
+        path4 = path1.join("aaa")
+        l = [path2, path4,path3]
+        assert sorted(l) == [path4, path2, path3]
+
     @py.test.mark.multi(bin=(False, True))
     def test_dump(self, tmpdir, bin):
         path = tmpdir.join("dumpfile%s" % int(bin))

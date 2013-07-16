@@ -1,3 +1,9 @@
+Changes between 1.4.15 and 1.4.16.dev
+==================================================
+
+- fix issue35 - define __gt__ ordering between a local path
+  and strings
+
 Changes between 1.4.14 and 1.4.15
 ==================================================
 
