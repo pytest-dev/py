@@ -27,8 +27,6 @@ def test_virtual_module_identity():
 def test_importall():
     base = py._pydir
     nodirs = [
-        base.join('_path', 'gateway',),
-        base.join('_code', 'oldmagic.py'),
     ]
     if sys.version_info >= (3,0):
         nodirs.append(base.join('_code', '_assertionold.py'))
