@@ -6,7 +6,7 @@ import py
 from py._path import common
 from stat import S_ISLNK, S_ISDIR, S_ISREG
 
-from os.path import normpath, isabs, exists, isdir, isfile
+from os.path import normpath, isabs, exists, isdir, isfile, islink
 
 iswin32 = sys.platform == "win32" or (getattr(os, '_name', False) == 'nt')
 
@@ -332,7 +332,9 @@ class LocalPath(FSBase):
         child.strpath = self.strpath + self.sep + name
         return child
 
-    _fastcheck = set("file dir link")
+    def islink(self):
+        return islink(self.strpath)
+
     def check(self, **kw):
         if not kw:
             return exists(self.strpath)
@@ -688,7 +690,10 @@ class LocalPath(FSBase):
         try:
             x = os.environ['HOME']
         except KeyError:
-            x = os.environ["HOMEDRIVE"] + os.environ['HOMEPATH']
+            try:
+                x = os.environ["HOMEDRIVE"] + os.environ['HOMEPATH']
+            except KeyError:
+                return None
         return cls(x)
     _gethomedir = classmethod(_gethomedir)
 

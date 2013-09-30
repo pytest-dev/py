@@ -453,9 +453,16 @@ def test_isimportable():
     assert not isimportable("x-1")
     assert not isimportable("x:1")
 
-def test_homedir():
+def test_homedir_from_HOME(monkeypatch):
+    path = os.getcwd()
+    monkeypatch.setenv("HOME", path)
+    assert py.path.local._gethomedir() == py.path.local(path)
+
+def test_homedir_not_exists(monkeypatch):
+    monkeypatch.delenv("HOME", raising=False)
+    monkeypatch.delenv("HOMEDRIVE", raising=False)
     homedir = py.path.local._gethomedir()
-    assert homedir.check(dir=1)
+    assert homedir is None
 
 def test_samefile(tmpdir):
     assert tmpdir.samefile(tmpdir)
@@ -553,6 +560,7 @@ class TestPOSIXLocalPath:
         linkpath.mksymlinkto(filepath)
         assert linkpath.check(file=1)
         assert not linkpath.check(link=0, file=1)
+        assert linkpath.islink()
 
     def test_symlink_relative(self, tmpdir):
         linkpath = tmpdir.join('test')
