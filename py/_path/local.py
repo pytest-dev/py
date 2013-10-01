@@ -143,7 +143,7 @@ class LocalPath(FSBase):
         the exact same path object. Use new() to get a new copy.
         """
         if path is None:
-            self.strpath = os.getcwd()
+            self.strpath = py.error.checked_call(os.getcwd)
         elif isinstance(path, common.PathBase):
             self.strpath = path.strpath
         elif isinstance(path, py.builtin._basestring):
@@ -498,7 +498,10 @@ class LocalPath(FSBase):
 
     def chdir(self):
         """ change directory to self and return old current directory """
-        old = self.__class__()
+        try:
+            old = self.__class__()
+        except py.error.ENOENT:
+            old = None
         py.error.checked_call(os.chdir, self.strpath)
         return old
 

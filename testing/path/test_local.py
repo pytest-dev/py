@@ -75,6 +75,14 @@ class TestLocalPath(common.CommonFSTests):
     def test_initialize_curdir(self):
         assert str(local()) == py.std.os.getcwd()
 
+    def test_chdir_gone(self, path1):
+        p = path1.ensure("dir_to_be_removed", dir=1)
+        p.chdir()
+        p.remove()
+        pytest.raises(py.error.ENOENT, py.path.local)
+        assert path1.chdir() is None
+        assert os.getcwd() == str(path1)
+
     def test_initialize_reldir(self, path1):
         old = path1.chdir()
         try:
