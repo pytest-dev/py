@@ -109,6 +109,10 @@ class TestLocalPath(common.CommonFSTests):
         finally:
             old.chdir()
 
+    def test_tilde_expansion(self):
+        p = py.path.local("~", exp=True)
+        assert p == os.path.expanduser("~")
+
     def test_eq_with_strings(self, path1):
         path1 = path1.join('sampledir')
         path2 = str(path1)
