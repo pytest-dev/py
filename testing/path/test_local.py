@@ -76,6 +76,7 @@ class TestLocalPath(common.CommonFSTests):
     def test_initialize_curdir(self):
         assert str(local()) == py.std.os.getcwd()
 
+    @skiponwin32
     def test_chdir_gone(self, path1):
         p = path1.ensure("dir_to_be_removed", dir=1)
         p.chdir()
