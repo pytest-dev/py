@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import py
 import pytest
 import os, sys
@@ -83,6 +84,22 @@ class TestLocalPath(common.CommonFSTests):
         assert path1.chdir() is None
         assert os.getcwd() == str(path1)
 
+    def test_as_cwd(self, path1):
+        dir = path1.ensure("subdir", dir=1)
+        old = py.path.local()
+        with dir.as_cwd() as x:
+            assert x == old
+            assert py.path.local() == dir
+        assert os.getcwd() == str(old)
+
+    def test_as_cwd_exception(self, path1):
+        old = py.path.local()
+        dir = path1.ensure("subdir", dir=1)
+        with pytest.raises(ValueError):
+            with dir.as_cwd():
+                raise ValueError()
+        assert old == py.path.local()
+
     def test_initialize_reldir(self, path1):
         old = path1.chdir()
         try:
@@ -110,6 +127,17 @@ class TestLocalPath(common.CommonFSTests):
         path4 = path1.join("aaa")
         l = [path2, path4,path3]
         assert sorted(l) == [path4, path2, path3]
+
+    def test_open_and_ensure(self, path1):
+        p = path1.join("sub1", "sub2", "file")
+        with p.open("w", ensure=1) as f:
+            f.write("hello")
+        assert p.read() == "hello"
+
+    def test_write_and_ensure(self, path1):
+        p = path1.join("sub1", "sub2", "file")
+        p.write("hello", ensure=1)
+        assert p.read() == "hello"
 
     @py.test.mark.multi(bin=(False, True))
     def test_dump(self, tmpdir, bin):

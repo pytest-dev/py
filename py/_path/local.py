@@ -1,6 +1,7 @@
 """
 local path implementation.
 """
+from contextlib import contextmanager
 import sys, os, stat, re, atexit
 import py
 from py._path import common
@@ -323,8 +324,13 @@ class LocalPath(FSBase):
         obj.strpath = normpath(strpath)
         return obj
 
-    def open(self, mode='r'):
-        """ return an opened file with the given mode. """
+    def open(self, mode='r', ensure=False):
+        """ return an opened file with the given mode.
+
+        If ensure is True, create parent directories if needed.
+        """
+        if ensure:
+            self.dirpath().ensure(dir=1)
         return py.error.checked_call(open, self.strpath, mode)
 
     def _fastjoin(self, name):
@@ -421,8 +427,12 @@ class LocalPath(FSBase):
         py.error.checked_call(os.mkdir, str(p))
         return p
 
-    def write(self, data, mode='w'):
-        """ write data into path. """
+    def write(self, data, mode='w', ensure=False):
+        """ write data into path.   If ensure is True create
+        missing parent directories.
+        """
+        if ensure:
+            self.dirpath().ensure(dir=1)
         if 'b' in mode:
             if not py.builtin._isbytes(data):
                 raise ValueError("can only process bytes")
@@ -504,6 +514,18 @@ class LocalPath(FSBase):
             old = None
         py.error.checked_call(os.chdir, self.strpath)
         return old
+
+
+    @contextmanager
+    def as_cwd(self):
+        """ return context manager which changes to current dir during the
+        managed "with" context. On __enter__ it returns the old dir.
+        """
+        old = self.chdir()
+        try:
+            yield old
+        finally:
+            old.chdir()
 
     def realpath(self):
         """ return a new path which contains no symbolic links."""

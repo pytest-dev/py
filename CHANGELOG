@@ -1,4 +1,4 @@
-Changes between 1.4.15 and 1.4.16.dev
+Changes between 1.4.15 and 1.4.16
 ==================================================
 
 - fix issue35 - define __gt__ ordering between a local path
@@ -7,6 +7,13 @@ Changes between 1.4.15 and 1.4.16.dev
 - fix issue36 - make chdir() work even if os.getcwd() fails.
 
 - add path.exists/isdir/isfile/islink shortcuts
+
+- introduce local path.as_cwd() context manager.
+
+- introduce p.write(ensure=1) and p.open(ensure=1)
+  where ensure triggers creation of neccessary parent
+  dirs.
+
 
 Changes between 1.4.14 and 1.4.15
 ==================================================
