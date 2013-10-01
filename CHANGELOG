@@ -2,7 +2,7 @@ Changes between 1.4.15 and X
 ==================================================
 
 - introduce exp optional argument to py.path.local
-  to that local("~user", exp=True) gives the home
+  to that local("~", expanduser=True) gives the home
   directory of "user".
 
 Changes between 1.4.15 and 1.4.16

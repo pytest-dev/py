@@ -134,13 +134,12 @@ class LocalPath(FSBase):
             st = self.path.lstat()
             return S_ISLNK(st.mode)
 
-    def __init__(self, path=None, exp=False):
+    def __init__(self, path=None, expanduser=False):
         """ Initialize and return a local Path instance.
 
         Path can be relative to the current directory.
         If path is None it defaults to the current working directory.
-        If exp is True and path is a string, os.path.expanduser like
-        user expansion takes place.
+        If expanduser is True, tilde-expansion is performed.
         Note that Path instances always carry an absolute path.
         Note also that passing in a local path object will simply return
         the exact same path object. Use new() to get a new copy.
@@ -150,7 +149,7 @@ class LocalPath(FSBase):
         elif isinstance(path, common.PathBase):
             self.strpath = path.strpath
         elif isinstance(path, py.builtin._basestring):
-            if exp:
+            if expanduser:
                 path = os.path.expanduser(path)
             self.strpath = os.path.abspath(normpath(str(path)))
         else:
