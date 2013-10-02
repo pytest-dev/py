@@ -1,8 +1,4 @@
-"""
-
-"""
-
-import os, sys
+import sys
 import subprocess
 import py
 from subprocess import Popen, PIPE

@@ -4,7 +4,6 @@ by using simple python objects.
 
 (c) holger krekel, holger at merlinux eu. 2009
 """
-import py
 import sys, re
 
 if sys.version_info >= (3,0):

@@ -318,7 +318,7 @@ def deindent(lines, offset=None):
     return newlines
 
 def get_statement_startend(lineno, nodelist):
-    from bisect import bisect_right, bisect_left
+    from bisect import bisect_right
     # lineno starts at 0
     nextlineno = None
     while 1:

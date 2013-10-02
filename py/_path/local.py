@@ -2,7 +2,7 @@
 local path implementation.
 """
 from contextlib import contextmanager
-import sys, os, stat, re, atexit
+import sys, os, re, atexit
 import py
 from py._path import common
 from stat import S_ISLNK, S_ISDIR, S_ISREG

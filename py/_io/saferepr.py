@@ -1,5 +1,5 @@
 import py
-import sys, os.path
+import sys
 
 builtin_repr = repr
 

@@ -1,5 +1,5 @@
 import py
-import sys, os.path
+import sys
 from inspect import CO_VARARGS, CO_VARKEYWORDS
 
 builtin_repr = repr
