@@ -11,12 +11,17 @@ py3k = sys.version_info[0] >= 3
 from py.builtin import text, bytes
 
 win32_and_ctypes = False
+colorama = None
 if sys.platform == "win32":
     try:
-        import ctypes
-        win32_and_ctypes = True
+        import colorama
     except ImportError:
-        pass
+        try:
+            import ctypes
+            win32_and_ctypes = True
+        except ImportError:
+            pass
+
 
 def _getdimensions():
     import termios,fcntl,struct
@@ -117,6 +122,8 @@ class TerminalWriter(object):
         elif py.builtin.callable(file) and not (
              hasattr(file, "write") and hasattr(file, "flush")):
             file = WriteFile(file, encoding=encoding)
+        if hasattr(file, "isatty") and file.isatty() and colorama:
+            file = colorama.AnsiToWin32(file).stream
         self.encoding = encoding or getattr(file, 'encoding', "utf-8")
         self._file = file
         self.fullwidth = get_terminal_width()
