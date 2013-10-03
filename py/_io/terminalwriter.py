@@ -150,6 +150,12 @@ class TerminalWriter(object):
             fullwidth = self.fullwidth
         # the goal is to have the line be as long as possible
         # under the condition that len(line) <= fullwidth
+        if sys.platform == "win32":
+            # if we print in the last column on windows we are on a
+            # new line but there is no way to verify/neutralize this
+            # (we may not know the exact line width)
+            # so let's be defensive to avoid empty lines in the output
+            fullwidth -= 1
         if title is not None:
             # we want 2 + 2*len(fill) + len(title) <= fullwidth
             # i.e.    2 + 2*len(sepchar)*N + len(title) <= fullwidth

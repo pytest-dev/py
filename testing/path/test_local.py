@@ -109,6 +109,7 @@ class TestLocalPath(common.CommonFSTests):
         finally:
             old.chdir()
 
+    @pytest.mark.xfail("sys.version_info < (2,6) and sys.platform == 'win32'")
     def test_tilde_expansion(self):
         p = py.path.local("~", expanduser=True)
         assert p == os.path.expanduser("~")

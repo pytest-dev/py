@@ -90,6 +90,7 @@ def test_unicode_on_file_with_ascii_encoding(tmpdir, monkeypatch, encoding):
     assert s == msg.encode("unicode-escape")
 
 
+win32 = int(sys.platform == "win32")
 class TestTerminalWriter:
     def pytest_generate_tests(self, metafunc):
         if "tw" in metafunc.funcargnames:
@@ -141,13 +142,13 @@ class TestTerminalWriter:
         tw.sep("-", fullwidth=60)
         l = tw.getlines()
         assert len(l) == 1
-        assert l[0] == "-" * 60 + "\n"
+        assert l[0] == "-" * (60-win32) + "\n"
 
     def test_sep_with_title(self, tw):
         tw.sep("-", "hello", fullwidth=60)
         l = tw.getlines()
         assert len(l) == 1
-        assert l[0] == "-" * 26 + " hello " + "-" * 27 + "\n"
+        assert l[0] == "-" * 26 + " hello " + "-" * (27-win32) + "\n"
 
     @py.test.mark.skipif("sys.platform == 'win32'")
     def test__escaped(self, tw):

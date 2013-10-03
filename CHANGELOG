@@ -1,7 +1,9 @@
-Changes between 1.4.16 and X
+Changes between 1.4.16 and 1.4.17
 ==================================================
 
 - make py.io.TerminalWriter() prefer colorama if it is available
+  and avoid empty lines when separator-lines are printed by
+  being defensive and reducing the working terminalwidth by 1
 
 - introduce optional "expanduser" argument to py.path.local
   to that local("~", expanduser=True) gives the home
