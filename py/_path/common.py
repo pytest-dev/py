@@ -223,6 +223,10 @@ newline will be removed from the end of each line. """
             return strself[len(strrelpath):]
         return ""
 
+    def ensure_dir(self, *args):
+        """ ensure the path joined with args is a directory. """
+        return self.ensure(*args, **{"dir": True})
+
     def bestrelpath(self, dest):
         """ return a string which is a relative path from self
             (assumed to be a directory) to dest such that

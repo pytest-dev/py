@@ -388,6 +388,11 @@ class CommonFSTests(object):
         p.remove()
         assert not p.check()
 
+    def test_ensure_dir(self, path1):
+        b = path1.ensure_dir("a", "b")
+        assert b.basename == "b"
+        assert b.isdir()
+
     def test_mkdir_and_remove(self, path1):
         tmpdir = path1
         py.test.raises(py.error.EEXIST, tmpdir.mkdir, 'sampledir')
