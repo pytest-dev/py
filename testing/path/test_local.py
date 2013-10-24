@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import with_statement
 import py
 import pytest
@@ -122,6 +124,9 @@ class TestLocalPath(common.CommonFSTests):
         path3 = path1.join('samplefile')
         assert path3 != path2
         assert path2 != path3
+
+    def test_eq_with_none(self, path1):
+        assert path1 != None
 
     def test_gt_with_strings(self, path1):
         path2 = path1.join('sampledir')
@@ -773,4 +778,27 @@ class TestPOSIXLocalPath:
         owner = path1.stat().owner
         group = path1.stat().group
         path1.chown(owner, group)
+
+
+class TestUnicodePy2Py3:
+    def test_join_ensure(self, tmpdir):
+        x = py.path.local(tmpdir.strpath)
+        part = py.builtin._totext("hällo", "utf8")
+        y = x.ensure(part)
+        assert x.join(part) == y
+
+    def test_listdir(self, tmpdir):
+        x = py.path.local(tmpdir.strpath)
+        part = py.builtin._totext("hällo", "utf8")
+        y = x.ensure(part)
+        assert x.listdir(part)[0] == y
+
+    @pytest.mark.xfail(reason="changing read/write might break existing usages")
+    def test_read_write(self, tmpdir):
+        x = tmpdir.join("hello")
+        part = py.builtin._totext("hällo", "utf8")
+        x.write(part)
+        assert x.read() == part
+        x.write(part.encode(sys.getdefaultencoding()))
+        assert x.read() == part.encode(sys.getdefaultencoding())
 

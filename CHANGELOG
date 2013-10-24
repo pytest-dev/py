@@ -3,6 +3,10 @@ Changes between 1.4.17 and 1.4.18.dev
 
 - introduce path.ensure_dir() as a synonym for ensure(..., dir=1)
 
+- some unicode/python3 related fixes wrt to path manipulations
+  (if you start passing unicode particular in py2 you might 
+  still get problems, though)
+
 Changes between 1.4.16 and 1.4.17
 ==================================================
 

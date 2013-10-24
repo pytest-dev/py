@@ -155,39 +155,43 @@ class LocalPath(FSBase):
         else:
             raise ValueError("can only pass None, Path instances "
                              "or non-empty strings to LocalPath")
-        assert isinstance(self.strpath, str)
+        assert isinstance(self.strpath, py.builtin._basestring)
 
     def __hash__(self):
         return hash(self.strpath)
 
     def __eq__(self, other):
-        s1 = str(self)
-        s2 = str(other)
+        s1 = self.strpath
+        s2 = getattr(other, "strpath", other)
         if iswin32:
             s1 = s1.lower()
-            s2 = s2.lower()
+            try:
+                s2 = s2.lower()
+            except AttributeError:
+                return False
         return s1 == s2
 
     def __ne__(self, other):
         return not (self == other)
 
     def __lt__(self, other):
-        return str(self) < str(other)
+        return self.strpath < getattr(other, "strpath", other)
 
     def __gt__(self, other):
-        return str(self) > str(other)
+        return self.strpath > getattr(other, "strpath", other)
 
     def samefile(self, other):
         """ return True if 'other' references the same file as 'self'.
         """
-        if not isinstance(other, py.path.local):
-            other = os.path.abspath(str(other))
+        other = getattr(other, "strpath", other)
+        if not os.path.isabs(other):
+            other = os.path.abspath(other)
         if self == other:
             return True
         if iswin32:
-            return False # ther is no samefile
+            return False # there is no samefile
         return py.error.checked_call(
-                os.path.samefile, str(self), str(other))
+                os.path.samefile, self.strpath, other)
 
     def remove(self, rec=1, ignore_errors=False):
         """ remove a file or directory (or a directory tree if rec=1).
@@ -306,7 +310,7 @@ class LocalPath(FSBase):
         of the args is an absolute path.
         """
         sep = self.sep
-        strargs = map_as_list(str, args)
+        strargs = [getattr(arg, "strpath", arg) for arg in args]
         strpath = self.strpath
         if kwargs.get('abs'):
             newargs = []
@@ -362,7 +366,7 @@ class LocalPath(FSBase):
         if fil is None and sort is None:
             names = py.error.checked_call(os.listdir, self.strpath)
             return map_as_list(self._fastjoin, names)
-        if isinstance(fil, str):
+        if isinstance(fil, py.builtin._basestring):
             if not self._patternchars.intersection(fil):
                 child = self._fastjoin(fil)
                 if os.path.exists(child.strpath):
@@ -414,7 +418,8 @@ class LocalPath(FSBase):
 
     def rename(self, target):
         """ rename this path to target. """
-        return py.error.checked_call(os.rename, str(self), str(target))
+        target = getattr(target, "strpath", target)
+        return py.error.checked_call(os.rename, self.strpath, target)
 
     def dump(self, obj, bin=1):
         """ pickle object into path location"""
@@ -427,7 +432,7 @@ class LocalPath(FSBase):
     def mkdir(self, *args):
         """ create & return the directory joined with args. """
         p = self.join(*args)
-        py.error.checked_call(os.mkdir, str(p))
+        py.error.checked_call(os.mkdir, getattr(p, "strpath", p))
         return p
 
     def write(self, data, mode='w', ensure=False):
