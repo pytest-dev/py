@@ -104,12 +104,9 @@ class TestLocalPath(common.CommonFSTests):
         assert old == py.path.local()
 
     def test_initialize_reldir(self, path1):
-        old = path1.chdir()
-        try:
+        with path1.as_cwd():
             p = local('samplefile')
             assert p.check()
-        finally:
-            old.chdir()
 
     @pytest.mark.xfail("sys.version_info < (2,6) and sys.platform == 'win32'")
     def test_tilde_expansion(self):
@@ -515,11 +512,8 @@ def test_samefile(tmpdir):
     assert tmpdir.samefile(tmpdir)
     p = tmpdir.ensure("hello")
     assert p.samefile(p)
-    old = p.dirpath().chdir()
-    try:
+    with p.dirpath().as_cwd():
         assert p.samefile(p.basename)
-    finally:
-        old.chdir()
     if sys.platform == "win32":
         p1 = p.__class__(str(p).lower())
         p2 = p.__class__(str(p).upper())
@@ -575,12 +569,9 @@ class TestWINLocalPath:
     def test_sysfind_in_currentdir(self, path1):
         cmd = py.path.local.sysfind('cmd')
         root = cmd.new(dirname='', basename='') # c:\ in most installations
-        old = root.chdir()
-        try:
+        with root.as_cwd():
             x = py.path.local.sysfind(cmd.relto(root))
             assert x.check(file=1)
-        finally:
-            old.chdir()
 
 class TestPOSIXLocalPath:
     pytestmark = skiponwin32
