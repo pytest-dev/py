@@ -389,8 +389,8 @@ class CommonFSTests(object):
         assert not p.check()
 
     def test_ensure_dir(self, path1):
-        b = path1.ensure_dir("a", "b")
-        assert b.basename == "b"
+        b = path1.ensure_dir("001", "002")
+        assert b.basename == "002"
         assert b.isdir()
 
     def test_mkdir_and_remove(self, path1):
