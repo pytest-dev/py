@@ -1,4 +1,4 @@
-Changes between 1.4.17 and 1.4.18.dev
+Changes between 1.4.17 and 1.4.18
 ==================================================
 
 - introduce path.ensure_dir() as a synonym for ensure(..., dir=1)
