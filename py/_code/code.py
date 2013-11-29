@@ -352,7 +352,7 @@ class ExceptionInfo(object):
             removed from the beginning)
         """
         lines = self._format_exception_only(self.type, self.value)
-        text = py.builtin._totext('').join(lines)
+        text = ''.join(lines)
         text = text.rstrip()
         if tryshort:
             if text.startswith(self._striptext):

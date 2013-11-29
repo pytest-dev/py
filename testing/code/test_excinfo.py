@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import py
 from py._code.code import FormattedExcinfo, ReprExceptionInfo
@@ -238,6 +239,13 @@ def test_excinfo_exconly():
     msg = excinfo.exconly(tryshort=True)
     assert msg.startswith('ValueError')
     assert msg.endswith("world")
+
+def test_excinfo_exconly_unicode_AssertionError():
+    def fail():
+        raise AssertionError(py.builtin._totext('£€', 'utf-8'))
+    excinfo = py.test.raises(Exception, fail)
+    msg = excinfo.exconly(tryshort=True)
+    assert msg == py.builtin._totext('£€', 'utf-8')
 
 def test_excinfo_repr():
     excinfo = py.test.raises(ValueError, h)
