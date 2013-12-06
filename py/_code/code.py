@@ -204,11 +204,12 @@ class TracebackEntry(object):
             mostly for internal use
         """
         try:
-            return self.frame.eval("__tracebackhide__")
-        except py.builtin._sysex:
-            raise
-        except:
-            return False
+            return self.frame.f_locals['__tracebackhide__']
+        except KeyError:
+            try:
+                return self.frame.f_globals['__tracebackhide__']
+            except KeyError:
+                return False
 
     def __str__(self):
         try:
