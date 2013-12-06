@@ -101,8 +101,10 @@ def ansi_print(text, esc, file=None, newline=True, flush=False):
         file.flush()
 
 def should_do_markup(file):
-    if os.environ.get('PY_FORCE_COLOR'):
+    if os.environ.get('PY_COLORS') == '1':
         return True
+    if os.environ.get('PY_COLORS') == '0':
+        return False
     return hasattr(file, 'isatty') and file.isatty() \
            and os.environ.get('TERM') != 'dumb' \
            and not (sys.platform.startswith('java') and os._name == 'nt')
