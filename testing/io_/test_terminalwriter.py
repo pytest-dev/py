@@ -224,7 +224,9 @@ def test_attr_hasmarkup():
     tw.hasmarkup = True
     tw.line("hello", bold=True)
     s = tw.stringio.getvalue()
-    assert len(s) > len("hello")
+    assert len(s) > len("hello\n")
+    assert u'\x1b[1m' in s
+    assert u'\x1b[0m' in s
 
 def test_ansi_print():
     # we have no easy way to construct a file that
@@ -234,4 +236,6 @@ def test_ansi_print():
     py.io.ansi_print("hello", 0x32, file=f)
     text2 = f.getvalue()
     assert text2.find("hello") != -1
-    assert len(text2) >= len("hello")
+    assert len(text2) >= len("hello\n")
+    assert u'\x1b[50m' in text2
+    assert u'\x1b[0m' in text2
