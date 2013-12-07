@@ -3,6 +3,9 @@ Changes between 1.4.18 and 1.4.19.dev
 
 - merge in apipkg fixes
 
+- some micro-optimizations in py/_code/code.py for speeding
+  up pytest runs.  Thanks Alex Gaynor for initiative.
+
 Changes between 1.4.17 and 1.4.18
 ==================================================
 

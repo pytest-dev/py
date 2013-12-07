@@ -385,6 +385,8 @@ raise ValueError()
         pr = FormattedExcinfo()
 
         class FakeCode(object):
+            class raw:
+                co_filename = '?'
             path = '?'
             firstlineno = 5
 
@@ -395,11 +397,15 @@ raise ValueError()
         class FakeFrame(object):
             code = FakeCode()
             f_locals = {}
+            f_globals = {}
 
         class FakeTracebackEntry(py.code.Traceback.Entry):
             def __init__(self, tb):
-                self.frame = FakeFrame()
                 self.lineno = 5+3
+
+            @property
+            def frame(self):
+                return FakeFrame()
 
         class Traceback(py.code.Traceback):
             Entry = FakeTracebackEntry

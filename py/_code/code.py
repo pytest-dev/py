@@ -9,14 +9,15 @@ reprlib = py.builtin._tryimport('repr', 'reprlib')
 class Code(object):
     """ wrapper around Python code objects """
     def __init__(self, rawcode):
-        rawcode = py.code.getrawcode(rawcode)
-        self.raw = rawcode
+        if not hasattr(rawcode, "co_filename"):
+            rawcode = py.code.getrawcode(rawcode)
         try:
             self.filename = rawcode.co_filename
             self.firstlineno = rawcode.co_firstlineno - 1
             self.name = rawcode.co_name
         except AttributeError:
             raise TypeError("not a code object: %r" %(rawcode,))
+        self.raw = rawcode
 
     def __eq__(self, other):
         return self.raw == other.raw
@@ -24,25 +25,25 @@ class Code(object):
     def __ne__(self, other):
         return not self == other
 
+    @property
     def path(self):
-        """ return a path object pointing to source code"""
+        """ return a path object pointing to source code (note that it
+        might not point to an actually existing file). """
         p = py.path.local(self.raw.co_filename)
+        # maybe don't try this checking
         if not p.check():
             # XXX maybe try harder like the weird logic
             # in the standard lib [linecache.updatecache] does?
             p = self.raw.co_filename
         return p
 
-    path = property(path, None, None, "path of this code object")
-
+    @property
     def fullsource(self):
         """ return a py.code.Source object for the full source file of the code
         """
         from py._code import source
         full, _ = source.findsource(self.raw)
         return full
-    fullsource = property(fullsource, None, None,
-                          "full source containing this code object")
 
     def source(self):
         """ return a py.code.Source object for the code object's source only
@@ -69,18 +70,18 @@ class Frame(object):
     in which expressions can be evaluated."""
 
     def __init__(self, frame):
-        self.code = py.code.Code(frame.f_code)
         self.lineno = frame.f_lineno - 1
         self.f_globals = frame.f_globals
         self.f_locals = frame.f_locals
         self.raw = frame
+        self.code = py.code.Code(frame.f_code)
 
+    @property
     def statement(self):
+        """ statement this frame is at """
         if self.code.fullsource is None:
             return py.code.Source("")
         return self.code.fullsource.getstatement(self.lineno)
-    statement = property(statement, None, None,
-                         "statement this frame is at")
 
     def eval(self, code, **vars):
         """ evaluate 'code' in the frame
@@ -131,26 +132,29 @@ class TracebackEntry(object):
 
     def __init__(self, rawentry):
         self._rawentry = rawentry
-        self.frame = py.code.Frame(rawentry.tb_frame)
-        # Ugh. 2.4 and 2.5 differs here when encountering
-        # multi-line statements. Not sure about the solution, but
-        # should be portable
         self.lineno = rawentry.tb_lineno - 1
-        self.relline = self.lineno - self.frame.code.firstlineno
+
+    @property
+    def frame(self):
+        return py.code.Frame(self._rawentry.tb_frame)
+
+    @property
+    def relline(self):
+        return self.lineno - self.frame.code.firstlineno
 
     def __repr__(self):
         return "<TracebackEntry %s:%d>" %(self.frame.code.path, self.lineno+1)
 
+    @property
     def statement(self):
-        """ return a py.code.Source object for the current statement """
+        """ py.code.Source object for the current statement """
         source = self.frame.code.fullsource
         return source.getstatement(self.lineno)
-    statement = property(statement, None, None,
-                         "statement of this traceback entry.")
 
+    @property
     def path(self):
+        """ path to the source code """
         return self.frame.code.path
-    path = property(path, None, None, "path to the full source code")
 
     def getlocals(self):
         return self.frame.f_locals
@@ -288,10 +292,11 @@ class Traceback(list):
         """ return last non-hidden traceback entry that lead
         to the exception of a traceback.
         """
-        tb = self.filter()
-        if not tb:
-            tb = self
-        return tb[-1]
+        for i in range(-1, -len(self)-1, -1):
+            entry = self[i]
+            if not entry.ishidden():
+                return entry
+        return self[-1]
 
     def recursionindex(self):
         """ return the index of the frame/TracebackItem where recursion
@@ -337,7 +342,7 @@ class ExceptionInfo(object):
                 if exprinfo and exprinfo.startswith('assert '):
                     self._striptext = 'AssertionError: '
         self._excinfo = tup
-        self.type, self.value, tb = self._excinfo
+        self.type, self.value, tb = tup
         self.typename = self.type.__name__
         self.traceback = py.code.Traceback(tb)
 
@@ -367,9 +372,8 @@ class ExceptionInfo(object):
     def _getreprcrash(self):
         exconly = self.exconly(tryshort=True)
         entry = self.traceback.getcrashentry()
-        path, lineno = entry.path, entry.lineno
-        reprcrash = ReprFileLocation(path, lineno+1, exconly)
-        return reprcrash
+        path, lineno = entry.frame.code.raw.co_filename, entry.lineno
+        return ReprFileLocation(path, lineno+1, exconly)
 
     def getrepr(self, showlocals=False, style="long",
             abspath=False, tbfilter=True, funcargs=False):

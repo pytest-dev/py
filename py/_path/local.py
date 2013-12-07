@@ -7,7 +7,7 @@ import py
 from py._path import common
 from stat import S_ISLNK, S_ISDIR, S_ISREG
 
-from os.path import normpath, isabs, exists, isdir, isfile, islink
+from os.path import abspath, normpath, isabs, exists, isdir, isfile, islink
 
 iswin32 = sys.platform == "win32" or (getattr(os, '_name', False) == 'nt')
 
@@ -151,11 +151,10 @@ class LocalPath(FSBase):
         elif isinstance(path, py.builtin._basestring):
             if expanduser:
                 path = os.path.expanduser(path)
-            self.strpath = os.path.abspath(normpath(str(path)))
+            self.strpath = abspath(normpath(path))
         else:
             raise ValueError("can only pass None, Path instances "
                              "or non-empty strings to LocalPath")
-        assert isinstance(self.strpath, py.builtin._basestring)
 
     def __hash__(self):
         return hash(self.strpath)
@@ -184,8 +183,8 @@ class LocalPath(FSBase):
         """ return True if 'other' references the same file as 'self'.
         """
         other = getattr(other, "strpath", other)
-        if not os.path.isabs(other):
-            other = os.path.abspath(other)
+        if not isabs(other):
+            other = abspath(other)
         if self == other:
             return True
         if iswin32:
@@ -369,7 +368,7 @@ class LocalPath(FSBase):
         if isinstance(fil, py.builtin._basestring):
             if not self._patternchars.intersection(fil):
                 child = self._fastjoin(fil)
-                if os.path.exists(child.strpath):
+                if exists(child.strpath):
                     return [child]
                 return []
             fil = common.FNMatcher(fil)
@@ -682,7 +681,7 @@ class LocalPath(FSBase):
             Note: This is probably not working on plain win32 systems
             but may work on cygwin.
         """
-        if os.path.isabs(name):
+        if isabs(name):
             p = py.path.local(name)
             if p.check(file=1):
                 return p
