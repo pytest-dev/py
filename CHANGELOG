@@ -10,6 +10,10 @@ Changes between 1.4.18 and 1.4.19.dev
   for py.io.TerminalWriter() independently from capabilities
   of the output file.  Thanks Marc Abramowitz for the PR.
 
+- some fixes to unicode handling in assertion handling.
+  Thanks for the PR to Floris Bruynooghe.  (This helps
+  to fix pytest issue 319).
+
 Changes between 1.4.17 and 1.4.18
 ==================================================
 
