@@ -15,7 +15,7 @@ else:
     invalidate_import_caches = getattr(importlib, "invalidate_caches", None)
 
 import pytest
-pytest_version_info = list(map(int, pytest.__version__.split(".")[:3]))
+pytest_version_info = tuple(map(int, pytest.__version__.split(".")[:3]))
 pytest25 = pytest.mark.skipif(pytest_version_info < (2,5), reason="requires pytest-2.5")
 
 class TWMock:
