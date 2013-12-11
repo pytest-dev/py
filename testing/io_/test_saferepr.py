@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import generators
 import py
 import sys
@@ -59,6 +61,11 @@ class TestSafeRepr:
             s = saferepr(Function())
         except Exception:
             py.test.fail("saferepr failed for newstyle class")
+
+    def test_unicode(self):
+        val = py.builtin._totext('£€', 'utf-8')
+        reprval = py.builtin._totext("'£€'", 'utf-8')
+        assert saferepr(val) == reprval
 
 def test_unicode_handling():
     value = py.builtin._totext('\xc4\x85\xc4\x87\n', 'utf-8').encode('utf8')

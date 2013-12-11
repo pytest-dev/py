@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import py
 from py._code.code import FormattedExcinfo, ReprExceptionInfo
@@ -12,6 +13,10 @@ except ImportError:
     invalidate_import_caches = None
 else:
     invalidate_import_caches = getattr(importlib, "invalidate_caches", None)
+
+import pytest
+pytest_version_info = list(map(int, pytest.__version__.split(".")[:3]))
+pytest25 = pytest.mark.skipif(pytest_version_info < (2,5), reason="requires pytest-2.5")
 
 class TWMock:
     def __init__(self):
@@ -238,6 +243,15 @@ def test_excinfo_exconly():
     msg = excinfo.exconly(tryshort=True)
     assert msg.startswith('ValueError')
     assert msg.endswith("world")
+
+@pytest25
+def test_excinfo_exconly_unicode_AssertionError():
+    val = py.builtin._totext('£€', 'utf-8')
+    def fail():
+        raise AssertionError(val)
+    excinfo = py.test.raises(Exception, fail)
+    msg = excinfo.exconly(tryshort=True)
+    assert msg == 'AssertionError: ' + val
 
 def test_excinfo_repr():
     excinfo = py.test.raises(ValueError, h)
