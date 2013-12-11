@@ -332,7 +332,7 @@ class ExceptionInfo(object):
             if exprinfo is None and isinstance(tup[1], AssertionError):
                 exprinfo = getattr(tup[1], 'msg', None)
                 if exprinfo is None:
-                    exprinfo = py.builtin._totext(tup[1])
+                    exprinfo = str(tup[1])
                 if exprinfo and exprinfo.startswith('assert '):
                     self._striptext = 'AssertionError: '
         self._excinfo = tup
@@ -365,8 +365,8 @@ class ExceptionInfo(object):
         Since traceback.format_exception_only() destroys unicode on
         python 2 we handle plain AsssertionErrors separately here.
         """
-        if hasattr(value, 'msg'):
-            return [value.msg]
+        if isinstance(value, AssertionError) and hasattr(value, 'msg'):
+            return ['AssertionError: ' + value.msg]
         else:
             return py.std.traceback.format_exception_only(etype, value)
 
