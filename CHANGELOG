@@ -1,4 +1,4 @@
-Changes between 1.4.18 and 1.4.19.dev
+Changes between 1.4.18 and 1.4.19
 ==================================================
 
 - merge in apipkg fixes
@@ -13,6 +13,8 @@ Changes between 1.4.18 and 1.4.19.dev
 - some fixes to unicode handling in assertion handling.
   Thanks for the PR to Floris Bruynooghe.  (This helps
   to fix pytest issue 319).
+
+- depend on setuptools presence, remove distribute_setup
 
 Changes between 1.4.17 and 1.4.18
 ==================================================
