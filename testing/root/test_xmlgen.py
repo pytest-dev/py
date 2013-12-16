@@ -6,7 +6,7 @@ class ns(py.xml.Namespace):
     pass
 
 def test_escape():
-    uvalue = py.builtin._totext('\xc4\x85\xc4\x87\n', 'utf-8')
+    uvalue = py.builtin._totext('\xc4\x85\xc4\x87\n\xe2\x82\xac\n', 'utf-8')
     class A:
         def __unicode__(self):
             return uvalue
@@ -22,6 +22,8 @@ def test_escape():
     if py.std.sys.version_info[0] < 3:
         assert isinstance(x, unicode)
         assert isinstance(y, unicode)
+        y = py.xml.escape(uvalue.encode('utf-8'))
+        assert y == uvalue
 
 
 def test_tag_with_text():

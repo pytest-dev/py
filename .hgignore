@@ -23,3 +23,7 @@ issue/
 env/
 3rdparty/
 .tox
+lib/
+bin/
+include/
+src/
