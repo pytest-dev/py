@@ -183,7 +183,14 @@ class StdCaptureFD(Capture):
     """
     def __init__(self, out=True, err=True, mixed=False,
         in_=True, patchsys=True, now=True):
-        self._options = locals()
+        self._options = {
+            "out": out,
+            "err": err,
+            "mixed": mixed,
+            "in_": in_,
+            "patchsys": patchsys,
+            "now": now,
+        }
         self._save()
         if now:
             self.startall()
@@ -251,20 +258,26 @@ class StdCaptureFD(Capture):
 
     def readouterr(self):
         """ return snapshot value of stdout/stderr capturings. """
-        l = []
-        for name in ('out', 'err'):
-            res = ""
-            if hasattr(self, name):
-                f = getattr(self, name).tmpfile
-                f.seek(0)
-                res = f.read()
-                enc = getattr(f, 'encoding', None)
-                if enc:
-                    res = py.builtin._totext(res, enc, 'replace')
-                f.truncate(0)
-                f.seek(0)
-            l.append(res)
-        return l
+        if hasattr(self, "out"):
+            out = self._readsnapshot(self.out.tmpfile)
+        else:
+            out = ""
+        if hasattr(self, "err"):
+            err = self._readsnapshot(self.err.tmpfile)
+        else:
+            err = ""
+        return [out, err]
+
+    def _readsnapshot(self, f):
+        f.seek(0)
+        res = f.read()
+        enc = getattr(f, "encoding", None)
+        if enc:
+            res = py.builtin._totext(res, enc, "replace")
+        f.truncate(0)
+        f.seek(0)
+        return res
+
 
 class StdCapture(Capture):
     """ This class allows to capture writes to sys.stdout|stderr "in-memory"
