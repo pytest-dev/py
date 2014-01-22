@@ -3,6 +3,12 @@
 
 - ignore unicode decode errors in xmlescape.  Thanks Anatoly Bubenkoff.
 
+- on python2 modify traceback.format_exception_only to match python3 
+  behaviour, namely trying to print unicode for Exception instances
+
+- use a safer way for serializing exception reports (helps to fix
+  pytest issue413)
+
 Changes between 1.4.18 and 1.4.19
 ==================================================
 

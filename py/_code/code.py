@@ -6,6 +6,35 @@ builtin_repr = repr
 
 reprlib = py.builtin._tryimport('repr', 'reprlib')
 
+if sys.version_info[0] >= 3:
+    from traceback import format_exception_only
+else:
+    import traceback
+    def format_exception_only(etype, evalue):
+        """ return list of unicode strings if possible (otherwise bytestrings)
+        """
+        # we patch traceback._some_str to try return unicode to have nicer
+        # printing of exceptions with unicode attributes in tracebacks.
+        # Alternative to monkeypatching we would need to copy
+        # python-2.7's format_exception_only and its induced functions
+        # -- which seems like overkill.
+        def somestr(value):
+            try:
+                return unicode(value)
+            except Exception:
+                try:
+                    return str(value)
+                except Exception:
+                    pass
+            return '<unprintable %s object>' % type(value).__name__
+
+        old = traceback._some_str
+        traceback._some_str = somestr
+        try:
+            return traceback.format_exception_only(etype, evalue)
+        finally:
+            traceback._some_str = old
+
 class Code(object):
     """ wrapper around Python code objects """
     def __init__(self, rawcode):
@@ -374,7 +403,7 @@ class ExceptionInfo(object):
         if isinstance(value, AssertionError) and hasattr(value, 'msg'):
             return ['AssertionError: ' + value.msg]
         else:
-            return py.std.traceback.format_exception_only(etype, value)
+            return format_exception_only(etype, value)
 
     def errisinstance(self, exc):
         """ return True if the exception is an instance of exc """
@@ -594,22 +623,16 @@ class TerminalRepr:
         return s
 
     def __unicode__(self):
-        l = []
-        tw = py.io.TerminalWriter(l.append)
+        # FYI this is called from pytest-xdist's serialization of exception
+        # information.
+        io = py.io.TextIO()
+        tw = py.io.TerminalWriter(file=io)
         self.toterminal(tw)
-        l = map(unicode_or_repr, l)
-        return "".join(l).strip()
+        return io.getvalue().strip()
 
     def __repr__(self):
         return "<%s instance at %0x>" %(self.__class__, id(self))
 
-def unicode_or_repr(obj):
-    try:
-        return py.builtin._totext(obj)
-    except KeyboardInterrupt:
-        raise
-    except Exception:
-        return "<print-error: %r>" % py.io.saferepr(obj)
 
 class ReprExceptionInfo(TerminalRepr):
     def __init__(self, reprtraceback, reprcrash):

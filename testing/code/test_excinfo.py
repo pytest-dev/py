@@ -727,6 +727,14 @@ raise ValueError()
                 assert isinstance(repr, ReprExceptionInfo)
                 assert repr.reprtraceback.style == style
 
+    def test_reprexcinfo_unicode(self):
+        from py._code.code import TerminalRepr
+        class MyRepr(TerminalRepr):
+            def toterminal(self, tw):
+                tw.line(py.builtin._totext("я", "utf-8"))
+        x = py.builtin._totext(MyRepr())
+        assert x == py.builtin._totext("я", "utf-8")
+
     def test_toterminal_long(self, importasmod):
         mod = importasmod("""
             def g(x):
