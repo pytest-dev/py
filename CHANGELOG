@@ -1,4 +1,4 @@
-UNRELEASED
+1.4.20
 ==================================================
 
 - ignore unicode decode errors in xmlescape.  Thanks Anatoly Bubenkoff.
