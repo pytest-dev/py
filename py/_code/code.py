@@ -9,31 +9,7 @@ reprlib = py.builtin._tryimport('repr', 'reprlib')
 if sys.version_info[0] >= 3:
     from traceback import format_exception_only
 else:
-    import traceback
-    def format_exception_only(etype, evalue):
-        """ return list of unicode strings if possible (otherwise bytestrings)
-        """
-        # we patch traceback._some_str to try return unicode to have nicer
-        # printing of exceptions with unicode attributes in tracebacks.
-        # Alternative to monkeypatching we would need to copy
-        # python-2.7's format_exception_only and its induced functions
-        # -- which seems like overkill.
-        def somestr(value):
-            try:
-                return unicode(value)
-            except Exception:
-                try:
-                    return str(value)
-                except Exception:
-                    pass
-            return '<unprintable %s object>' % type(value).__name__
-
-        old = traceback._some_str
-        traceback._some_str = somestr
-        try:
-            return traceback.format_exception_only(etype, evalue)
-        finally:
-            traceback._some_str = old
+    from py._code._py2traceback import format_exception_only
 
 class Code(object):
     """ wrapper around Python code objects """
@@ -386,24 +362,13 @@ class ExceptionInfo(object):
             the exception representation is returned (so 'AssertionError: ' is
             removed from the beginning)
         """
-        lines = self._format_exception_only(self.type, self.value)
+        lines = format_exception_only(self.type, self.value)
         text = ''.join(lines)
         text = text.rstrip()
         if tryshort:
             if text.startswith(self._striptext):
                 text = text[len(self._striptext):]
         return text
-
-    def _format_exception_only(self, etype, value):
-        """Format the exception part of a traceback
-
-        Since traceback.format_exception_only() destroys unicode on
-        python 2 we handle plain AsssertionErrors separately here.
-        """
-        if isinstance(value, AssertionError) and hasattr(value, 'msg'):
-            return ['AssertionError: ' + value.msg]
-        else:
-            return format_exception_only(etype, value)
 
     def errisinstance(self, exc):
         """ return True if the exception is an instance of exc """
