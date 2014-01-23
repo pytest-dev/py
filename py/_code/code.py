@@ -336,8 +336,6 @@ class ExceptionInfo(object):
     """
     _striptext = ''
     def __init__(self, tup=None, exprinfo=None):
-        # NB. all attributes are private!  Subclasses or other
-        #     ExceptionInfo-like classes may have different attributes.
         if tup is None:
             tup = sys.exc_info()
             if exprinfo is None and isinstance(tup[1], AssertionError):
