@@ -145,3 +145,6 @@ Example::
 .. autoclass:: py.code.ExceptionInfo
     :members:
 
+.. autoclass:: py.code.Traceback
+    :members:
+

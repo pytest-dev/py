@@ -347,9 +347,16 @@ class ExceptionInfo(object):
                 if exprinfo and exprinfo.startswith('assert '):
                     self._striptext = 'AssertionError: '
         self._excinfo = tup
-        self.type, self.value, tb = tup
+        #: the exception class
+        self.type = tup[0]
+        #: the exception instance
+        self.value = tup[1]
+        #: the exception raw traceback
+        self.tb = tup[2]
+        #: the exception type name
         self.typename = self.type.__name__
-        self.traceback = py.code.Traceback(tb)
+        #: the exception traceback (py.code.Traceback instance)
+        self.traceback = py.code.Traceback(self.tb)
 
     def __repr__(self):
         return "<ExceptionInfo %s tblen=%d>" % (self.typename, len(self.traceback))
