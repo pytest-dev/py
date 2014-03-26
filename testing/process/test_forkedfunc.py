@@ -50,6 +50,12 @@ def test_forkedfunc_on_fds():
     assert result.signal == 0
     assert result.retval == 2
 
+def test_forkedfunc_on_fds_output():
+    result = py.process.ForkedFunc(boxf3).waitfinish()
+    assert result.signal == 11
+    assert result.out == "s"
+
+
 def test_forkedfunc_signal():
     result = py.process.ForkedFunc(boxseg).waitfinish()
     assert result.retval is None
@@ -119,6 +125,10 @@ def boxf2():
     os.write(1, "someout".encode('ascii'))
     os.write(2, "someerr".encode('ascii'))
     return 2
+
+def boxf3():
+    os.write(1, "s".encode('ascii'))
+    os.kill(os.getpid(), 11)
 
 def boxseg():
     os.kill(os.getpid(), 11)
