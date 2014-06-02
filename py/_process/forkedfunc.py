@@ -63,7 +63,7 @@ class ForkedFunc(object):
             retvalf.close()
         os.close(1)
         os.close(2)
-        sys.exit(EXITSTATUS)
+        os._exit(EXITSTATUS)
 
     def waitfinish(self, waiter=os.waitpid):
         pid, systemstatus = waiter(self.pid, 0)
