@@ -3,8 +3,6 @@
     ForkedFunc provides a way to run a function in a forked process
     and get at its return value, stdout and stderr output as well
     as signals and exitstatusus.
-
-    XXX see if tempdir handling is sane
 """
 
 import py
@@ -12,8 +10,10 @@ import os
 import sys
 import marshal
 
+
 class ForkedFunc(object):
     EXITSTATUS_EXCEPTION = 3
+
     def __init__(self, fun, args=None, kwargs=None, nice_level=0):
         if args is None:
             args = []
@@ -28,9 +28,10 @@ class ForkedFunc(object):
         self.STDERR = tempdir.ensure('stderr')
 
         pid = os.fork()
-        if pid: # in parent process
+        if pid:  # in parent process
             self.pid = pid
-        else: # in child process
+        else:  # in child process
+            self.pid = None
             self._child(nice_level)
 
     def _child(self, nice_level):
@@ -62,7 +63,7 @@ class ForkedFunc(object):
             retvalf.close()
         os.close(1)
         os.close(2)
-        os._exit(EXITSTATUS)
+        sys.exit(EXITSTATUS)
 
     def waitfinish(self, waiter=os.waitpid):
         pid, systemstatus = waiter(self.pid, 0)
@@ -71,8 +72,6 @@ class ForkedFunc(object):
                 exitstatus = os.WTERMSIG(systemstatus) + 128
             else:
                 exitstatus = os.WEXITSTATUS(systemstatus)
-            #raise ExecutionFailed(status, systemstatus, cmd,
-            #                      ''.join(out), ''.join(err))
         else:
             exitstatus = 0
         signal = systemstatus & 0x7f
@@ -95,7 +94,9 @@ class ForkedFunc(object):
             self.tempdir.remove()
 
     def __del__(self):
-        self._removetemp()
+        if self.pid is not None:  # only clean up in main process
+            self._removetemp()
+
 
 class Result(object):
     def __init__(self, exitstatus, signal, retval, stdout, stderr):
