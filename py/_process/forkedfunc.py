@@ -11,8 +11,33 @@ import sys
 import marshal
 
 
-class ForkedFunc(object):
+
+class HookMixin(object):
+    _on_start = list()
+    _on_exit = list()
+
+    @classmethod
+    def register_on_start(cls, callback):
+        cls._on_start.append(callback)
+
+    @classmethod
+    def register_on_exit(self, callback):
+        self._on_exit.append(callback)
+
+    def _run_on_start(self):
+        self._run_callbacks(self._on_start)
+
+    def _run_on_exit(self):
+        self._run_callbacks(self._on_exit)
+
+    def _run_callbacks(self, callbacks):
+        for callback in callbacks:
+            callback(self)
+
+
+class ForkedFunc(HookMixin):
     EXITSTATUS_EXCEPTION = 3
+
 
     def __init__(self, fun, args=None, kwargs=None, nice_level=0):
         if args is None:
@@ -51,8 +76,10 @@ class ForkedFunc(object):
             if nice_level:
                 os.nice(nice_level)
             try:
+                self._run_on_start()
                 retval = self.fun(*self.args, **self.kwargs)
                 retvalf.write(marshal.dumps(retval))
+                self._run_on_exit()
             except:
                 excinfo = py.code.ExceptionInfo()
                 stderr.write(excinfo.exconly())
@@ -96,6 +123,7 @@ class ForkedFunc(object):
     def __del__(self):
         if self.pid is not None:  # only clean up in main process
             self._removetemp()
+
 
 
 class Result(object):

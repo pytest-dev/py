@@ -110,6 +110,25 @@ def test_kill_func_forked():
     assert result.signal == 15
 
 
+def test_hooks():
+    def _boxed():
+        return 1
+
+    def _on_start(proc):
+        sys.stdout.write("some out\n")
+
+    def _on_exit(proc):
+        sys.stderr.write("some err\n")
+
+    py.process.ForkedFunc.register_on_start(_on_start)
+    py.process.ForkedFunc.register_on_exit(_on_exit)
+    result = py.process.ForkedFunc(_boxed).waitfinish()
+    assert result.out == "some out\n"
+    assert result.err == "some err\n"
+    assert result.exitstatus == 0
+    assert result.signal == 0
+    assert result.retval == 1
+
 
 # ======================================================================
 # examples
