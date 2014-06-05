@@ -11,7 +11,6 @@ import sys
 import marshal
 
 
-
 class HookMixin(object):
     _on_start = list()
     _on_exit = list()
@@ -62,11 +61,11 @@ class ForkedFunc(HookMixin):
     def _child(self, nice_level):
         # right now we need to call a function, but first we need to
         # map all IO that might happen
-        sys.stdout = stdout = open(str(self.STDOUT), "w", 0)
+        sys.stdout = stdout = open(str(self.STDOUT), "wb", 0)
         fdstdout = stdout.fileno()
         if fdstdout != 1:
             os.dup2(fdstdout, 1)
-        sys.stderr = stderr = open(str(self.STDERR), "w", 0)
+        sys.stderr = stderr = open(str(self.STDERR), "wb", 0)
         fdstderr = stderr.fileno()
         if fdstderr != 2:
             os.dup2(fdstderr, 2)
@@ -123,7 +122,6 @@ class ForkedFunc(HookMixin):
     def __del__(self):
         if self.pid is not None:  # only clean up in main process
             self._removetemp()
-
 
 
 class Result(object):
