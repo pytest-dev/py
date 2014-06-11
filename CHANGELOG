@@ -1,8 +1,9 @@
 1.4.X
 ==================================================
 
-- ForkedFunc now opens unbuffered stdout/stderr FDs
-  (helps to see output/err from a dying process)
+- ForkedFunc now has class-level register_on_start/on_exit()
+  methods to allow adding information in the boxed process.
+  Thanks Marc Schlaich.
 
 1.4.20
 ==================================================

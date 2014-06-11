@@ -110,7 +110,9 @@ def test_kill_func_forked():
     assert result.signal == 15
 
 
-def test_hooks():
+def test_hooks(monkeypatch):
+    monkeypatch.setattr(py.process.ForkedFunc, "_on_exit", [])
+    monkeypatch.setattr(py.process.ForkedFunc, "_on_start", [])
     def _boxed():
         return 1
 

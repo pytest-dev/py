@@ -32,6 +32,8 @@ class HookMixin(object):
     def _run_callbacks(self, callbacks):
         for callback in callbacks:
             callback(self)
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 
 class ForkedFunc(HookMixin):
@@ -61,11 +63,11 @@ class ForkedFunc(HookMixin):
     def _child(self, nice_level):
         # right now we need to call a function, but first we need to
         # map all IO that might happen
-        sys.stdout = stdout = open(str(self.STDOUT), "wb", 0)
+        sys.stdout = stdout = open(str(self.STDOUT), "w")
         fdstdout = stdout.fileno()
         if fdstdout != 1:
             os.dup2(fdstdout, 1)
-        sys.stderr = stderr = open(str(self.STDERR), "wb", 0)
+        sys.stderr = stderr = open(str(self.STDERR), "w")
         fdstderr = stderr.fileno()
         if fdstderr != 2:
             os.dup2(fdstderr, 2)
@@ -81,7 +83,7 @@ class ForkedFunc(HookMixin):
                 self._run_on_exit()
             except:
                 excinfo = py.code.ExceptionInfo()
-                stderr.write(excinfo.exconly())
+                stderr.write(str(excinfo._getreprcrash()))
                 EXITSTATUS = self.EXITSTATUS_EXCEPTION
         finally:
             stdout.close()
