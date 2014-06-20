@@ -5,7 +5,6 @@ the following tools and modules:
 * py.apipkg:  explicit API control and lazy-importing
 * py.iniconfig:  easy parsing of .ini files
 * py.code: dynamic code generation and introspection
-* py.path:  uniform local and svn path objects
 
 NOTE: prior to the 1.4 release this distribution used to
 contain py.test which is now its own package, see http://pytest.org
