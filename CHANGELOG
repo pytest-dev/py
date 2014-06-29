@@ -5,6 +5,11 @@
   methods to allow adding information in the boxed process.
   Thanks Marc Schlaich.
 
+- refactor traceback generation in light of pytest issue 364
+  (shortening tracebacks).   you can now set a new traceback style 
+  on a per-entry basis such that a caller can force entries to be 
+  isplayed as short or long entries.
+
 1.4.20
 ==================================================
 
