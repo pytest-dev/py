@@ -5,6 +5,10 @@
   methods to allow adding information in the boxed process.
   Thanks Marc Schlaich.
 
+- ForkedFunc in the child opens in "auto-flush" mode for
+  stdout/stderr so that when a subprocess dies you can see
+  its output even if it didn't flush itself.
+
 - refactor traceback generation in light of pytest issue 364
   (shortening tracebacks).   you can now set a new traceback style 
   on a per-entry basis such that a caller can force entries to be 

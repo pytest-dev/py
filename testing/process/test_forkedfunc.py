@@ -56,6 +56,15 @@ def test_forkedfunc_on_fds_output():
     assert result.out == "s"
 
 
+def test_forkedfunc_on_stdout():
+    def boxf3():
+        import sys
+        sys.stdout.write("hello\n")
+        os.kill(os.getpid(), 11)
+    result = py.process.ForkedFunc(boxf3).waitfinish()
+    assert result.signal == 11
+    assert result.out == "hello\n"
+
 def test_forkedfunc_signal():
     result = py.process.ForkedFunc(boxseg).waitfinish()
     assert result.retval is None
