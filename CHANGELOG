@@ -1,4 +1,4 @@
-1.4.X
+1.4.21
 ==================================================
 
 - ForkedFunc now has class-level register_on_start/on_exit()
@@ -13,6 +13,10 @@
   (shortening tracebacks).   you can now set a new traceback style 
   on a per-entry basis such that a caller can force entries to be 
   isplayed as short or long entries.
+
+- win32: py.path.local.sysfind(name) will preferrably return files with
+  extensions so that if "X" and "X.bat" or "X.exe" is on the PATH,
+  one of the latter two will be returned.
 
 1.4.20
 ==================================================

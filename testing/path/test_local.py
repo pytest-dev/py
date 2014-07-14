@@ -295,6 +295,14 @@ class TestLocalPath(common.CommonFSTests):
 class TestExecutionOnWindows:
     pytestmark = win32only
 
+    def test_sysfind_bat_exe_before(self, tmpdir, monkeypatch):
+        monkeypatch.setenv("PATH", str(tmpdir), prepend=os.pathsep)
+        tmpdir.ensure("hello")
+        h = tmpdir.ensure("hello.bat")
+        x = py.path.local.sysfind("hello")
+        assert x == h
+
+
 class TestExecution:
     pytestmark = skiponwin32
 

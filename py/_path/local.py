@@ -700,9 +700,10 @@ class LocalPath(FSBase):
                                  for path in paths]
                 else:
                     paths = py.std.os.environ['PATH'].split(':')
-            tryadd = ['']
+            tryadd = []
             if iswin32:
                 tryadd += os.environ['PATHEXT'].split(os.pathsep)
+            tryadd.append("")
 
             for x in paths:
                 for addext in tryadd:
