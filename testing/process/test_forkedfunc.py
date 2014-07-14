@@ -1,6 +1,12 @@
+import pytest
 import py, sys, os
 
 pytestmark = py.test.mark.skipif("not hasattr(os, 'fork')")
+
+@pytest.fixture(autouse=True)
+def clear_forkedfunc(monkeypatch):
+    monkeypatch.setattr(py.process.ForkedFunc, "_on_start", [])
+    monkeypatch.setattr(py.process.ForkedFunc, "_on_exit", [])
 
 def test_waitfinish_removes_tempdir():
     ff = py.process.ForkedFunc(boxf1)
