@@ -5,11 +5,10 @@ from contextlib import contextmanager
 import sys, os, re, atexit
 import py
 from py._path import common
+from py._path.common import iswin32
 from stat import S_ISLNK, S_ISDIR, S_ISREG
 
 from os.path import abspath, normpath, isabs, exists, isdir, isfile, islink
-
-iswin32 = sys.platform == "win32" or (getattr(os, '_name', False) == 'nt')
 
 if sys.version_info > (3,0):
     def map_as_list(func, iter):

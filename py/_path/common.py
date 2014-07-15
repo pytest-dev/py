@@ -3,6 +3,9 @@
 import os, sys
 import py
 
+# Moved from local.py.
+iswin32 = sys.platform == "win32" or (getattr(os, '_name', False) == 'nt')
+
 class Checkers:
     _depend_on_existence = 'exists', 'link', 'dir', 'file'
 
