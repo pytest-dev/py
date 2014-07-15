@@ -581,6 +581,13 @@ class TestWINLocalPath:
             x = py.path.local.sysfind(cmd.relto(root))
             assert x.check(file=1)
 
+    def test_fnmatch_file_abspath_posix_pattern_on_win32(self, tmpdir):
+        import posixpath
+        b = tmpdir.join("a", "b")
+        assert b.fnmatch(posixpath.sep.join("ab"))
+        pattern = posixpath.sep.join([str(tmpdir), "*", "b"])
+        assert b.fnmatch(pattern)
+
 class TestPOSIXLocalPath:
     pytestmark = skiponwin32
 
@@ -800,4 +807,3 @@ class TestUnicodePy2Py3:
         assert x.read() == part
         x.write(part.encode(sys.getdefaultencoding()))
         assert x.read() == part.encode(sys.getdefaultencoding())
-
