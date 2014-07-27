@@ -809,3 +809,4 @@ class TestUnicodePy2Py3:
         assert x.read() == part
         x.write(part.encode(sys.getdefaultencoding()))
         assert x.read() == part.encode(sys.getdefaultencoding())
+
