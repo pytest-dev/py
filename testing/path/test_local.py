@@ -282,16 +282,6 @@ class TestLocalPath(common.CommonFSTests):
         pattern = os.sep.join([str(tmpdir), "*", "b"])
         assert b.fnmatch(pattern)
 
-    #@pytest.mark.skipif(sys.platform != "win32", reason="win32-specific test for path separators")
-    def test_fnmatch_file_abspath_posix_pattern_on_win32(self, tmpdir):
-        if sys.platform != "win32":
-            py.test.skip("win32-specific test for path separators")
-        import posixpath
-        b = tmpdir.join("a", "b")
-        assert b.fnmatch(posixpath.sep.join("ab"))
-        pattern = posixpath.sep.join([str(tmpdir), "*", "b"])
-        assert b.fnmatch(pattern)
-
     def test_sysfind(self):
         name = sys.platform == "win32" and "cmd" or "test"
         x = py.path.local.sysfind(name)
@@ -819,4 +809,3 @@ class TestUnicodePy2Py3:
         assert x.read() == part
         x.write(part.encode(sys.getdefaultencoding()))
         assert x.read() == part.encode(sys.getdefaultencoding())
-
