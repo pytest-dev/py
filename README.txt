@@ -13,5 +13,5 @@ For questions and more information please visit http://pylib.readthedocs.org
 
 Bugs and issues: http://bitbucket.org/hpk42/py/issues/
 
-Authors: Holger Krekel and others, 2004-2013
+Authors: Holger Krekel and others, 2004-2014
 

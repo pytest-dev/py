@@ -1,3 +1,9 @@
+1.4.22
+==================================================
+
+- refactor class-level registry on ForkedFunc child start/finish
+  event to become instance based (i.e. passed into the constructor)
+
 1.4.21
 ==================================================
 

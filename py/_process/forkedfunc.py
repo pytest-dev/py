@@ -11,31 +11,6 @@ import sys
 import marshal
 
 
-class HookMixin(object):
-    _on_start = list()
-    _on_exit = list()
-
-    @classmethod
-    def register_on_start(cls, callback):
-        cls._on_start.append(callback)
-
-    @classmethod
-    def register_on_exit(self, callback):
-        self._on_exit.append(callback)
-
-    def _run_on_start(self):
-        self._run_callbacks(self._on_start)
-
-    def _run_on_exit(self):
-        self._run_callbacks(self._on_exit)
-
-    def _run_callbacks(self, callbacks):
-        for callback in callbacks:
-            callback(self)
-        sys.stdout.flush()
-        sys.stderr.flush()
-
-
 def get_unbuffered_io(fd, filename):
     f = open(str(filename), "w")
     if fd != f.fileno():
@@ -49,11 +24,12 @@ def get_unbuffered_io(fd, filename):
     return AutoFlush()
 
 
-class ForkedFunc(HookMixin):
+class ForkedFunc:
     EXITSTATUS_EXCEPTION = 3
 
 
-    def __init__(self, fun, args=None, kwargs=None, nice_level=0):
+    def __init__(self, fun, args=None, kwargs=None, nice_level=0,
+                 child_on_start=None, child_on_exit=None):
         if args is None:
             args = []
         if kwargs is None:
@@ -71,9 +47,9 @@ class ForkedFunc(HookMixin):
             self.pid = pid
         else:  # in child process
             self.pid = None
-            self._child(nice_level)
+            self._child(nice_level, child_on_start, child_on_exit)
 
-    def _child(self, nice_level):
+    def _child(self, nice_level, child_on_start, child_on_exit):
         # right now we need to call a function, but first we need to
         # map all IO that might happen
         sys.stdout = stdout = get_unbuffered_io(1, self.STDOUT)
@@ -84,10 +60,12 @@ class ForkedFunc(HookMixin):
             if nice_level:
                 os.nice(nice_level)
             try:
-                self._run_on_start()
+                if child_on_start is not None:
+                    child_on_start()
                 retval = self.fun(*self.args, **self.kwargs)
                 retvalf.write(marshal.dumps(retval))
-                self._run_on_exit()
+                if child_on_exit is not None:
+                    child_on_exit()
             except:
                 excinfo = py.code.ExceptionInfo()
                 stderr.write(str(excinfo._getreprcrash()))

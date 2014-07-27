@@ -3,10 +3,6 @@ import py, sys, os
 
 pytestmark = py.test.mark.skipif("not hasattr(os, 'fork')")
 
-@pytest.fixture(autouse=True)
-def clear_forkedfunc(monkeypatch):
-    monkeypatch.setattr(py.process.ForkedFunc, "_on_start", [])
-    monkeypatch.setattr(py.process.ForkedFunc, "_on_exit", [])
 
 def test_waitfinish_removes_tempdir():
     ff = py.process.ForkedFunc(boxf1)
@@ -126,20 +122,19 @@ def test_kill_func_forked():
 
 
 def test_hooks(monkeypatch):
-    monkeypatch.setattr(py.process.ForkedFunc, "_on_exit", [])
-    monkeypatch.setattr(py.process.ForkedFunc, "_on_start", [])
     def _boxed():
         return 1
 
-    def _on_start(proc):
+    def _on_start():
         sys.stdout.write("some out\n")
+        sys.stdout.flush()
 
-    def _on_exit(proc):
+    def _on_exit():
         sys.stderr.write("some err\n")
+        sys.stderr.flush()
 
-    py.process.ForkedFunc.register_on_start(_on_start)
-    py.process.ForkedFunc.register_on_exit(_on_exit)
-    result = py.process.ForkedFunc(_boxed).waitfinish()
+    result = py.process.ForkedFunc(_boxed, child_on_start=_on_start,
+                                   child_on_exit=_on_exit).waitfinish()
     assert result.out == "some out\n"
     assert result.err == "some err\n"
     assert result.exitstatus == 0
