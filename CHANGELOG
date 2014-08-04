@@ -1,3 +1,17 @@
+1.4.23
+==================================================
+
+- use newer apipkg version which makes attribute access on
+  alias modules resolve to None rather than an ImportError.
+  This helps with code that uses inspect.getframeinfo()
+  on py34 which causes a complete walk on sys.modules
+  thus triggering the alias module to resolve and blowing
+  up with ImportError.  The negative side is that something
+  like "py.test.X" will now result in None instead of "importerror: pytest"
+  if pytest is not installed.  But you shouldn't import "py.test" 
+  anyway anymore.
+
+
 1.4.22
 ==================================================
 
