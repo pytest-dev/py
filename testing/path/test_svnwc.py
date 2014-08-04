@@ -338,7 +338,7 @@ class TestWCSvnCommandPath(CommonSvnTests):
         somefile = root.join('somefile')
         somefile.ensure(file=True)
         # not yet added to repo
-        py.test.raises((py.process.cmdexec.Error, ValueError), 'somefile.lock()')
+        py.test.raises(Exception, 'somefile.lock()')
         somefile.write('foo')
         somefile.commit('test')
         assert somefile.check(versioned=True)
