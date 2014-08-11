@@ -489,6 +489,14 @@ def test_oneline_and_comment():
     source = getstatement(0, "raise ValueError\n#hello")
     assert str(source) == "raise ValueError"
 
+def test_single_line_else():
+    source = getstatement(1, "if False: 2\nelse: 3")
+    assert str(source) == "else: 3"
+
+def test_single_line_finally():
+    source = getstatement(1, "try: 1\nfinally: 3")
+    assert str(source) == "finally: 3"
+
 def XXXtest_multiline():
     source = getstatement(0, """\
 raise ValueError(

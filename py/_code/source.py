@@ -377,8 +377,10 @@ def getstatementrange_ast(lineno, source, assertion=False, astnode=None):
         end = len(source.lines)
     while end:
         line = source.lines[end-1].lstrip()
-        if (not line or line.startswith("#") or line.startswith("else:") or
-            line.startswith("finally:")):
+        if (not line
+                or line.startswith("#")
+                or line.replace(" ", "") == "else:"
+                or line.replace(" ", "") == "finally:"):
             end -= 1
         else:
             break

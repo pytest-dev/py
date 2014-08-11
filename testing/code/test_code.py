@@ -132,3 +132,28 @@ def test_frame_getargs():
     fr4 = py.code.Frame(f4('a', 'b', c='d'))
     assert fr4.getargs(var=True) == [('x', 'a'), ('y', ('b',)),
                                      ('z', {'c': 'd'})]
+
+
+class TestExceptionInfo:
+
+    def test_bad_getsource(self):
+        try:
+            if False: pass
+            else: assert False
+        except AssertionError:
+            exci = py.code.ExceptionInfo()
+        assert exci.getrepr()
+
+
+class TestTracebackEntry:
+
+    def test_getsource(self):
+        try:
+            if False: pass
+            else: assert False
+        except AssertionError:
+            exci = py.code.ExceptionInfo()
+        entry = exci.traceback[0]
+        source = entry.getsource()
+        assert len(source) == 4
+        assert 'else: assert False' in source[3]
