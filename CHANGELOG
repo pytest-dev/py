@@ -1,3 +1,10 @@
+1.4.24
+==================================================
+
+- Fix retrieving source when an else: line has an other statement on
+  the same line.
+
+
 1.4.23
 ==================================================
 
