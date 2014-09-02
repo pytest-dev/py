@@ -115,6 +115,22 @@ class PathBase(object):
         """
         return self.new(basename='').join(*args, **kwargs)
 
+    def read_binary(self):
+        """ read and return a bytestring from reading the path. """
+        f = self.open('rb')
+        try:
+            return f.read()
+        finally:
+            f.close()
+
+    def read_text(self, encoding=None):
+        """ read and return a Unicode string from reading the path. """
+        f = self.open('r', encoding=encoding)
+        try:
+            return f.read()
+        finally:
+            f.close()
+
     def read(self, mode='r'):
         """ read and return a bytestring from reading the path. """
         if sys.version_info < (2,3):

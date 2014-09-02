@@ -2,7 +2,7 @@
 local path implementation.
 """
 from contextlib import contextmanager
-import sys, os, re, atexit
+import sys, os, re, atexit, io
 import py
 from py._path import common
 from stat import S_ISLNK, S_ISDIR, S_ISREG
@@ -330,13 +330,15 @@ class LocalPath(FSBase):
         obj.strpath = normpath(strpath)
         return obj
 
-    def open(self, mode='r', ensure=False):
+    def open(self, mode='r', ensure=False, encoding=None):
         """ return an opened file with the given mode.
 
         If ensure is True, create parent directories if needed.
         """
         if ensure:
             self.dirpath().ensure(dir=1)
+        if encoding:
+            return py.error.checked_call(io.open, self.strpath, mode, encoding=encoding)
         return py.error.checked_call(open, self.strpath, mode)
 
     def _fastjoin(self, name):
@@ -433,6 +435,30 @@ class LocalPath(FSBase):
         p = self.join(*args)
         py.error.checked_call(os.mkdir, getattr(p, "strpath", p))
         return p
+
+    def write_binary(self, data, ensure=False):
+        """ write binary data into path.   If ensure is True create
+        missing parent directories.
+        """
+        if ensure:
+            self.dirpath().ensure(dir=1)
+        f = self.open('wb')
+        try:
+            f.write(data)
+        finally:
+            f.close()
+
+    def write_text(self, data, ensure=False, encoding=None):
+        """ write binary data into path.   If ensure is True create
+        missing parent directories.
+        """
+        if ensure:
+            self.dirpath().ensure(dir=1)
+        f = self.open('w', encoding=encoding)
+        try:
+            f.write(data)
+        finally:
+            f.close()
 
     def write(self, data, mode='w', ensure=False):
         """ write data into path.   If ensure is True create

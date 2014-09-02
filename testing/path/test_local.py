@@ -801,3 +801,24 @@ class TestUnicodePy2Py3:
         x.write(part.encode(sys.getdefaultencoding()))
         assert x.read() == part.encode(sys.getdefaultencoding())
 
+class TestBinaryAndTextMethods:
+    def test_read_binwrite(self, tmpdir):
+        x = tmpdir.join("hello")
+        part = py.builtin._totext("hällo", "utf8")
+        part_utf8 = part.encode("utf8")
+        x.write_binary(part_utf8)
+        assert x.read_binary() == part_utf8
+        assert x.read_text(encoding="utf8") == part
+    def test_read_textwrite(self, tmpdir):
+        x = tmpdir.join("hello")
+        part = py.builtin._totext("hällo", "utf8")
+        part_utf8 = part.encode("utf8")
+        x.write_text(part, encoding="utf8")
+        assert x.read_binary() == part_utf8
+        assert x.read_text(encoding="utf8") == part
+    def test_default_encoding(self, tmpdir):
+        x = tmpdir.join("hello")
+        # Can't use UTF8 as the default encoding (ASCII) doesn't support it
+        part = py.builtin._totext("hello", "ascii")
+        x.write_text(part)
+        assert x.read_text() == part
