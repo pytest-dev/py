@@ -445,7 +445,7 @@ class LocalPath(FSBase):
         with self.open('wb') as f:
             f.write(data)
 
-    def write_text(self, data, encoding="utf8", ensure=False):
+    def write_text(self, data, encoding, ensure=False):
         """ write text data into path using the specified encoding.
         If ensure is True create missing parent directories.
         """

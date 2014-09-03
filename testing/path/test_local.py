@@ -824,7 +824,7 @@ class TestBinaryAndTextMethods:
         x = tmpdir.join("hello")
         # Can't use UTF8 as the default encoding (ASCII) doesn't support it
         part = py.builtin._totext("hello", "ascii")
-        x.write_text(part)
-        s = x.read_text()
+        x.write_text(part, "ascii")
+        s = x.read_text("ascii")
         assert s == part
         assert type(s) == type(part)

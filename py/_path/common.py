@@ -120,7 +120,7 @@ class PathBase(object):
         with self.open('rb') as f:
             return f.read()
 
-    def read_text(self, encoding="utf8"):
+    def read_text(self, encoding):
         """ read and return a Unicode string from reading the path. """
         with self.open("r", encoding=encoding) as f:
             return f.read()
