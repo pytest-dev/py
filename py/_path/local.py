@@ -442,23 +442,17 @@ class LocalPath(FSBase):
         """
         if ensure:
             self.dirpath().ensure(dir=1)
-        f = self.open('wb')
-        try:
+        with self.open('wb') as f:
             f.write(data)
-        finally:
-            f.close()
 
-    def write_text(self, data, ensure=False, encoding=None):
-        """ write binary data into path.   If ensure is True create
-        missing parent directories.
+    def write_text(self, data, encoding="utf8", ensure=False):
+        """ write text data into path using the specified encoding.
+        If ensure is True create missing parent directories.
         """
         if ensure:
             self.dirpath().ensure(dir=1)
-        f = self.open('w', encoding=encoding)
-        try:
+        with self.open('w', encoding=encoding) as f:
             f.write(data)
-        finally:
-            f.close()
 
     def write(self, data, mode='w', ensure=False):
         """ write data into path.   If ensure is True create

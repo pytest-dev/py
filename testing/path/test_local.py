@@ -808,7 +808,10 @@ class TestBinaryAndTextMethods:
         part_utf8 = part.encode("utf8")
         x.write_binary(part_utf8)
         assert x.read_binary() == part_utf8
-        assert x.read_text(encoding="utf8") == part
+        s = x.read_text(encoding="utf8")
+        assert s == part
+        assert py.builtin._istext(s)
+
     def test_read_textwrite(self, tmpdir):
         x = tmpdir.join("hello")
         part = py.builtin._totext("hällo", "utf8")
@@ -816,9 +819,12 @@ class TestBinaryAndTextMethods:
         x.write_text(part, encoding="utf8")
         assert x.read_binary() == part_utf8
         assert x.read_text(encoding="utf8") == part
+
     def test_default_encoding(self, tmpdir):
         x = tmpdir.join("hello")
         # Can't use UTF8 as the default encoding (ASCII) doesn't support it
         part = py.builtin._totext("hello", "ascii")
         x.write_text(part)
-        assert x.read_text() == part
+        s = x.read_text()
+        assert s == part
+        assert type(s) == type(part)

@@ -117,31 +117,19 @@ class PathBase(object):
 
     def read_binary(self):
         """ read and return a bytestring from reading the path. """
-        f = self.open('rb')
-        try:
+        with self.open('rb') as f:
             return f.read()
-        finally:
-            f.close()
 
-    def read_text(self, encoding=None):
+    def read_text(self, encoding="utf8"):
         """ read and return a Unicode string from reading the path. """
-        f = self.open('r', encoding=encoding)
-        try:
+        with self.open("r", encoding=encoding) as f:
             return f.read()
-        finally:
-            f.close()
+
 
     def read(self, mode='r'):
         """ read and return a bytestring from reading the path. """
-        if sys.version_info < (2,3):
-            for x in 'u', 'U':
-                if x in mode:
-                    mode = mode.replace(x, '')
-        f = self.open(mode)
-        try:
+        with self.open(mode) as f:
             return f.read()
-        finally:
-            f.close()
 
     def readlines(self, cr=1):
         """ read and return a list of lines from the path. if cr is False, the

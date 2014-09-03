@@ -1,8 +1,12 @@
-1.4.24
+1.4.24.dev
 ==================================================
 
 - Fix retrieving source when an else: line has an other statement on
   the same line.
+
+- add localpath read_text/write_text/read_bytes/write_bytes methods
+  as shortcuts and clearer bytes/text interfaces for read/write.
+  Adapted from a PR from Paul Moore.
 
 
 1.4.23
