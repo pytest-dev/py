@@ -1,6 +1,8 @@
 """
 local path implementation.
 """
+from __future__ import with_statement
+
 from contextlib import contextmanager
 import sys, os, re, atexit, io
 import py
