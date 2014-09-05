@@ -54,6 +54,7 @@ def test_terminalwriter_default_instantiation():
 def test_terminalwriter_dumb_term_no_markup(monkeypatch):
     monkeypatch.setattr(os, 'environ', {'TERM': 'dumb', 'PATH': ''})
     class MyFile:
+        closed = False
         def isatty(self):
             return True
     monkeypatch.setattr(sys, 'stdout', MyFile())

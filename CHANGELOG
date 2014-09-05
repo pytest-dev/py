@@ -1,4 +1,4 @@
-1.4.24.dev
+1.4.24
 ==================================================
 
 - Fix retrieving source when an else: line has an other statement on
