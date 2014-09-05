@@ -1,7 +1,7 @@
 1.4.25.dev
 ==================================================
 
-- ifix issue52: vaguely fix py25 compat of py.path.local (it's not
+- fix issue52: vaguely fix py25 compat of py.path.local (it's not
   officially supported)
 
 1.4.24

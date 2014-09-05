@@ -7,7 +7,7 @@ def main():
         name='py',
         description='library with cross-python path, ini-parsing, io, code, log facilities',
         long_description = open('README.txt').read(),
-        version='1.4.24',
+        version='1.4.25.dev',
         url='http://pylib.readthedocs.org/',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],

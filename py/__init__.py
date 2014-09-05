@@ -8,7 +8,7 @@ dictionary or an import path.
 
 (c) Holger Krekel and others, 2004-2014
 """
-__version__ = '1.4.24'
+__version__ = '1.4.25.dev'
 
 from py import _apipkg
 
