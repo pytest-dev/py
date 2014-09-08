@@ -2,7 +2,7 @@
 ==================================================
 
 - fix issue52: vaguely fix py25 compat of py.path.local (it's not
-  officially supported)
+  officially supported), also fix docs
 
 1.4.24
 ==================================================

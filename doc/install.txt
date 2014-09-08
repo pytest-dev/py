@@ -7,7 +7,7 @@ installation info in a nutshell
 
 **PyPI name**: py_
 
-**Pythons**: 2.5, 2.6, 2.7, 3.2, 3.3, Jython-2.5.1, PyPy-2.0
+**Pythons**: CPython 2.6, 2.7, 3.3, 3.4, PyPy-2.3
 
 **Operating systems**: Linux, Windows, OSX, Unix
 
@@ -29,7 +29,7 @@ to install the latest release of the py lib.  The ``-U`` switch
 will trigger an upgrade if you already have an older version installed.
 
 .. note::
-    
+
    As of version 1.4 py does not contain py.test anymore - you
    need to install the new `pytest`_ distribution.
 
