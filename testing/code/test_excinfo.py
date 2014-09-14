@@ -16,7 +16,6 @@ else:
 
 import pytest
 pytest_version_info = tuple(map(int, pytest.__version__.split(".")[:3]))
-pytest25 = pytest.mark.skipif(pytest_version_info < (2,5), reason="requires pytest-2.5")
 
 class TWMock:
     def __init__(self):
@@ -151,6 +150,17 @@ class TestTraceback_f_g_h:
         recindex = traceback.recursionindex()
         assert recindex == 3
 
+    def test_traceback_only_specific_recursion_errors(self, monkeypatch):
+        def f(n):
+            if n == 0:
+                raise RuntimeError("hello")
+            f(n-1)
+
+        excinfo = pytest.raises(RuntimeError, f, 100)
+        monkeypatch.delattr(excinfo.traceback.__class__, "recursionindex")
+        repr = excinfo.getrepr()
+        assert "RuntimeError: hello" in str(repr.reprcrash)
+
     def test_traceback_no_recursion_index(self):
         def do_stuff():
             raise RuntimeError
@@ -243,15 +253,6 @@ def test_excinfo_exconly():
     msg = excinfo.exconly(tryshort=True)
     assert msg.startswith('ValueError')
     assert msg.endswith("world")
-
-@pytest25
-def test_excinfo_exconly_unicode_AssertionError():
-    val = py.builtin._totext('£€', 'utf-8')
-    def fail():
-        raise AssertionError(val)
-    excinfo = py.test.raises(Exception, fail)
-    msg = excinfo.exconly(tryshort=True)
-    assert msg == 'AssertionError: ' + val
 
 def test_excinfo_repr():
     excinfo = py.test.raises(ValueError, h)

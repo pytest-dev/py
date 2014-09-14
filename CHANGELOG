@@ -4,6 +4,9 @@
 - fix issue52: vaguely fix py25 compat of py.path.local (it's not
   officially supported), also fix docs
 
+- fix pytest issue 589: when checking if we have a recursion error
+  check for the specific "maximum recursion depth" text of the exception.
+
 1.4.24
 ==================================================
 

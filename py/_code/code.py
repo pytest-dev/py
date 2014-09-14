@@ -572,7 +572,8 @@ class FormattedExcinfo(object):
             traceback = traceback.filter()
         recursionindex = None
         if excinfo.errisinstance(RuntimeError):
-            recursionindex = traceback.recursionindex()
+            if "maximum recursion depth exceeded" in str(excinfo.value):
+                recursionindex = traceback.recursionindex()
         last = traceback[-1]
         entries = []
         extraline = None
