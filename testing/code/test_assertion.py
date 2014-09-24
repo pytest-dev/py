@@ -14,12 +14,6 @@ def test_assert():
         s = str(e)
         assert s.startswith('assert 2 == 3\n')
 
-def test_assert_with_explicit_message():
-    try:
-        assert f() == 3, "hello"
-    except AssertionError:
-        e = exvalue()
-        assert e.msg == 'hello'
 
 def test_assert_within_finally():
     excinfo = py.test.raises(ZeroDivisionError, """
@@ -106,15 +100,6 @@ def test_len():
         assert s.startswith("assert 42 == 100")
         assert "where 42 = len([" in s
 
-def test_assert_non_string_message():
-    class A:
-        def __str__(self):
-            return "hello"
-    try:
-        assert 0 == 1, A()
-    except AssertionError:
-        e = exvalue()
-        assert e.msg == "hello"
 
 def test_assert_keyword_arg():
     def f(x=3):

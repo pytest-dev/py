@@ -1,4 +1,4 @@
-1.4.25.dev
+1.4.25
 ==================================================
 
 - fix issue52: vaguely fix py25 compat of py.path.local (it's not
