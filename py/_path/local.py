@@ -153,7 +153,7 @@ class LocalPath(FSBase):
         elif isinstance(path, py.builtin._basestring):
             if expanduser:
                 path = os.path.expanduser(path)
-            self.strpath = abspath(normpath(path))
+            self.strpath = abspath(path)
         else:
             raise ValueError("can only pass None, Path instances "
                              "or non-empty strings to LocalPath")
