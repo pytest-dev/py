@@ -224,7 +224,7 @@ if sys.version_info >= (3,0):
     def _reraise(cls, val, tb):
         __tracebackhide__ = True
         assert hasattr(val, '__traceback__')
-        raise val
+        raise cls.with_traceback(val, tb)
 else:
     exec ("""
 def _reraise(cls, val, tb):

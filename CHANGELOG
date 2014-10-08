@@ -3,6 +3,7 @@ NEXT
 
 - avoid calling normpath twice in py.path.local
 
+- py.builtin._reraise properly reraises under Python3 now.
 
 1.4.25
 ==================================================
