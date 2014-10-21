@@ -5,6 +5,8 @@ NEXT
 
 - py.builtin._reraise properly reraises under Python3 now.
 
+- fix issue53 - remove module index, thanks jenisys.
+
 1.4.25
 ==================================================
 
