@@ -7,6 +7,9 @@ NEXT
 
 - fix issue53 - remove module index, thanks jenisys.
 
+- allow posix path separators when "fnmatch" is called.
+  Thanks Christian Long for the complete PR.
+
 1.4.25
 ==================================================
 
