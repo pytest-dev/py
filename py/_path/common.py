@@ -1,7 +1,10 @@
 """
 """
-import os, sys
+import os, sys, posixpath
 import py
+
+# Moved from local.py.
+iswin32 = sys.platform == "win32" or (getattr(os, '_name', False) == 'nt')
 
 class Checkers:
     _depend_on_existence = 'exists', 'link', 'dir', 'file'
@@ -383,6 +386,15 @@ class FNMatcher:
 
     def __call__(self, path):
         pattern = self.pattern
+
+        if (pattern.find(path.sep) == -1 and
+        iswin32 and
+        pattern.find(posixpath.sep) != -1):
+            # Running on Windows, the pattern has no Windows path separators,
+            # and the pattern has one or more Posix path separators. Replace
+            # the Posix path separators with the Windows path separator.
+            pattern = pattern.replace(posixpath.sep, path.sep)
+
         if pattern.find(path.sep) == -1:
             name = path.basename
         else:
