@@ -1,4 +1,4 @@
-NEXT
+1.4.26
 ==================================================
 
 - avoid calling normpath twice in py.path.local
