@@ -489,6 +489,25 @@ def test_oneline_and_comment():
     source = getstatement(0, "raise ValueError\n#hello")
     assert str(source) == "raise ValueError"
 
+def test_comments():
+    source = '''def test():
+    "comment 1"
+    x = 1
+      # comment 2
+    # comment 3
+
+    assert False
+
+"""
+comment 4
+"""
+'''
+    for line in range(2,6):
+        assert str(getstatement(line, source)) == '    x = 1'
+    for line in range(6,10):
+        assert str(getstatement(line, source)) == '    assert False'
+    assert str(getstatement(10, source)) == '"""'
+
 def test_single_line_else():
     source = getstatement(1, "if False: 2\nelse: 3")
     assert str(source) == "else: 3"

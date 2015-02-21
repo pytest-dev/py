@@ -375,15 +375,17 @@ def getstatementrange_ast(lineno, source, assertion=False, astnode=None):
     # - there might be empty lines
     if end is None:
         end = len(source.lines)
-    while end:
-        line = source.lines[end-1].lstrip()
-        if (not line
-                or line.startswith("#")
-                or line.replace(" ", "") == "else:"
-                or line.replace(" ", "") == "finally:"):
-            end -= 1
-        else:
+    import re
+    prefix = re.match(r"\s*", source.lines[start]).group()
+    i = start+1
+    while i < end:
+        line = source.lines[i]
+        if not line or len(line)<len(prefix) or line[:len(prefix)]!=prefix:
             break
+        rem = line[len(prefix):].lstrip()
+        if not rem or rem[0]=='#': break
+        i += 1
+    end = i
     return astnode, start, end
 
 def getstatementrange_old(lineno, source, assertion=False):
