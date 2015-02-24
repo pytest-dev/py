@@ -42,6 +42,13 @@ def test_terminalwriter_getdimensions_bogus(monkeypatch):
     tw = py.io.TerminalWriter()
     assert tw.fullwidth == 80
 
+def test_terminalwriter_getdimensions_emacs(monkeypatch):
+    # emacs terminal returns (0,0) but set COLUMNS properly
+    monkeypatch.setattr(terminalwriter, '_getdimensions', lambda: (0,0))
+    monkeypatch.setenv('COLUMNS', '42')
+    tw = py.io.TerminalWriter()
+    assert tw.fullwidth == 42
+
 def test_terminalwriter_computes_width(monkeypatch):
     monkeypatch.setattr(terminalwriter, 'get_terminal_width', lambda: 42)
     tw = py.io.TerminalWriter()
@@ -262,4 +269,3 @@ def test_should_do_markup_PY_COLORS_eq_0(monkeypatch):
     tw.line("hello", bold=True)
     s = f.getvalue()
     assert s == "hello\n"
-
