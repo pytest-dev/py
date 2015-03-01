@@ -1,3 +1,8 @@
+.. image:: https://drone.io/bitbucket.org/pytest-dev/py/status.png
+   :target: https://drone.io/bitbucket.org/pytest-dev/py/latest
+.. image:: https://pypip.in/v/py/badge.png
+   :target: https://pypi.python.org/pypi/py
+
 The py lib is a Python development support library featuring
 the following tools and modules:
 
@@ -14,4 +19,3 @@ For questions and more information please visit http://pylib.readthedocs.org
 Bugs and issues: http://bitbucket.org/hpk42/py/issues/
 
 Authors: Holger Krekel and others, 2004-2014
-
