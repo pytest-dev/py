@@ -479,6 +479,15 @@ class TestImport:
         m2 = p2.pyimport()
         assert m1 == m2
 
+    def test_ensuresyspath_append(self, tmpdir):
+        root1 = tmpdir.mkdir("root1")
+        file1 = root1.ensure("x123.py")
+        assert str(root1) not in sys.path
+        file1.pyimport(ensuresyspath="append")
+        assert str(root1) == sys.path[-1]
+        assert str(root1) not in sys.path[:-1]
+
+
 def test_pypkgdir(tmpdir):
     pkg = tmpdir.ensure('pkg1', dir=1)
     pkg.ensure("__init__.py")
