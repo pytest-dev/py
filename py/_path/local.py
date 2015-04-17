@@ -570,35 +570,6 @@ class LocalPath(FSBase):
         """ return string representation of the Path. """
         return self.strpath
 
-    def pypkgpath(self, pkgname=None):
-        """ return the Python package path by looking for a
-            pkgname.  If pkgname is None look for the last
-            directory upwards which still contains an __init__.py
-            and whose basename is python-importable.
-            Return None if a pkgpath can not be determined.
-        """
-        pkgpath = None
-        for parent in self.parts(reverse=True):
-            if pkgname is None:
-                if parent.check(file=1):
-                    continue
-                if not isimportable(parent.basename):
-                    break
-                if parent.join('__init__.py').check():
-                    pkgpath = parent
-                    continue
-                return pkgpath
-            else:
-                if parent.basename == pkgname:
-                    return parent
-        return pkgpath
-
-    def _prependsyspath(self, path):
-        s = str(path)
-        if s != sys.path[0]:
-            #print "prepending to sys.path", s
-            sys.path.insert(0, s)
-
     def chmod(self, mode, rec=0):
         """ change permissions to the given mode. If mode is an
             integer it directly encodes the os-specific modes.
@@ -611,33 +582,65 @@ class LocalPath(FSBase):
                 py.error.checked_call(os.chmod, str(x), mode)
         py.error.checked_call(os.chmod, str(self), mode)
 
+    def pypkgpath(self):
+        """ return the Python package path by looking for a
+            pkgname.  If pkgname is None look for the last
+            directory upwards which still contains an __init__.py
+            and whose basename is python-importable.
+            Return None if a pkgpath can not be determined.
+        """
+        pkgpath = None
+        for parent in self.parts(reverse=True):
+            if parent.check(file=1):
+                continue
+            if not isimportable(parent.basename):
+                break
+            if parent.join('__init__.py').check():
+                pkgpath = parent
+                continue
+            return pkgpath
+        return pkgpath
+
+    def _ensuresyspath(self, ensuremode, path):
+        if ensuremode:
+            s = str(path)
+            if ensuremode == "append":
+                if s not in sys.path:
+                    sys.path.append(s)
+            else:
+                if s != sys.path[0]:
+                    sys.path.insert(0, s)
+
     def pyimport(self, modname=None, ensuresyspath=True):
         """ return path as an imported python module.
-            if modname is None, look for the containing package
-            and construct an according module name.
-            The module will be put/looked up in sys.modules.
+
+        If modname is None, look for the containing package
+        and construct an according module name.
+        The module will be put/looked up in sys.modules.
+        if ensuresyspath is True then the root dir for importing
+        the file (taking __init__.py files into account) will
+        be prepended to sys.path if it isn't there already.
+        If ensuresyspath=="append" the root dir will be appended
+        if it isn't already contained in sys.path.
+        if ensuresyspath is False no modification of syspath happens.
         """
         if not self.check():
             raise py.error.ENOENT(self)
-        #print "trying to import", self
+
         pkgpath = None
         if modname is None:
             pkgpath = self.pypkgpath()
             if pkgpath is not None:
-                if ensuresyspath:
-                    self._prependsyspath(pkgpath.dirpath())
-                __import__(pkgpath.basename)
-                pkg = sys.modules[pkgpath.basename]
-                names = self.new(ext='').relto(pkgpath.dirpath())
-                names = names.split(self.sep)
-                if names and names[-1] == "__init__":
+                pkgroot = pkgpath.dirpath()
+                names = self.new(ext="").relto(pkgroot).split(self.sep)
+                if names[-1] == "__init__":
                     names.pop()
                 modname = ".".join(names)
             else:
-                # no package scope, still make it possible
-                if ensuresyspath:
-                    self._prependsyspath(self.dirpath())
+                pkgroot = self.dirpath()
                 modname = self.purebasename
+
+            self._ensuresyspath(ensuresyspath, pkgroot)
             __import__(modname)
             mod = sys.modules[modname]
             if self.basename == "__init__.py":
@@ -651,7 +654,6 @@ class LocalPath(FSBase):
             if modfile.endswith(os.path.sep + "__init__.py"):
                 if self.basename != "__init__.py":
                     modfile = modfile[:-12]
-
             try:
                 issame = self.samefile(modfile)
             except py.error.ENOENT:
@@ -898,8 +900,6 @@ def copychunked(src, dest):
         fsrc.close()
 
 def isimportable(name):
-    if name:
-        if not (name[0].isalpha() or name[0] == '_'):
-            return False
-        name= name.replace("_", '')
+    if name and (name[0].isalpha() or name[0] == '_'):
+        name = name.replace("_", '')
         return not name or name.isalnum()

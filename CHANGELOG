@@ -3,6 +3,12 @@
 
 - fix issue59: point to new repo site
 
+- allow a new ensuresyspath="append" mode for py.path.local.pyimport()
+  so that a neccessary import path is appended instead of prepended to
+  sys.path 
+
+- strike undocumented, untested argument to py.path.local.pypkgpath
+
 1.4.26
 ==================================================
 
