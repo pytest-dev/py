@@ -591,22 +591,18 @@ class LocalPath(FSBase):
         py.error.checked_call(os.chmod, str(self), mode)
 
     def pypkgpath(self):
-        """ return the Python package path by looking for a
-            pkgname.  If pkgname is None look for the last
-            directory upwards which still contains an __init__.py
-            and whose basename is python-importable.
-            Return None if a pkgpath can not be determined.
+        """ return the Python package path by looking for the last
+        directory upwards which still contains an __init__.py.
+        Return None if a pkgpath can not be determined.
         """
         pkgpath = None
         for parent in self.parts(reverse=True):
-            if parent.check(file=1):
-                continue
-            if not isimportable(parent.basename):
-                break
-            if parent.join('__init__.py').check():
+            if parent.isdir():
+                if not parent.join('__init__.py').exists():
+                    break
+                if not isimportable(parent.basename):
+                    break
                 pkgpath = parent
-                continue
-            return pkgpath
         return pkgpath
 
     def _ensuresyspath(self, ensuremode, path):
