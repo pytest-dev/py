@@ -113,9 +113,7 @@ class PathBase(object):
     ext = property(ext, None, None, ext.__doc__)
 
     def dirpath(self, *args, **kwargs):
-        """ return the directory Path of the current Path joined
-            with any given path arguments.
-        """
+        """ return the directory path joined with any given path arguments.  """
         return self.new(basename='').join(*args, **kwargs)
 
     def read_binary(self):

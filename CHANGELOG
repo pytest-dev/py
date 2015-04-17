@@ -9,6 +9,8 @@
 
 - strike undocumented, untested argument to py.path.local.pypkgpath
 
+- speed up py.path.local.dirpath by a factor of 10
+
 1.4.26
 ==================================================
 

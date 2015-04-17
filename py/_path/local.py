@@ -10,7 +10,7 @@ from py._path import common
 from py._path.common import iswin32
 from stat import S_ISLNK, S_ISDIR, S_ISREG
 
-from os.path import abspath, normpath, isabs, exists, isdir, isfile, islink
+from os.path import abspath, normpath, isabs, exists, isdir, isfile, islink, dirname
 
 if sys.version_info > (3,0):
     def map_as_list(func, iter):
@@ -303,6 +303,14 @@ class LocalPath(FSBase):
                     else:
                         raise ValueError("invalid part specification %r" % name)
         return res
+
+    def dirpath(self, *args):
+        """ return the directory path joined with any given path arguments.  """
+        path = object.__new__(self.__class__)
+        path.strpath = dirname(self.strpath)
+        if args:
+            path = path.join(*args)
+        return path
 
     def join(self, *args, **kwargs):
         """ return a new path by appending all 'args' as path
