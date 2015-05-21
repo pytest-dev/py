@@ -304,13 +304,15 @@ class LocalPath(FSBase):
                         raise ValueError("invalid part specification %r" % name)
         return res
 
-    def dirpath(self, *args):
+    def dirpath(self, *args, **kwargs):
         """ return the directory path joined with any given path arguments.  """
-        path = object.__new__(self.__class__)
-        path.strpath = dirname(self.strpath)
-        if args:
-            path = path.join(*args)
-        return path
+        if not kwargs:
+            path = object.__new__(self.__class__)
+            path.strpath = dirname(self.strpath)
+            if args:
+                path = path.join(*args)
+            return path
+        return super(LocalPath, self).dirpath(*args, **kwargs)
 
     def join(self, *args, **kwargs):
         """ return a new path by appending all 'args' as path
