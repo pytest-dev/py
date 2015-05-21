@@ -798,15 +798,19 @@ class TestPOSIXLocalPath:
 
 
 class TestUnicodePy2Py3:
-    def test_join_ensure(self, tmpdir):
+    def test_join_ensure(self, tmpdir, monkeypatch):
+        if sys.version_info >= (3,0) and "LANG" not in os.environ:
+            pytest.skip("cannot run test without locale")
         x = py.path.local(tmpdir.strpath)
-        part = py.builtin._totext("hällo", "utf8")
+        part = "hällo"
         y = x.ensure(part)
         assert x.join(part) == y
 
     def test_listdir(self, tmpdir):
+        if sys.version_info >= (3,0) and "LANG" not in os.environ:
+            pytest.skip("cannot run test without locale")
         x = py.path.local(tmpdir.strpath)
-        part = py.builtin._totext("hällo", "utf8")
+        part = "hällo"
         y = x.ensure(part)
         assert x.listdir(part)[0] == y
 
