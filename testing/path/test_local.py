@@ -34,6 +34,11 @@ class TestLocalPath(common.CommonFSTests):
         p = tmpdir.join("..//%s/" % tmpdir.basename)
         assert p == tmpdir
 
+    def test_dirpath(self, tmpdir):
+        p = tmpdir.join('foo')
+        assert tmpdir.dirpath('/bar') == tmpdir.join('bar')
+        assert tmpdir.dirpath('/bar', abs=True) == py.path.local('/bar')
+
     def test_gethash(self, tmpdir):
         md5 = py.builtin._tryimport('md5', 'hashlib').md5
         lib = py.builtin._tryimport('sha', 'hashlib')
