@@ -33,6 +33,7 @@ Contents:
 
     announce/release-2.0.0
     changelog
+    announce/*
 
 Indices and tables
 ==================

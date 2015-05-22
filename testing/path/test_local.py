@@ -34,9 +34,10 @@ class TestLocalPath(common.CommonFSTests):
         p = tmpdir.join("..//%s/" % tmpdir.basename)
         assert p == tmpdir
 
-    def test_dirpath(self, tmpdir):
+    @skiponwin32
+    def test_dirpath_abs_no_abs(self, tmpdir):
         p = tmpdir.join('foo')
-        assert tmpdir.dirpath('/bar') == tmpdir.join('bar')
+        assert p.dirpath('/bar') == tmpdir.join('bar')
         assert tmpdir.dirpath('/bar', abs=True) == py.path.local('/bar')
 
     def test_gethash(self, tmpdir):

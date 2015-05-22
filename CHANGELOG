@@ -1,3 +1,9 @@
+1.4.28
+==================================================
+
+- fix issue64 -- dirpath regression when "abs=True" is passed.
+  Thanks Gilles Dartiguelongue.
+
 1.4.27
 ==================================================
 
