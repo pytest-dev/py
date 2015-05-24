@@ -470,7 +470,7 @@ class FormattedExcinfo(object):
     def get_source(self, source, line_index=-1, excinfo=None, short=False):
         """ return formatted and marked up source lines. """
         lines = []
-        if source is None:
+        if source is None or line_index >= len(source.lines):
             source = py.code.Source("???")
             line_index = 0
         if line_index < 0:
