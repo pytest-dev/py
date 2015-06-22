@@ -1,3 +1,14 @@
+1.4.29
+==================================================
+
+- fix issue55: revert a change to the statement finding algorithm
+  which is used by pytest for generating tracebacks.
+  Thanks Daniel Hahler for initial analysis.
+
+- fix pytest issue254 for when traceback rendering can't
+  find valid source code.  Thanks Ionel Cristian Maries.
+
+
 1.4.28
 ==================================================
 

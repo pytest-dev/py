@@ -508,6 +508,15 @@ comment 4
         assert str(getstatement(line, source)) == '    assert False'
     assert str(getstatement(10, source)) == '"""'
 
+def test_comment_in_statement():
+    source = '''test(foo=1,
+    # comment 1
+    bar=2)
+'''
+    for line in range(1,3):
+        assert str(getstatement(line, source)) == \
+               'test(foo=1,\n    # comment 1\n    bar=2)'
+
 def test_single_line_else():
     source = getstatement(1, "if False: 2\nelse: 3")
     assert str(source) == "else: 3"
@@ -515,6 +524,13 @@ def test_single_line_else():
 def test_single_line_finally():
     source = getstatement(1, "try: 1\nfinally: 3")
     assert str(source) == "finally: 3"
+
+def test_issue55():
+    source = ('def round_trip(dinp):\n  assert 1 == dinp\n'
+              'def test_rt():\n  round_trip("""\n""")\n')
+    s = getstatement(3, source)
+    assert str(s) == '  round_trip("""\n""")'
+
 
 def XXXtest_multiline():
     source = getstatement(0, """\
