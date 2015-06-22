@@ -115,7 +115,8 @@ class TestLocalPath(common.CommonFSTests):
             assert p.check()
 
     @pytest.mark.xfail("sys.version_info < (2,6) and sys.platform == 'win32'")
-    def test_tilde_expansion(self):
+    def test_tilde_expansion(self, monkeypatch, tmpdir):
+        monkeypatch.setenv("HOME", str(tmpdir))
         p = py.path.local("~", expanduser=True)
         assert p == os.path.expanduser("~")
 
