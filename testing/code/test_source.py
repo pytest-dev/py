@@ -224,7 +224,6 @@ class TestSourceParsingAndCompiling:
         assert len(source) == 6
         assert source.getstatementrange(2) == (1, 4)
 
-    @py.test.mark.xfail
     def test_getstatementrange_bug2(self):
         source = Source("""\
             assert (
@@ -239,6 +238,18 @@ class TestSourceParsingAndCompiling:
         """)
         assert len(source) == 9
         assert source.getstatementrange(5) == (0, 9)
+
+    def test_getstatementrange_ast_issue58(self):
+        source = Source("""\
+
+            def test_some():
+                for a in [a for a in
+                    CAUSE_ERROR]: pass
+
+            x = 3
+        """)
+        assert getstatement(2, source).lines == source.lines[2:3]
+        assert getstatement(3, source).lines == source.lines[3:4]
 
     @py.test.mark.skipif("sys.version_info < (2,6)")
     def test_getstatementrange_out_of_bounds_py3(self):

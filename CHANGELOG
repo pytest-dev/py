@@ -1,3 +1,10 @@
+1.4.30
+==================================================
+
+- fix issue68 an assert with a  multiline list comprehension 
+  was not reported correctly. Thanks Henrik Heibuerger.
+
+
 1.4.29
 ==================================================
 
