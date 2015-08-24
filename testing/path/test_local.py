@@ -780,6 +780,14 @@ class TestPOSIXLocalPath:
         a.copy(b, mode=True)
         assert b.join(f.basename).stat().mode == newmode
 
+    def test_copy_stat(self, tmpdir):
+        src = tmpdir.ensure('src', 'a')
+        dst = tmpdir.join('dst', 'a')
+        src.copy(dst, stat=True)
+        oldstat = src.stat()
+        newstat = dst.stat()
+        assert oldstat == newstat
+
     @failsonjython
     def test_chown_identity(self, path1):
         owner = path1.stat().owner

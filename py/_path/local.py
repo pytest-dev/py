@@ -402,7 +402,7 @@ class LocalPath(FSBase):
         """ return last modification time of the path. """
         return self.stat().mtime
 
-    def copy(self, target, mode=False):
+    def copy(self, target, mode=False, stat=False):
         """ copy path to target."""
         if self.check(file=1):
             if target.check(dir=1):
@@ -411,6 +411,8 @@ class LocalPath(FSBase):
             copychunked(self, target)
             if mode:
                 copymode(self, target)
+            if stat:
+                copystat(self, target)
         else:
             def rec(p):
                 return p.check(link=0)
@@ -427,6 +429,8 @@ class LocalPath(FSBase):
                     newx.ensure(dir=1)
                 if mode:
                     copymode(x, newx)
+                if stat:
+                    copystat(self, target)
 
     def rename(self, target):
         """ rename this path to target. """
@@ -888,6 +892,9 @@ class LocalPath(FSBase):
 
 def copymode(src, dest):
     py.std.shutil.copymode(str(src), str(dest))
+
+def copystat(src, dest):
+    py.std.shutil.copystat(str(src), str(dest))
 
 def copychunked(src, dest):
     chunksize = 524288 # half a meg of bytes
