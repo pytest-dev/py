@@ -403,7 +403,12 @@ class LocalPath(FSBase):
         return self.stat().mtime
 
     def copy(self, target, mode=False, stat=False):
-        """ copy path to target."""
+        """ copy path to target.
+
+            If mode is True, will copy copy permission from path to target.
+            If stat is True, copy permission, last modification 
+            time, last access time, and flags from path to target.
+        """
         if self.check(file=1):
             if target.check(dir=1):
                 target = target.join(self.basename)
@@ -430,7 +435,7 @@ class LocalPath(FSBase):
                 if mode:
                     copymode(x, newx)
                 if stat:
-                    copystat(self, target)
+                    copystat(x, newx)
 
     def rename(self, target):
         """ rename this path to target. """
@@ -891,9 +896,11 @@ class LocalPath(FSBase):
     make_numbered_dir = classmethod(make_numbered_dir)
 
 def copymode(src, dest):
+    """ copy permission from src to dst. """
     py.std.shutil.copymode(str(src), str(dest))
 
 def copystat(src, dest):
+    """ copy permission,  last modification time, last access time, and flags from src to dst."""
     py.std.shutil.copystat(str(src), str(dest))
 
 def copychunked(src, dest):
