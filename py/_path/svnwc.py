@@ -490,7 +490,7 @@ class SvnWCCommandPath(common.PathBase):
                 strerr.find('file already exists') != -1 or
                 strerr.find('w150002:') != -1 or
                 strerr.find("can't create directory") != -1):
-                raise py.error.EEXIST(self)
+                raise py.error.EEXIST(strerr) #self)
             raise
         return out
 

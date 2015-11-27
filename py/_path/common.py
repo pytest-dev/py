@@ -219,7 +219,7 @@ newline will be removed from the end of each line. """
             strrelpath += self.sep
         #assert strrelpath[-1] == self.sep
         #assert strrelpath[-2] != self.sep
-        strself = str(self)
+        strself = self.strpath
         if sys.platform == "win32" or getattr(os, '_name', None) == 'nt':
             if os.path.normcase(strself).startswith(
                os.path.normcase(strrelpath)):

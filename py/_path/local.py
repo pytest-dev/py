@@ -410,7 +410,7 @@ class LocalPath(FSBase):
             assert self!=target
             copychunked(self, target)
             if mode:
-                copymode(self, target)
+                copymode(self.strpath, target.strpath)
         else:
             def rec(p):
                 return p.check(link=0)
@@ -426,7 +426,7 @@ class LocalPath(FSBase):
                 elif x.check(dir=1):
                     newx.ensure(dir=1)
                 if mode:
-                    copymode(x, newx)
+                    copymode(x.strpath, newx.strpath)
 
     def rename(self, target):
         """ rename this path to target. """
@@ -590,7 +590,7 @@ class LocalPath(FSBase):
         if rec:
             for x in self.visit(rec=rec):
                 py.error.checked_call(os.chmod, str(x), mode)
-        py.error.checked_call(os.chmod, str(self), mode)
+        py.error.checked_call(os.chmod, self.strpath, mode)
 
     def pypkgpath(self):
         """ return the Python package path by looking for the last
@@ -887,7 +887,7 @@ class LocalPath(FSBase):
     make_numbered_dir = classmethod(make_numbered_dir)
 
 def copymode(src, dest):
-    py.std.shutil.copymode(str(src), str(dest))
+    py.std.shutil.copymode(src, dest)
 
 def copychunked(src, dest):
     chunksize = 524288 # half a meg of bytes

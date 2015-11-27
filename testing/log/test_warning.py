@@ -1,8 +1,11 @@
+import pytest
 import py
+
 mypath = py.path.local(__file__).new(ext=".py")
 
+@pytest.mark.xfail
 def test_forwarding_to_warnings_module():
-    py.test.deprecated_call(py.log._apiwarn, "1.3", "..")
+    pytest.deprecated_call(py.log._apiwarn, "1.3", "..")
 
 def test_apiwarn_functional(recwarn):
     capture = py.io.StdCapture()

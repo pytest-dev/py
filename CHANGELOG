@@ -1,3 +1,11 @@
+1.4.31
+==================================================
+
+- fix local().copy(dest, mode=True) to also work
+  with unicode.
+
+- pass better error message with svn EEXIST paths
+
 1.4.30
 ==================================================
 

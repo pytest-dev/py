@@ -771,7 +771,8 @@ class TestPOSIXLocalPath:
                 x.chmod(y)
 
     def test_copy_archiving(self, tmpdir):
-        f = tmpdir.ensure("a", "file1")
+        unicode_fn = u"something-\342\200\223.txt"
+        f = tmpdir.ensure("a", unicode_fn)
         a = f.dirpath()
         oldmode = f.stat().mode
         newmode = oldmode ^ 1
