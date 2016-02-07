@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
+import time
 import py
 import pytest
 import os, sys
@@ -14,6 +15,8 @@ win32only = py.test.mark.skipif(
         "not (sys.platform == 'win32' or getattr(os, '_name', None) == 'nt')")
 skiponwin32 = py.test.mark.skipif(
         "sys.platform == 'win32' or getattr(os, '_name', None) == 'nt'")
+
+ATIME_RESOLUTION = 0.01
 
 
 def pytest_funcarg__path1(request):
@@ -716,9 +719,9 @@ class TestPOSIXLocalPath:
         # we could wait here but timer resolution is very
         # system dependent
         path.read()
-        time.sleep(0.01)
+        time.sleep(ATIME_RESOLUTION)
         atime2 = path.atime()
-        time.sleep(0.01)
+        time.sleep(ATIME_RESOLUTION)
         duration = time.time() - now
         assert (atime2-atime1) <= duration
 
@@ -780,6 +783,34 @@ class TestPOSIXLocalPath:
         b = tmpdir.join("b")
         a.copy(b, mode=True)
         assert b.join(f.basename).stat().mode == newmode
+
+    def test_copy_stat_file(self, tmpdir):
+        src = tmpdir.ensure('src')
+        dst = tmpdir.join('dst')
+        # a small delay before the copy
+        time.sleep(ATIME_RESOLUTION)
+        src.copy(dst, stat=True)
+        oldstat = src.stat()
+        newstat = dst.stat()
+        assert oldstat.mode == newstat.mode
+        assert (dst.atime() - src.atime()) < ATIME_RESOLUTION
+        assert (dst.mtime() - src.mtime()) < ATIME_RESOLUTION
+
+    def test_copy_stat_dir(self, tmpdir):
+        test_files = ['a', 'b', 'c']
+        src = tmpdir.join('src')
+        for f in test_files:
+            src.join(f).write(f, ensure=True)
+        dst = tmpdir.join('dst')
+        # a small delay before the copy
+        time.sleep(ATIME_RESOLUTION)
+        src.copy(dst, stat=True)
+        for f in test_files:
+            oldstat = src.join(f).stat()
+            newstat = dst.join(f).stat()
+            assert (newstat.atime - oldstat.atime) < ATIME_RESOLUTION
+            assert (newstat.mtime - oldstat.mtime) < ATIME_RESOLUTION
+            assert oldstat.mode == newstat.mode
 
     @failsonjython
     def test_chown_identity(self, path1):
