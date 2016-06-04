@@ -6,6 +6,40 @@ import py
 # Moved from local.py.
 iswin32 = sys.platform == "win32" or (getattr(os, '_name', False) == 'nt')
 
+try:
+    from os import fspath
+except ImportError:
+    def fspath(path):
+        """
+        Return the string representation of the path.
+        If str or bytes is passed in, it is returned unchanged.
+        This code comes from PEP 519, modified to support earlier versions of
+        python.
+
+        This is required for python < 3.6.
+        """
+        if isinstance(path, (py.builtin.text, py.builtin.bytes)):
+            return path
+
+        # Work from the object's type to match method resolution of other magic
+        # methods.
+        path_type = type(path)
+        try:
+            return path_type.__fspath__(path)
+        except AttributeError:
+            if hasattr(path_type, '__fspath__'):
+                raise
+            try:
+                import pathlib
+            except ImportError:
+                pass
+            else:
+                if isinstance(path, pathlib.PurePath):
+                    return py.builtin.text(path)
+
+            raise TypeError("expected str, bytes or os.PathLike object, not "
+                            + path_type.__name__)
+
 class Checkers:
     _depend_on_existence = 'exists', 'link', 'dir', 'file'
 
@@ -89,7 +123,7 @@ class PathBase(object):
     Checkers = Checkers
 
     def __div__(self, other):
-        return self.join(str(other))
+        return self.join(fspath(other))
     __truediv__ = __div__ # py3k
 
     def basename(self):
@@ -342,6 +376,9 @@ newline will be removed from the end of each line. """
     def samefile(self, other):
         """ return True if other refers to the same stat object as self. """
         return self.strpath == str(other)
+
+    def __fspath__(self):
+        return str(self)
 
 class Visitor:
     def __init__(self, fil, rec, ignore, bf, sort):
