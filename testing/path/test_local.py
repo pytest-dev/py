@@ -29,6 +29,14 @@ def pytest_funcarg__path1(request):
         assert path1.join("samplefile").check()
     return request.cached_setup(setup, teardown, scope="session")
 
+def pytest_funcarg__fake_fspath_obj(request):
+    class FakeFSPathClass(object):
+        def __init__(self, path):
+            self._path = path
+        def __fspath__(self):
+            return self._path
+    return FakeFSPathClass("this/is/a/fake/path")
+
 class TestLocalPath(common.CommonFSTests):
     def test_join_normpath(self, tmpdir):
         assert tmpdir.join(".") == tmpdir
@@ -300,6 +308,13 @@ class TestLocalPath(common.CommonFSTests):
         assert py.path.local.sysfind(name, paths=[]) is None
         x2 = py.path.local.sysfind(name, paths=[x.dirpath()])
         assert x2 == x
+
+    def test_fspath_protocol_other_class(self, fake_fspath_obj):
+        py_path = py.path.local.LocalPath(fake_fspath_obj)
+        str_path = fake_fspath_obj.__fspath__()
+        assert py_path.strpath == str_path
+        assert py_path.join(fake_fspath_obj).strpath == os.path.join(
+                str_path, fake_fspath_obj)
 
 
 class TestExecutionOnWindows:
