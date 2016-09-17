@@ -600,7 +600,10 @@ raise ValueError()
             def entry():
                 func1()
         """)
-        excinfo = py.test.raises(ValueError, mod.entry)
+        try:
+            mod.entry()
+        except ValueError:
+            excinfo = py.code.ExceptionInfo()
         from py._code.code import Code
         monkeypatch.setattr(Code, 'path', 'bogus')
         excinfo.traceback[0].frame.code.path = "bogus"
@@ -720,7 +723,10 @@ raise ValueError()
             def entry():
                 f(0)
         """)
-        excinfo = py.test.raises(ValueError, mod.entry)
+        try:
+            mod.entry()
+        except ValueError:
+            excinfo = py.code.ExceptionInfo()
 
         for style in ("short", "long", "no"):
             for showlocals in (True, False):
