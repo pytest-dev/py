@@ -6,6 +6,10 @@ python:
 - '3.4'
 - '3.5'
 - pypy
+
+matrix:
+  allow_failures:
+  - python: pypy
 cache: python
 install: pip install tox
 script: tox -e py
