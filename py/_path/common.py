@@ -382,9 +382,9 @@ newline will be removed from the end of each line. """
 
 class Visitor:
     def __init__(self, fil, rec, ignore, bf, sort):
-        if isinstance(fil, str):
+        if isinstance(fil, py.builtin._basestring):
             fil = FNMatcher(fil)
-        if isinstance(rec, str):
+        if isinstance(rec, py.builtin._basestring):
             self.rec = FNMatcher(rec)
         elif not hasattr(rec, '__call__') and rec:
             self.rec = lambda path: True
@@ -437,4 +437,3 @@ class FNMatcher:
             if not os.path.isabs(pattern):
                 pattern = '*' + path.sep + pattern
         return py.std.fnmatch.fnmatch(name, pattern)
-
