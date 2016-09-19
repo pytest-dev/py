@@ -1,6 +1,8 @@
 import py
 import sys
 
+import pytest
+
 class CommonFSTests(object):
     def test_constructor_equality(self, path1):
         p = path1.__class__(path1)
@@ -186,9 +188,10 @@ class CommonFSTests(object):
         assert "sampledir" in l
         assert not path1.sep.join(["sampledir", "otherfile"]) in l
 
-    def test_visit_filterfunc_is_string(self, path1):
+    @pytest.mark.paramtrize('fil', ['*dir', u'*dir'])
+    def test_visit_filterfunc_is_string(self, path1, fil):
         l = []
-        for i in path1.visit('*dir'):
+        for i in path1.visit(fil):
             l.append(i.relto(path1))
         assert len(l), 2
         assert "sampledir" in l
