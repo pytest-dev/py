@@ -439,12 +439,12 @@ class CommonFSTests(object):
             from py.path.common import fspath
         assert fspath(path1) == path1.strpath
 
-    @py.test.skip("sys.version_info < (3,6)")
+    @py.test.mark.skip("sys.version_info < (3,6)")
     def test_fspath_open(self, path1):
         f = path1.join('opentestfile')
         open(f)
 
-    @py.test.skip("sys.version_info < (3,6)")
+    @py.test.mark.skip("sys.version_info < (3,6)")
     def test_fspath_fsencode(self, path1):
         from os import fsencode
         assert fsencode(path1) == fsencode(path1.strpath)
