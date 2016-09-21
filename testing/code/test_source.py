@@ -1,14 +1,15 @@
 from py.code import Source
 import py
+import pytest
 import sys
 
 from py._code.source import _ast
-if _ast is not None:
-    astonly = py.test.mark.nothing
-else:
-    astonly = py.test.mark.xfail("True", reason="only works with AST-compile")
 
-failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
+astonly = pytest.mark.xfail(
+    _ast is None,
+    reason="only works with AST-compile")
+failsonjython = pytest.mark.xfail("sys.platform.startswith('java')")
+
 
 def test_source_str_function():
     x = Source("3")
@@ -27,20 +28,20 @@ def test_source_str_function():
     """, rstrip=True)
     assert str(x) == "\n3"
 
+
 def test_unicode():
-    try:
-        unicode
-    except NameError:
-        return
-    x = Source(unicode("4"))
+
+    x = Source(py.builtin.text("4"))
     assert str(x) == "4"
-    co = py.code.compile(unicode('u"\xc3\xa5"', 'utf8'), mode='eval')
+    co = py.code.compile(py.builtin.text('u"\xc3\xa5"', 'utf8'), mode='eval')
     val = eval(co)
-    assert isinstance(val, unicode)
+    assert isinstance(val, py.builtin.text)
+
 
 def test_source_from_function():
     source = py.code.Source(test_source_str_function)
     assert str(source).startswith('def test_source_str_function():')
+
 
 def test_source_from_method():
     class TestClass:
@@ -50,10 +51,12 @@ def test_source_from_method():
     assert source.lines == ["def test_method(self):",
                             "    pass"]
 
+
 def test_source_from_lines():
     lines = ["a \n", "b\n", "c"]
     source = py.code.Source(lines)
     assert source.lines == ['a ', 'b', 'c']
+
 
 def test_source_from_inner_function():
     def f():
@@ -63,6 +66,7 @@ def test_source_from_inner_function():
     source = py.code.Source(f)
     assert str(source).startswith('def f():')
 
+
 def test_source_putaround_simple():
     source = Source("raise ValueError")
     source = source.putaround(
@@ -71,13 +75,14 @@ def test_source_putaround_simple():
             x = 42
         else:
             x = 23""")
-    assert str(source)=="""\
+    assert str(source) == """\
 try:
     raise ValueError
 except ValueError:
     x = 42
 else:
     x = 23"""
+
 
 def test_source_putaround():
     source = Source()
@@ -87,11 +92,13 @@ def test_source_putaround():
     """)
     assert str(source).strip() == "if 1:\n    x=1"
 
+
 def test_source_strips():
     source = Source("")
     assert source == Source()
     assert str(source) == ''
     assert source.strip() == source
+
 
 def test_source_strip_multiline():
     source = Source()
@@ -99,11 +106,13 @@ def test_source_strip_multiline():
     source2 = source.strip()
     assert source2.lines == [" hello"]
 
+
 def test_syntaxerror_rerepresentation():
     ex = py.test.raises(SyntaxError, py.code.compile, 'xyz xyz')
     assert ex.value.lineno == 1
-    assert ex.value.offset in (4,7) # XXX pypy/jython versus cpython?
+    assert ex.value.offset in (4, 7)  # XXX pypy/jython versus cpython?
     assert ex.value.text.strip(), 'x x'
+
 
 def test_isparseable():
     assert Source("hello").isparseable()
@@ -113,6 +122,7 @@ def test_isparseable():
     assert not Source(" \nif 1:\npass").isparseable()
     assert not Source(chr(0)).isparseable()
 
+
 class TestAccesses:
     source = Source("""\
         def f(x):
@@ -120,6 +130,7 @@ class TestAccesses:
         def g(x):
             pass
     """)
+
     def test_getrange(self):
         x = self.source[0:2]
         assert x.isparseable()
@@ -137,6 +148,7 @@ class TestAccesses:
         l = [x for x in self.source]
         assert len(l) == 4
 
+
 class TestSourceParsingAndCompiling:
     source = Source("""\
         def f(x):
@@ -148,12 +160,12 @@ class TestSourceParsingAndCompiling:
     def test_compile(self):
         co = py.code.compile("x=3")
         d = {}
-        exec (co, d)
+        exec(co, d)
         assert d['x'] == 3
 
     def test_compile_and_getsource_simple(self):
         co = py.code.compile("x=3")
-        exec (co)
+        exec(co)
         source = py.code.Source(co)
         assert str(source) == "x=3"
 
@@ -173,17 +185,19 @@ class TestSourceParsingAndCompiling:
         source2 = py.std.inspect.getsource(co2)
         assert 'ValueError' in source2
 
-    def test_getstatement(self):
-        #print str(self.source)
-        ass = str(self.source[1:])
-        for i in range(1, 4):
-            #print "trying start in line %r" % self.source[i]
-            s = self.source.getstatement(i)
-            #x = s.deindent()
-            assert str(s) == ass
+    @pytest.mark.parametrize('line', range(1, 4))
+    def test_getstatement(self, line):
+        print(str(self.source))
+        ass = str(self.source.getstatement(1))
+
+        print("trying start in line %r" % self.source[line])
+        s = self.source.getstatement(line)
+        print(str(s))
+        # x = s.deindent()
+        assert str(s) == str(ass)
 
     def test_getstatementrange_triple_quoted(self):
-        #print str(self.source)
+        print(str(self.source))
         source = Source("""hello('''
         ''')""")
         s = source.getstatement(0)
@@ -204,12 +218,12 @@ class TestSourceParsingAndCompiling:
         """)
         assert len(source) == 7
         # check all lineno's that could occur in a traceback
-        #assert source.getstatementrange(0) == (0, 7)
-        #assert source.getstatementrange(1) == (1, 5)
+        # assert source.getstatementrange(0) == (0, 7)
+        # assert source.getstatementrange(1) == (1, 5)
         assert source.getstatementrange(2) == (2, 3)
         assert source.getstatementrange(3) == (3, 4)
         assert source.getstatementrange(4) == (4, 5)
-        #assert source.getstatementrange(5) == (0, 7)
+        # assert source.getstatementrange(5) == (0, 7)
         assert source.getstatementrange(6) == (6, 7)
 
     def test_getstatementrange_bug(self):
@@ -255,7 +269,7 @@ class TestSourceParsingAndCompiling:
     def test_getstatementrange_out_of_bounds_py3(self):
         source = Source("if xxx:\n   from .collections import something")
         r = source.getstatementrange(1)
-        assert r == (1,2)
+        assert r == (1, 2)
 
     def test_getstatementrange_with_syntaxerror_issue7(self):
         source = Source(":")
@@ -271,34 +285,41 @@ class TestSourceParsingAndCompiling:
 
     def test_compile_and_getsource(self):
         co = self.source.compile()
-        py.builtin.exec_(co, globals())
+        ns = {}
+        py.builtin.exec_(co, ns)
+        f = ns['f']
         f(7)
         excinfo = py.test.raises(AssertionError, "f(6)")
         frame = excinfo.traceback[-1].frame
         stmt = frame.code.fullsource.getstatement(frame.lineno)
-        #print "block", str(block)
         assert str(stmt).strip().startswith('assert')
 
-    def test_compilefuncs_and_path_sanity(self):
-        def check(comp, name):
-            co = comp(self.source, name)
-            if not name:
-                expected = "codegen %s:%d>" %(mypath, mylineno+2+1)
-            else:
-                expected = "codegen %r %s:%d>" % (name, mypath, mylineno+2+1)
-            fn = co.co_filename
-            assert fn.endswith(expected)
+    @pytest.fixture(scope='class')
+    def compilefuncs_and_path_sanity(self):
+        return py.code.Code(self.test_compilefuncs_and_path_sanity)
 
-        mycode = py.code.Code(self.test_compilefuncs_and_path_sanity)
+    @pytest.mark.parametrize('comp', [py.code.compile, py.code.Source.compile],
+                             ids=['code.compile', 'Source.compile'])
+    @pytest.mark.parametrize('name', ['', None, 'my'],
+                             ids=['empty', 'none', 'named'])
+    def test_compilefuncs_and_path_sanity(self, comp, name,
+                                          compilefuncs_and_path_sanity):
+        mycode = compilefuncs_and_path_sanity
         mylineno = mycode.firstlineno
         mypath = mycode.path
 
-        for comp in py.code.compile, py.code.Source.compile:
-            for name in '', None, 'my':
-                yield check, comp, name
+        co = comp(self.source, name)
+        if not name:
+            expected = "codegen %s:%d>" % (mypath, mylineno+2+1+8)
+        else:
+            expected = "codegen %r %s:%d>" % (name, mypath, mylineno+2+1+8)
+        fn = co.co_filename
+        assert fn.endswith(expected)
 
     def test_offsetless_synerr(self):
-        py.test.raises(SyntaxError, py.code.compile, "lambda a,a: 0", mode='eval')
+        py.test.raises(SyntaxError, py.code.compile,
+                       "lambda a,a: 0", mode='eval')
+
 
 def test_getstartingblock_singleline():
     class A:
@@ -311,6 +332,7 @@ def test_getstartingblock_singleline():
     l = [i for i in x.source.lines if i.strip()]
     assert len(l) == 1
 
+
 def test_getstartingblock_multiline():
     class A:
         def __init__(self, *args):
@@ -320,10 +342,11 @@ def test_getstartingblock_multiline():
     x = A('x',
           'y' \
           ,
-          'z')
+          'z')  # noqa
 
     l = [i for i in x.source.lines if i.strip()]
     assert len(l) == 4
+
 
 def test_getline_finally():
     def c(): pass
@@ -338,6 +361,7 @@ def test_getline_finally():
     source = excinfo.traceback[-1].statement
     assert str(source).strip() == 'c(1)'
 
+
 def test_getfuncsource_dynamic():
     source = """
         def f():
@@ -346,7 +370,9 @@ def test_getfuncsource_dynamic():
         def g(): pass
     """
     co = py.code.compile(source)
-    py.builtin.exec_(co, globals())
+    ns = {}
+    py.builtin.exec_(co, ns)
+    f, g = ns['f'], ns['g']
     assert str(py.code.Source(f)).strip() == 'def f():\n    raise ValueError'
     assert str(py.code.Source(g)).strip() == 'def g(): pass'
 
@@ -356,7 +382,10 @@ def test_getfuncsource_with_multine_string():
         c = '''while True:
     pass
 '''
-    assert str(py.code.Source(f)).strip() == "def f():\n    c = '''while True:\n    pass\n'''"
+        return c
+
+    expected = "def f():\n    c = '''while True:\n    pass\n'''\n    return c"
+    assert str(py.code.Source(f)).strip() == expected
 
 
 def test_deindent():
@@ -648,4 +677,3 @@ something
 '''"""
     result = getstatement(1, source)
     assert str(result) == "'''\n'''"
-
