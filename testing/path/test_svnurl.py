@@ -2,7 +2,7 @@ import py
 from py._path.svnurl import InfoSvnCommand
 import datetime
 import time
-from svntestbase import CommonSvnTests
+from .svntestbase import CommonSvnTests
 
 
 @py.test.fixture

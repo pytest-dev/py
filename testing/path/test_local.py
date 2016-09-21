@@ -7,7 +7,7 @@ import pytest
 import os
 import sys
 from py.path import local
-import common
+from . import common
 
 _on_jython = sys.platform.startswith('java')
 _os_nt = getattr(os, '_name', None) == 'nt'
