@@ -4,32 +4,40 @@ from __future__ import with_statement
 import time
 import py
 import pytest
-import os, sys
+import os
+import sys
 from py.path import local
 import common
 
-failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
-failsonjywin32 = py.test.mark.xfail("sys.platform.startswith('java') "
-        "and getattr(os, '_name', None) == 'nt'")
+_on_jython = sys.platform.startswith('java')
+_os_nt = getattr(os, '_name', None) == 'nt'
+_on_win32 = sys.platform == 'win32'
+
+failsonjython = py.test.mark.xfail(
+    _on_jython, reason='not supported for jython')
+failsonjywin32 = py.test.mark.xfail(
+    _on_jython and _os_nt,
+    reason='not supported for jython on win23')
 win32only = py.test.mark.skipif(
-        "not (sys.platform == 'win32' or getattr(os, '_name', None) == 'nt')")
+    not (_on_win32 or _os_nt),
+    reason='only supported on win32')
 skiponwin32 = py.test.mark.skipif(
-        "sys.platform == 'win32' or getattr(os, '_name', None) == 'nt'")
+    _on_win32 or _os_nt,
+    reason='not supported on win32')
 
 ATIME_RESOLUTION = 0.01
 
 
-def pytest_funcarg__path1(request):
-    def setup():
-        path1 = request.getfuncargvalue("tmpdir")
-        common.setuptestfs(path1)
-        return path1
-    def teardown(path1):
-        # post check
-        assert path1.join("samplefile").check()
-    return request.cached_setup(setup, teardown, scope="session")
+@pytest.fixture(scope='session')
+def path1(request, tmpdir_factory):
 
-def pytest_funcarg__fake_fspath_obj(request):
+    path1 = tmpdir_factory.mktemp('path1')
+    common.setuptestfs(path1)
+    yield path1
+    assert path1.join("samplefile").check()
+
+@pytest.fixture
+def fake_fspath_obj(request):
     class FakeFSPathClass(object):
         def __init__(self, path):
             self._path = path
@@ -125,7 +133,6 @@ class TestLocalPath(common.CommonFSTests):
             p = local('samplefile')
             assert p.check()
 
-    @pytest.mark.xfail("sys.version_info < (2,6) and sys.platform == 'win32'")
     def test_tilde_expansion(self, monkeypatch, tmpdir):
         monkeypatch.setenv("HOME", str(tmpdir))
         p = py.path.local("~", expanduser=True)
@@ -309,8 +316,9 @@ class TestLocalPath(common.CommonFSTests):
         x2 = py.path.local.sysfind(name, paths=[x.dirpath()])
         assert x2 == x
 
+    @pytest.mark.xfail(reason="major issue in __fspath__ semantics")
     def test_fspath_protocol_other_class(self, fake_fspath_obj):
-        py_path = py.path.local.LocalPath(fake_fspath_obj)
+        py_path = py.path.local(fake_fspath_obj)
         str_path = fake_fspath_obj.__fspath__()
         assert py_path.strpath == str_path
         assert py_path.join(fake_fspath_obj).strpath == os.path.join(
