@@ -330,10 +330,10 @@ def test_codepath_Queue_example():
     assert path.check()
 
 class TestFormattedExcinfo:
-    def pytest_funcarg__importasmod(self, request):
+    @pytest.fixture
+    def importasmod(self, request, tmpdir):
         def importasmod(source):
             source = py.code.Source(source)
-            tmpdir = request.getfuncargvalue("tmpdir")
             modpath = tmpdir.join("mod.py")
             tmpdir.ensure("__init__.py")
             modpath.write(source)

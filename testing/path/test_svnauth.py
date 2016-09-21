@@ -1,5 +1,6 @@
 import py
-import svntestbase
+import pytest
+from . import svntestbase
 from py.path import SvnAuth
 import time
 import sys
@@ -261,17 +262,21 @@ class TestSvnURLAuth(object):
         u.propget('foo')
         assert '--username="foo" --password="bar"' in u.commands[0]
 
-def pytest_funcarg__setup(request):
-    return Setup(request)
+@pytest.fixture
+def setup(request, tmpdir):
+    if not svnbin:
+        py.test.skip("svn binary required")
+    if not request.config.option.runslowtests:
+        py.test.skip('use --runslowtests to run these tests')
+
+    setup = Setup(tmpdir)
+
+    yield setup
+    py.process.kill(setup.pid)
+
 
 class Setup:
-    def __init__(self, request):
-        if not svnbin:
-            py.test.skip("svn binary required")
-        if not request.config.option.runslowtests:
-            py.test.skip('use --runslowtests to run these tests')
-
-        tmpdir = request.getfuncargvalue("tmpdir")
+    def __init__(self, tmpdir):
         repodir = tmpdir.join("repo")
         py.process.cmdexec('svnadmin create %s' % repodir)
         if sys.platform == 'win32':
@@ -282,13 +287,14 @@ class Setup:
             repodir = repodir[1:]
         self.repopath = py.path.local(repodir)
         self.temppath = tmpdir.mkdir("temppath")
-        self.auth = SvnAuth('johnny', 'foo', cache_auth=False,
-                                    interactive=False)
+        self.auth = SvnAuth('johnny', 'foo',
+                            cache_auth=False,
+                            interactive=False)
         make_repo_auth(self.repopath, {'johnny': ('foo', 'rw')})
         self.port, self.pid = serve_bg(self.repopath.dirpath())
         # XXX caching is too global
         py.path.svnurl._lsnorevcache._dict.clear()
-        request.addfinalizer(lambda: py.process.kill(self.pid))
+
 
 class TestSvnWCAuthFunctional:
     def test_checkout_constructor_arg(self, setup):

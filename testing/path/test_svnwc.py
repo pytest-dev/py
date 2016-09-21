@@ -24,8 +24,10 @@ def test_make_repo(path1, tmpdir):
     rev = wc.commit()
     assert rev is None
 
-def pytest_funcarg__path1(request):
-    repo, repourl, wc = request.getfuncargvalue("repowc1")
+
+@py.test.fixture
+def path1(repowc1):
+    repo, repourl, wc = repowc1
     return wc
 
 class TestWCSvnCommandPath(CommonSvnTests):

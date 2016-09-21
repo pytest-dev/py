@@ -1,11 +1,13 @@
 from __future__ import with_statement
 
-import os, sys
+import os
+import sys
 import py
-
-needsdup = py.test.mark.skipif("not hasattr(os, 'dup')")
+import pytest
 
 from py.builtin import print_
+needsdup = pytest.mark.skipif("not hasattr(os, 'dup')")
+
 
 if sys.version_info >= (3,0):
     def tobytes(obj):
@@ -70,11 +72,12 @@ def test_dontreadfrominput():
     py.test.raises(ValueError, f.fileno)
     f.close() # just for completeness
 
-def pytest_funcarg__tmpfile(request):
-    testdir = request.getfuncargvalue("testdir")
-    f = testdir.makepyfile("").open('wb+')
-    request.addfinalizer(f.close)
-    return f
+
+@pytest.fixture
+def tmpfile(testdir):
+    with testdir.makepyfile("").open('wb+') as f:
+        yield f
+
 
 @needsdup
 def test_dupfile(tmpfile):
