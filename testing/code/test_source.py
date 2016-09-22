@@ -29,8 +29,8 @@ def test_source_str_function():
     assert str(x) == "\n3"
 
 
+@pytest.mark.skipif(sys.version_info >= (3,), reason='only on python2')
 def test_unicode():
-
     x = Source(py.builtin.text("4"))
     assert str(x) == "4"
     co = py.code.compile(py.builtin.text('u"\xc3\xa5"', 'utf8'), mode='eval')

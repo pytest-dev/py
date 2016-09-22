@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
+from operator import methodcaller
 import time
 import py
 import pytest
@@ -25,6 +26,11 @@ skiponwin32 = py.test.mark.skipif(
     _on_win32 or _os_nt,
     reason='not supported on win32')
 
+needs_fsencoding = pytest.mark.skipif(
+    sys.version_info >= (3, 0) and "LANG" not in os.environ,
+    reason="cannot run test without locale"
+)
+
 ATIME_RESOLUTION = 0.01
 
 
@@ -36,14 +42,17 @@ def path1(request, tmpdir_factory):
     yield path1
     assert path1.join("samplefile").check()
 
+
 @pytest.fixture
 def fake_fspath_obj(request):
     class FakeFSPathClass(object):
         def __init__(self, path):
             self._path = path
+
         def __fspath__(self):
             return self._path
     return FakeFSPathClass("this/is/a/fake/path")
+
 
 class TestLocalPath(common.CommonFSTests):
     def test_join_normpath(self, tmpdir):
@@ -91,7 +100,8 @@ class TestLocalPath(common.CommonFSTests):
 
     def test_remove_routes_ignore_errors(self, tmpdir, monkeypatch):
         l = []
-        monkeypatch.setattr(py.std.shutil, 'rmtree',
+        monkeypatch.setattr(
+            py.std.shutil, 'rmtree',
             lambda *args, **kwargs: l.append(kwargs))
         tmpdir.remove()
         assert not l[0]['ignore_errors']
@@ -148,7 +158,7 @@ class TestLocalPath(common.CommonFSTests):
         assert path2 != path3
 
     def test_eq_with_none(self, path1):
-        assert path1 != None
+        assert path1 != None  # noqa
 
     def test_gt_with_strings(self, path1):
         path2 = path1.join('sampledir')
@@ -158,7 +168,7 @@ class TestLocalPath(common.CommonFSTests):
         assert path2 < "ttt"
         assert "ttt" > path2
         path4 = path1.join("aaa")
-        l = [path2, path4,path3]
+        l = [path2, path4, path3]
         assert sorted(l) == [path4, path2, path3]
 
     def test_open_and_ensure(self, path1):
@@ -176,7 +186,7 @@ class TestLocalPath(common.CommonFSTests):
     def test_dump(self, tmpdir, bin):
         path = tmpdir.join("dumpfile%s" % int(bin))
         try:
-            d = {'answer' : 42}
+            d = {'answer': 42}
             path.dump(d, bin=bin)
             f = path.open('rb+')
             dnew = py.std.pickle.load(f)
@@ -236,7 +246,7 @@ class TestLocalPath(common.CommonFSTests):
             old.chdir()
 
     def test_ensure_filepath_withdir(self, tmpdir):
-        newfile = tmpdir.join('test1','test')
+        newfile = tmpdir.join('test1', 'test')
         newfile.ensure()
         assert newfile.check(file=1)
         newfile.write("42")
@@ -251,7 +261,7 @@ class TestLocalPath(common.CommonFSTests):
         assert newfile.check(file=1)
 
     def test_ensure_dirpath(self, tmpdir):
-        newfile = tmpdir.join('test1','testfile')
+        newfile = tmpdir.join('test1', 'testfile')
         t = newfile.ensure(dir=1)
         assert t == newfile
         assert newfile.check(dir=1)
@@ -285,8 +295,8 @@ class TestLocalPath(common.CommonFSTests):
         assert l2.read() == 'foo'
 
     def test_visit_depth_first(self, tmpdir):
-        p1 = tmpdir.ensure("a","1")
-        p2 = tmpdir.ensure("b","2")
+        tmpdir.ensure("a", "1")
+        tmpdir.ensure("b", "2")
         p3 = tmpdir.ensure("breadth")
         l = list(tmpdir.visit(lambda x: x.check(file=1)))
         assert len(l) == 3
@@ -294,8 +304,8 @@ class TestLocalPath(common.CommonFSTests):
         assert l[2] == p3
 
     def test_visit_rec_fnmatch(self, tmpdir):
-        p1 = tmpdir.ensure("a","123")
-        p2 = tmpdir.ensure(".b","345")
+        p1 = tmpdir.ensure("a", "123")
+        tmpdir.ensure(".b", "345")
         l = list(tmpdir.visit("???", rec="[!.]*"))
         assert len(l) == 1
         # check that breadth comes last
@@ -353,17 +363,17 @@ class TestExecution:
         assert y == x
 
     def test_sysfind_multiple(self, tmpdir, monkeypatch):
-        monkeypatch.setenv('PATH',
-                          "%s:%s" % (tmpdir.ensure('a'),
-                                       tmpdir.join('b')),
-                          prepend=":")
+        monkeypatch.setenv(
+            'PATH',
+            "%s:%s" % (tmpdir.ensure('a'), tmpdir.join('b')),
+            prepend=":")
         tmpdir.ensure('b', 'a')
-        checker = lambda x: x.dirpath().basename == 'b'
-        x = py.path.local.sysfind('a', checker=checker)
+
+        def basename_is_b(path): return path.dirpath().basename == 'b'
+        x = py.path.local.sysfind('a', checker=basename_is_b)
         assert x.basename == 'a'
         assert x.dirpath().basename == 'b'
-        checker = lambda x: None
-        assert py.path.local.sysfind('a', checker=checker) is None
+        assert py.path.local.sysfind('a', checker=lambda x: None) is None
 
     def test_sysexec(self):
         x = py.path.local.sysfind('ls')
@@ -373,9 +383,8 @@ class TestExecution:
 
     def test_sysexec_failing(self):
         x = py.path.local.sysfind('false')
-        py.test.raises(py.process.cmdexec.Error, """
+        with py.test.raises(py.process.cmdexec.Error):
             x.sysexec('aksjdkasjd')
-        """)
 
     def test_make_numbered_dir(self, tmpdir):
         tmpdir.ensure('base.not_an_int', dir=1)
@@ -383,12 +392,12 @@ class TestExecution:
             numdir = local.make_numbered_dir(prefix='base.', rootdir=tmpdir,
                                              keep=2, lock_timeout=0)
             assert numdir.check()
-            assert numdir.basename == 'base.%d' %i
-            if i>=1:
+            assert numdir.basename == 'base.%d' % i
+            if i >= 1:
                 assert numdir.new(ext=str(i-1)).check()
-            if i>=2:
+            if i >= 2:
                 assert numdir.new(ext=str(i-2)).check()
-            if i>=3:
+            if i >= 3:
                 assert not numdir.new(ext=str(i-3)).check()
 
     def test_make_numbered_dir_NotImplemented_Error(self, tmpdir, monkeypatch):
@@ -404,15 +413,15 @@ class TestExecution:
             numdir = local.make_numbered_dir(prefix='base2.', rootdir=tmpdir,
                                              keep=2)
             assert numdir.check()
-            assert numdir.basename == 'base2.%d' %i
+            assert numdir.basename == 'base2.%d' % i
             for j in range(i):
                 assert numdir.new(ext=str(j)).check()
 
     def test_error_preservation(self, path1):
-        py.test.raises (EnvironmentError, path1.join('qwoeqiwe').mtime)
-        py.test.raises (EnvironmentError, path1.join('qwoeqiwe').read)
+        py.test.raises(EnvironmentError, path1.join('qwoeqiwe').mtime)
+        py.test.raises(EnvironmentError, path1.join('qwoeqiwe').read)
 
-    #def test_parentdirmatch(self):
+    # def test_parentdirmatch(self):
     #    local.parentdirmatch('std', startmodule=__name__)
     #
 
@@ -428,12 +437,12 @@ class TestImport:
         p.pyimport()
         tmpdir.join("a").move(tmpdir.join("b"))
         pytest.raises(tmpdir.ImportMismatchError,
-            lambda: tmpdir.join("b", "test_x123.py").pyimport())
+                      tmpdir.join("b", "test_x123.py").pyimport)
 
     def test_pyimport_messy_name(self, tmpdir):
         # http://bitbucket.org/hpk42/py-trunk/issue/129
         path = tmpdir.ensure('foo__init__.py')
-        obj = path.pyimport()
+        path.pyimport()
 
     def test_pyimport_dir(self, tmpdir):
         p = tmpdir.join("hello_123")
@@ -494,8 +503,9 @@ class TestImport:
         pseudopath = tmpdir.ensure(name+"123.py")
         mod.__file__ = str(pseudopath)
         monkeypatch.setitem(sys.modules, name, mod)
-        excinfo = py.test.raises(pseudopath.ImportMismatchError,
-            "p.pyimport()")
+        excinfo = py.test.raises(
+            pseudopath.ImportMismatchError,
+            p.pyimport)
         modname, modfile, orig = excinfo.value.args
         assert modname == name
         assert modfile == pseudopath
@@ -528,13 +538,15 @@ def test_pypkgdir(tmpdir):
     assert pkg.pypkgpath() == pkg
     assert pkg.join('subdir', '__init__.py').pypkgpath() == pkg
 
+
 def test_pypkgdir_unimportable(tmpdir):
-    pkg = tmpdir.ensure('pkg1-1', dir=1) # unimportable
+    pkg = tmpdir.ensure('pkg1-1', dir=1)  # unimportable
     pkg.ensure("__init__.py")
     subdir = pkg.ensure("subdir/__init__.py").dirpath()
     assert subdir.pypkgpath() == subdir
     assert subdir.ensure("xyz.py").pypkgpath() == subdir
     assert not pkg.pypkgpath()
+
 
 def test_isimportable():
     from py._path.local import isimportable
@@ -547,16 +559,19 @@ def test_isimportable():
     assert not isimportable("x-1")
     assert not isimportable("x:1")
 
+
 def test_homedir_from_HOME(monkeypatch):
     path = os.getcwd()
     monkeypatch.setenv("HOME", path)
     assert py.path.local._gethomedir() == py.path.local(path)
+
 
 def test_homedir_not_exists(monkeypatch):
     monkeypatch.delenv("HOME", raising=False)
     monkeypatch.delenv("HOMEDRIVE", raising=False)
     homedir = py.path.local._gethomedir()
     assert homedir is None
+
 
 def test_samefile(tmpdir):
     assert tmpdir.samefile(tmpdir)
@@ -569,13 +584,16 @@ def test_samefile(tmpdir):
         p2 = p.__class__(str(p).upper())
         assert p1.samefile(p2)
 
+
 def test_listdir_single_arg(tmpdir):
     tmpdir.ensure("hello")
     assert tmpdir.listdir("hello")[0].basename == "hello"
 
+
 def test_mkdtemp_rootdir(tmpdir):
     dtmp = local.mkdtemp(rootdir=tmpdir)
     assert tmpdir.listdir() == [dtmp]
+
 
 class TestWINLocalPath:
     pytestmark = win32only
@@ -618,7 +636,7 @@ class TestWINLocalPath:
 
     def test_sysfind_in_currentdir(self, path1):
         cmd = py.path.local.sysfind('cmd')
-        root = cmd.new(dirname='', basename='') # c:\ in most installations
+        root = cmd.new(dirname='', basename='')   # c:\ in most installations
         with root.as_cwd():
             x = py.path.local.sysfind(cmd.relto(root))
             assert x.check(file=1)
@@ -631,6 +649,7 @@ class TestWINLocalPath:
         assert b.fnmatch(posixpath.sep.join("ab"))
         pattern = posixpath.sep.join([str(tmpdir), "*", "b"])
         assert b.fnmatch(pattern)
+
 
 class TestPOSIXLocalPath:
     pytestmark = skiponwin32
@@ -690,7 +709,7 @@ class TestPOSIXLocalPath:
 
     def test_symlink_remove(self, tmpdir):
         linkpath = tmpdir.join('test')
-        linkpath.mksymlinkto(linkpath) # point to itself
+        linkpath.mksymlinkto(linkpath)  # point to itself
         assert linkpath.check(link=1)
         linkpath.remove()
         assert not linkpath.check()
@@ -784,7 +803,7 @@ class TestPOSIXLocalPath:
 
     def test_chmod_rec_int(self, path1):
         # XXX fragile test
-        recfilter = lambda x: x.check(dotfile=0, link=0)
+        recfilter = methodcaller('check', dotfile=0, link=0)
         oldmodes = {}
         for x in path1.visit(rec=recfilter):
             oldmodes[x] = x.stat().mode
@@ -793,11 +812,12 @@ class TestPOSIXLocalPath:
             for x in path1.visit(rec=recfilter):
                 assert x.stat().mode & int("777", 8) == int("772", 8)
         finally:
-            for x,y in oldmodes.items():
+            for x, y in oldmodes.items():
                 x.chmod(y)
 
+    @pytest.mark.xfail(reason="unicode issue with paths")
     def test_copy_archiving(self, tmpdir):
-        unicode_fn = u"something-\342\200\223.txt"
+        unicode_fn = u"something-äöü.txt"
         f = tmpdir.ensure("a", unicode_fn)
         a = f.dirpath()
         oldmode = f.stat().mode
@@ -860,23 +880,22 @@ class TestPOSIXLocalPath:
 
 
 class TestUnicodePy2Py3:
+
+    @needs_fsencoding
     def test_join_ensure(self, tmpdir, monkeypatch):
-        if sys.version_info >= (3,0) and "LANG" not in os.environ:
-            pytest.skip("cannot run test without locale")
         x = py.path.local(tmpdir.strpath)
         part = "hällo"
         y = x.ensure(part)
         assert x.join(part) == y
 
     def test_listdir(self, tmpdir):
-        if sys.version_info >= (3,0) and "LANG" not in os.environ:
-            pytest.skip("cannot run test without locale")
         x = py.path.local(tmpdir.strpath)
-        part = "hällo"
+        part = u"hällo".encode('utf-8')
         y = x.ensure(part)
         assert x.listdir(part)[0] == y
 
-    @pytest.mark.xfail(reason="changing read/write might break existing usages")
+    @pytest.mark.xfail(
+        reason="changing read/write might break existing usages")
     def test_read_write(self, tmpdir):
         x = tmpdir.join("hello")
         part = py.builtin._totext("hällo", "utf8")
@@ -884,6 +903,7 @@ class TestUnicodePy2Py3:
         assert x.read() == part
         x.write(part.encode(sys.getdefaultencoding()))
         assert x.read() == part.encode(sys.getdefaultencoding())
+
 
 class TestBinaryAndTextMethods:
     def test_read_binwrite(self, tmpdir):
