@@ -310,11 +310,12 @@ class TestLocalPath(common.CommonFSTests):
         assert x2 == x
 
     def test_fspath_protocol_other_class(self, fake_fspath_obj):
-        py_path = py.path.local.LocalPath(fake_fspath_obj)
+        # py.path is always absolute
+        py_path = py.path.local(fake_fspath_obj)
         str_path = fake_fspath_obj.__fspath__()
-        assert py_path.strpath == str_path
+        assert py_path.check(endswith=str_path)
         assert py_path.join(fake_fspath_obj).strpath == os.path.join(
-                str_path, fake_fspath_obj)
+                py_path.strpath, str_path)
 
 
 class TestExecutionOnWindows:
