@@ -1,6 +1,7 @@
 import py
 import sys
 
+
 class CommonFSTests(object):
     def test_constructor_equality(self, path1):
         p = path1.__class__(path1)
@@ -55,10 +56,12 @@ class CommonFSTests(object):
         x = other.common(path1)
         assert x == path1
 
-    #def test_parents_nonexisting_file(self, path1):
-    #    newpath = path1 / 'dirnoexist' / 'nonexisting file'
-    #    par = list(newpath.parents())
-    #    assert par[:2] == [path1 / 'dirnoexist', path1]
+    def test_parents_nonexisting_file(self, path1):
+        newpath = path1 / 'dirnoexist' / 'nonexisting file'
+        par = list(newpath.parts())
+        par.pop()
+        assert (path1 / 'dirnoexist') in par
+        assert path1 in par
 
     def test_basename_checks(self, path1):
         newpath = path1.join('sampledir')
@@ -101,7 +104,7 @@ class CommonFSTests(object):
         assert not path1.join("samplefile").isdir()
 
     def test_dir(self, path1):
-        #print repr(path1.join("sampledir"))
+        print(repr(path1.join("sampledir")))
         assert path1.join("sampledir").check(dir=1)
         assert path1.join('samplefile').check(notdir=1)
         assert not path1.join("samplefile").check(dir=1)
@@ -115,14 +118,13 @@ class CommonFSTests(object):
         assert not path1.join("samplefile").fnmatch('s*x')
         assert not path1.join("samplefile").check(fnmatch='s*x')
 
-    #def test_fnmatch_dir(self, path1):
-
-    #    pattern = path1.sep.join(['s*file'])
-    #    sfile = path1.join("samplefile")
-    #    assert sfile.check(fnmatch=pattern)
+    def test_fnmatch_dir(self, path1):
+        pattern = path1.sep.join(['s*file'])
+        sfile = path1.join("samplefile")
+        assert sfile.check(fnmatch=pattern)
 
     def test_relto(self, path1):
-        l=path1.join("sampledir", "otherfile")
+        l = path1.join("sampledir", "otherfile")
         assert l.relto(path1) == l.sep.join(["sampledir", "otherfile"])
         assert l.check(relto=path1)
         assert path1.check(notrelto=l)
@@ -143,8 +145,8 @@ class CommonFSTests(object):
         assert curdir.bestrelpath("hello") == "hello"
 
     def test_relto_not_relative(self, path1):
-        l1=path1.join("bcde")
-        l2=path1.join("b")
+        l1 = path1.join("bcde")
+        l2 = path1.join("b")
         assert not l1.relto(l2)
         assert not l2.relto(l1)
 
@@ -206,7 +208,7 @@ class CommonFSTests(object):
         assert path1.sep.join(["sampledir", "otherfile"]) in l
         assert "samplefile" in l
 
-    def test_endswith(self, path1):
+    def test_endswith_check(self, path1):
         assert path1.check(notendswith='.py')
         x = path1.join('samplefile')
         assert x.check(endswith='file')
@@ -240,7 +242,7 @@ class CommonFSTests(object):
         newpath = path1.join('samplefile.py')
         dirname, purebasename, basename, ext = newpath._getbyspec(
             'dirname,purebasename,basename,ext')
-        assert str(path1).endswith(dirname) # be careful with win32 'drive'
+        assert str(path1).endswith(dirname)  # be careful with win32 'drive'
         assert purebasename == 'samplefile'
         assert basename == 'samplefile.py'
         assert ext == '.py'
@@ -301,13 +303,13 @@ class CommonFSTests(object):
         p = path1.join('samplepickle')
         obj = p.load()
         assert type(obj) is dict
-        assert obj.get('answer',None) == 42
+        assert obj.get('answer', None) == 42
 
     def test_visit_filesonly(self, path1):
         l = []
         for i in path1.visit(lambda x: x.check(file=1)):
             l.append(i.relto(path1))
-        assert not "sampledir" in l
+        assert "sampledir" not in l
         assert path1.sep.join(["sampledir", "otherfile"]) in l
 
     def test_visit_nodotfiles(self, path1):
@@ -316,7 +318,7 @@ class CommonFSTests(object):
             l.append(i.relto(path1))
         assert "sampledir" in l
         assert path1.sep.join(["sampledir", "otherfile"]) in l
-        assert not ".dotfile" in l
+        assert ".dotfile" not in l
 
     def test_visit_breadthfirst(self, path1):
         l = []
@@ -436,23 +438,24 @@ class CommonFSTests(object):
         try:
             from os import fspath
         except ImportError:
-            from py.path.common import fspath
+            from py._path.common import fspath
         assert fspath(path1) == path1.strpath
 
-    @py.test.skip("sys.version_info < (3,6)")
+    @py.test.mark.skip("sys.version_info < (3,6)")
     def test_fspath_open(self, path1):
         f = path1.join('opentestfile')
         open(f)
 
-    @py.test.skip("sys.version_info < (3,6)")
+    @py.test.mark.skip("sys.version_info < (3,6)")
     def test_fspath_fsencode(self, path1):
         from os import fsencode
         assert fsencode(path1) == fsencode(path1.strpath)
 
+
 def setuptestfs(path):
     if path.join('samplefile').check():
         return
-    #print "setting up test fs for", repr(path)
+    print("setting up test fs for %r" % (path,))
     samplefile = path.ensure('samplefile')
     samplefile.write('samplefile\n')
 
@@ -462,7 +465,7 @@ def setuptestfs(path):
     execfilepy = path.ensure('execfile.py')
     execfilepy.write('x=42')
 
-    d = {1:2, 'hello': 'world', 'answer': 42}
+    d = {1: 2, 'hello': 'world', 'answer': 42}
     path.ensure('samplepickle').dump(d)
 
     sampledir = path.ensure('sampledir', dir=1)
@@ -472,7 +475,7 @@ def setuptestfs(path):
     otherdir.ensure('__init__.py')
 
     module_a = otherdir.ensure('a.py')
-    if sys.version_info >= (2,6):
+    if sys.version_info >= (2, 6):
         module_a.write('from .b import stuff as result\n')
     else:
         module_a.write('from b import stuff as result\n')

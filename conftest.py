@@ -1,25 +1,32 @@
 import py
 import sys
+import pytest
+import os
 
-pytest_plugins = 'doctest pytester'.split()
+pytest_plugins = 'doctest', 'pytester'
 
 collect_ignore = ['build', 'doc/_build']
 
 
-import os, py
 pid = os.getpid()
+
 
 def pytest_addoption(parser):
     group = parser.getgroup("pylib", "py lib testing options")
-    group.addoption('--runslowtests',
-           action="store_true", dest="runslowtests", default=False,
-           help=("run slow tests"))
+    group.addoption(
+        '--runslowtests',
+        action="store_true", dest="runslowtests", default=False,
+        help=("run slow tests"))
 
-def pytest_funcarg__sshhost(request):
+
+@pytest.fixture
+def sshhost(request):
     val = request.config.getvalue("sshhost")
     if val:
         return val
     py.test.skip("need --sshhost option")
+
+
 def pytest_generate_tests(metafunc):
     multi = getattr(metafunc.function, 'multi', None)
     if multi is not None:
@@ -27,10 +34,6 @@ def pytest_generate_tests(metafunc):
         for name, l in multi.kwargs.items():
             for val in l:
                 metafunc.addcall(funcargs={name: val})
-    elif 'anypython' in metafunc.funcargnames:
-        for name in ('python2.4', 'python2.5', 'python2.6',
-                     'python2.7', 'python3.1', 'pypy-c', 'jython'):
-            metafunc.addcall(id=name, param=name)
 
 # XXX copied from execnet's conftest.py - needs to be merged
 winpymap = {
@@ -41,6 +44,7 @@ winpymap = {
     'python3.1': r'C:\Python31\python.exe',
 }
 
+
 def getexecutable(name, cache={}):
     try:
         return cache[name]
@@ -49,7 +53,8 @@ def getexecutable(name, cache={}):
         if executable:
             if name == "jython":
                 import subprocess
-                popen = subprocess.Popen([str(executable), "--version"],
+                popen = subprocess.Popen(
+                    [str(executable), "--version"],
                     universal_newlines=True, stderr=subprocess.PIPE)
                 out, err = popen.communicate()
                 if not err or "2.5" not in err:
@@ -57,7 +62,11 @@ def getexecutable(name, cache={}):
         cache[name] = executable
         return executable
 
-def pytest_funcarg__anypython(request):
+
+@pytest.fixture(params=(
+    'python2.4', 'python2.5', 'python2.6',
+    'python2.7', 'python3.1', 'pypy-c', 'jython'))
+def anypython(request):
     name = request.param
     executable = getexecutable(name)
     if executable is None:

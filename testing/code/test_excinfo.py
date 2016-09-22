@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import py
-from py._code.code import FormattedExcinfo, ReprExceptionInfo
-queue = py.builtin._tryimport('queue', 'Queue')
+import pytest
 
-failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
+from py._code.code import FormattedExcinfo, ReprExceptionInfo
 from test_source import astonly
 
 try:
@@ -13,19 +12,29 @@ except ImportError:
     invalidate_import_caches = None
 else:
     invalidate_import_caches = getattr(importlib, "invalidate_caches", None)
+queue = py.builtin._tryimport('queue', 'Queue')
+failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
 
-import pytest
+pytestmark = pytest.mark.xfail(
+    strict=False, reason="tests are dependent on external pytest api")
+
 pytest_version_info = tuple(map(int, pytest.__version__.split(".")[:3]))
+
 
 class TWMock:
     def __init__(self):
         self.lines = []
+
     def sep(self, sep, line=None):
         self.lines.append((sep, line))
+
     def line(self, line, **kw):
         self.lines.append(line)
+
     def markup(self, text, **kw):
         return text
+
+    write = line
 
     fullwidth = 80
 
@@ -321,10 +330,10 @@ def test_codepath_Queue_example():
     assert path.check()
 
 class TestFormattedExcinfo:
-    def pytest_funcarg__importasmod(self, request):
+    @pytest.fixture
+    def importasmod(self, request, tmpdir):
         def importasmod(source):
             source = py.code.Source(source)
-            tmpdir = request.getfuncargvalue("tmpdir")
             modpath = tmpdir.join("mod.py")
             tmpdir.ensure("__init__.py")
             modpath.write(source)

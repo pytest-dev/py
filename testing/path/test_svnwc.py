@@ -1,9 +1,10 @@
 import py
-import os, sys
+import os
+import sys
 import pytest
 from py._path.svnwc import InfoSvnWCCommand, XMLWCStatus, parse_wcinfotime
 from py._path import svnwc as svncommon
-from svntestbase import CommonSvnTests
+from .svntestbase import CommonSvnTests
 
 def test_make_repo(path1, tmpdir):
     repo = tmpdir.join("repo")
@@ -24,8 +25,10 @@ def test_make_repo(path1, tmpdir):
     rev = wc.commit()
     assert rev is None
 
-def pytest_funcarg__path1(request):
-    repo, repourl, wc = request.getfuncargvalue("repowc1")
+
+@py.test.fixture
+def path1(repowc1):
+    repo, repourl, wc = repowc1
     return wc
 
 class TestWCSvnCommandPath(CommonSvnTests):

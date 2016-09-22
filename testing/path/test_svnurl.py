@@ -2,11 +2,14 @@ import py
 from py._path.svnurl import InfoSvnCommand
 import datetime
 import time
-from svntestbase import CommonSvnTests
+from .svntestbase import CommonSvnTests
 
-def pytest_funcarg__path1(request):
-    repo, repourl, wc = request.getfuncargvalue("repowc1")
+
+@py.test.fixture
+def path1(request, repowc1):
+    repo, repourl, wc = repowc1
     return py.path.svnurl(repourl)
+
 
 class TestSvnURLCommandPath(CommonSvnTests):
     @py.test.mark.xfail
@@ -16,6 +19,7 @@ class TestSvnURLCommandPath(CommonSvnTests):
     # the following two work on jython but not in local/svnwc
     def test_listdir(self, path1):
         super(TestSvnURLCommandPath, self).test_listdir(path1)
+
     def test_visit_ignore(self, path1):
         super(TestSvnURLCommandPath, self).test_visit_ignore(path1)
 
