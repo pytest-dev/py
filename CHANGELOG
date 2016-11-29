@@ -6,6 +6,9 @@
 
 - fix issue70: added ability to copy all stat info in py.path.local.copy.
 
+- make TerminalWriter.fullwidth a property.  This results in the correct
+  value when the terminal gets resized.
+
 1.4.31
 ==================================================
 
