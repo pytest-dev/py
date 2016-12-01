@@ -1,6 +1,10 @@
 - update supported html tags to include recent additions.
   Thanks Denis Afonso for the PR.
 
+- Remove internal code in ``Source.compile`` meant to support earlier Python 3 versions that produced the side effect
+  of leaving ``None`` in ``sys.modules`` when called (see pytest-dev/pytest#2103).
+  Thanks Bruno Oliveira for the PR.
+
 1.4.32
 ====================================================================
 
