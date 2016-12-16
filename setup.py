@@ -3,6 +3,7 @@ import sys
 
 from setuptools import setup
 
+
 def get_version():
     p = os.path.join(os.path.dirname(
                      os.path.abspath(__file__)), "py", "__init__.py")
@@ -13,13 +14,12 @@ def get_version():
     raise ValueError("could not read version")
 
 
-
 def main():
     setup(
         name='py',
         description='library with cross-python path, ini-parsing, io, code, log facilities',
-        long_description = open('README.rst').read(),
-        version='1.4.32.dev1',
+        long_description=open('README.rst').read(),
+        version=get_version(),
         url='http://pylib.readthedocs.org/',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
