@@ -1,6 +1,18 @@
-import os, sys
+import os
+import sys
 
 from setuptools import setup
+
+def get_version():
+    p = os.path.join(os.path.dirname(
+                     os.path.abspath(__file__)), "py", "__init__.py")
+    with open(p) as f:
+        for line in f.readlines():
+            if "__version__" in line:
+                return line.strip().split("=")[-1].strip(" '")
+    raise ValueError("could not read version")
+
+
 
 def main():
     setup(
