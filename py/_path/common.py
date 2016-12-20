@@ -1,6 +1,7 @@
 """
 """
 import os, sys, posixpath
+import fnmatch
 import py
 
 # Moved from local.py.
@@ -436,4 +437,4 @@ class FNMatcher:
             name = str(path) # path.strpath # XXX svn?
             if not os.path.isabs(pattern):
                 pattern = '*' + path.sep + pattern
-        return py.std.fnmatch.fnmatch(name, pattern)
+        return fnmatch.fnmatch(name, pattern)
