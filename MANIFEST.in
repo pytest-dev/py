@@ -7,3 +7,4 @@ include conftest.py
 include tox.ini
 graft doc
 graft testing
+global-exclude *.pyc
