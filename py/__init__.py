@@ -1,5 +1,5 @@
 """
-py.test and pylib: rapid testing and development utils
+pylib: rapid testing and development utils
 
 this module uses apipkg.py for lazy-loading sub modules
 and classes.  The initpkg-dictionary  below specifies
@@ -8,7 +8,7 @@ dictionary or an import path.
 
 (c) Holger Krekel and others, 2004-2014
 """
-__version__ = '1.4.33.dev1'
+__version__ = '1.4.33'
 
 from py import _apipkg
 
