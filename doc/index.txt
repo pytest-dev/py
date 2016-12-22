@@ -8,10 +8,6 @@ Welcome to py's documentation!
 
 see :ref:`CHANGELOG <changelog>` for latest changes.
 
-.. note::
-
-   Since version 1.4, the testing tool "py.test" is part of its own `pytest distribution`_.
-
 .. _`pytest distribution`: http://pytest.org
 
 Contents:
