@@ -379,7 +379,7 @@ newline will be removed from the end of each line. """
         return self.strpath == str(other)
 
     def __fspath__(self):
-        return str(self)
+        return self.strpath
 
 class Visitor:
     def __init__(self, fil, rec, ignore, bf, sort):
