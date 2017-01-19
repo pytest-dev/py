@@ -143,6 +143,15 @@ class TestLocalPath(common.CommonFSTests):
     def test_eq_with_none(self, path1):
         assert path1 != None
 
+    def test_eq_non_ascii_unicode(self, path1):
+        path2 = path1.join(u'temp')
+        path3 = path1.join(u'ação')
+        path4 = path1.join(u'ディレクトリ')
+
+        assert path2 != path3
+        assert path2 != path4
+        assert path4 != path3
+
     def test_gt_with_strings(self, path1):
         path2 = path1.join('sampledir')
         path3 = str(path1.join("ttt"))
@@ -245,6 +254,12 @@ class TestLocalPath(common.CommonFSTests):
 
     def test_ensure_dirpath(self, tmpdir):
         newfile = tmpdir.join('test1','testfile')
+        t = newfile.ensure(dir=1)
+        assert t == newfile
+        assert newfile.check(dir=1)
+
+    def test_ensure_non_ascii_unicode(self, tmpdir):
+        newfile = tmpdir.join(u'ação',u'ディレクトリ')
         t = newfile.ensure(dir=1)
         assert t == newfile
         assert newfile.check(dir=1)
