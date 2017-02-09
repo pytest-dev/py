@@ -20,7 +20,7 @@ def main():
         description='library with cross-python path, ini-parsing, io, code, log facilities',
         long_description=open('README.rst').read(),
         version=get_version(),
-        url='http://pylib.readthedocs.org/',
+        url='http://py.readthedocs.io/',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
         author='holger krekel, Ronny Pfannschmidt, Benjamin Peterson and others',
