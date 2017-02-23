@@ -6,6 +6,8 @@
 
 - fix issue106: Naive unicode encoding when calling fspath() in python2. Thanks Tiago Nobrega for the PR.
 
+- fix issue110: unittest.TestCase.assertWarns fails with py imported.
+
 1.4.32
 ====================================================================
 

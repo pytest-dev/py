@@ -35,3 +35,25 @@ def test_error_conversion_ENOTDIR(testdir):
 def test_checked_call_supports_kwargs(tmpdir):
     import tempfile
     py.error.checked_call(tempfile.mkdtemp, dir=str(tmpdir))
+
+
+try:
+    import unittest
+    unittest.TestCase.assertWarns
+except (ImportError, AttributeError):
+    pass  # required interface not available
+else:
+    import sys
+    import warnings
+
+    class Case(unittest.TestCase):
+        def test_assertWarns(self):
+            # Clear everything "py.*" from sys.modules and re-import py
+            # as a fresh start
+            for mod in tuple(sys.modules.keys()):
+                if mod and (mod == 'py' or mod.startswith('py.')):
+                    del sys.modules[mod]
+            import py
+
+            with self.assertWarns(UserWarning):
+                warnings.warn('this should work')
