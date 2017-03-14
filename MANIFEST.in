@@ -1,6 +1,6 @@
 include CHANGELOG
 include AUTHORS
-include README.txt
+include README.rst
 include setup.py
 include LICENSE
 include conftest.py
