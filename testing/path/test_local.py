@@ -35,7 +35,7 @@ def pytest_funcarg__fake_fspath_obj(request):
             self._path = path
         def __fspath__(self):
             return self._path
-    return FakeFSPathClass("this/is/a/fake/path")
+    return FakeFSPathClass(os.path.join("this", "is", "a", "fake", "path"))
 
 class TestLocalPath(common.CommonFSTests):
     def test_join_normpath(self, tmpdir):

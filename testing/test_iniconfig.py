@@ -153,7 +153,7 @@ def test_iniconfig_section_first(tmpdir):
     excinfo = py.test.raises(ParseError, """
         IniConfig("x", data='name=1')
     """)
-    assert excinfo.value.msg == "no section header defined"
+    assert "no section header defined" in str(excinfo.value)
 
 def test_iniconig_section_duplicate_fails():
     excinfo = py.test.raises(ParseError, r"""
