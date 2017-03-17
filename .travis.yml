@@ -11,5 +11,5 @@ matrix:
   allow_failures:
   - python: pypy
 cache: python
-install: pip install tox
-script: tox -e py
+install: pip install tox-travis
+script: tox

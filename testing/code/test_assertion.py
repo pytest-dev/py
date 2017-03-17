@@ -108,7 +108,7 @@ def test_assert_keyword_arg():
         assert f(x=5)
     except AssertionError:
         e = exvalue()
-        assert "x=5" in e.msg
+        assert "x=5" in str(e)
 
 # These tests should both fail, but should fail nicely...
 class WeirdRepr:
@@ -121,8 +121,8 @@ def bug_test_assert_repr():
         assert v == 1
     except AssertionError:
         e = exvalue()
-        assert e.msg.find('WeirdRepr') != -1
-        assert e.msg.find('second line') != -1
+        assert str(e).find('WeirdRepr') != -1
+        assert str(e).find('second line') != -1
         assert 0
 
 def test_assert_non_string():
@@ -130,7 +130,7 @@ def test_assert_non_string():
         assert 0, ['list']
     except AssertionError:
         e = exvalue()
-        assert e.msg.find("list") != -1
+        assert str(e).find("list") != -1
 
 def test_assert_implicit_multiline():
     try:
@@ -139,7 +139,7 @@ def test_assert_implicit_multiline():
            2, 3]
     except AssertionError:
         e = exvalue()
-        assert e.msg.find('assert [1, 2, 3] !=') != -1
+        assert str(e).find('assert [1, 2, 3] !=') != -1
 
 
 def test_assert_with_brokenrepr_arg():
@@ -154,14 +154,14 @@ def test_multiple_statements_per_line():
         a = 1; assert a == 2
     except AssertionError:
         e = exvalue()
-        assert "assert 1 == 2" in e.msg
+        assert "assert 1 == 2" in str(e)
 
 def test_power():
     try:
         assert 2**3 == 7
     except AssertionError:
         e = exvalue()
-        assert "assert (2 ** 3) == 7" in e.msg
+        assert "assert (2 ** 3) == 7" in str(e)
 
 
 class TestView:
@@ -285,8 +285,8 @@ def test_assert_raise_subclass():
             super(SomeEx, self).__init__()
     try:
         raise SomeEx("hello")
-    except AssertionError:
-        s = str(exvalue())
+    except AssertionError as e:
+        s = str(e)
         assert 're-run' not in s
         assert 'could not determine' in s
 
