@@ -1,3 +1,9 @@
+1.4.34
+====================================================================
+
+- fix issue119 / pytest issue708 where tmpdir may fail to make numbered directories
+  when the filesystem is case-insensitive.
+
 1.4.33
 ====================================================================
 
