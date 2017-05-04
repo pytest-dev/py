@@ -205,14 +205,14 @@ class LocalPath(FSBase):
             if rec:
                 # force remove of readonly files on windows
                 if iswin32:
-                    self.chmod(448, rec=1) # octcal 0700
+                    self.chmod(0o700, rec=1)
                 py.error.checked_call(py.std.shutil.rmtree, self.strpath,
                     ignore_errors=ignore_errors)
             else:
                 py.error.checked_call(os.rmdir, self.strpath)
         else:
             if iswin32:
-                self.chmod(448) # octcal 0700
+                self.chmod(0o700)
             py.error.checked_call(os.remove, self.strpath)
 
     def computehash(self, hashtype="md5", chunksize=524288):
