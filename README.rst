@@ -1,5 +1,12 @@
+.. image:: https://img.shields.io/pypi/v/py.svg
+    :target: https://pypi.org/project/py
+
+.. image:: https://anaconda.org/conda-forge/py/badges/version.svg
+    :target: https://anaconda.org/conda-forge/py
+
 .. image:: https://img.shields.io/pypi/pyversions/pytest.svg
   :target: https://pypi.org/project/py
+
 .. image:: https://img.shields.io/travis/pytest-dev/py.svg
    :target: https://travis-ci.org/pytest-dev/py
 
