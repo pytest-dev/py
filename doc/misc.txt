@@ -90,4 +90,4 @@ right version::
 Cross-Python Version compatibility helpers
 =============================================
 
-The ``py.builtin`` namespace provides a number of helpers that help to write python code compatible across Python interpreters, mainly Python2 and Python3.  Type ``help(py.builtin)`` on a Python prompt for a the selection of builtins.
+The ``py.builtin`` namespace provides a number of helpers that help to write python code compatible across Python interpreters, mainly Python2 and Python3.  Type ``help(py.builtin)`` on a Python prompt for the selection of builtins.
