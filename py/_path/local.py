@@ -737,7 +737,7 @@ class LocalPath(FSBase):
                     except KeyError:
                         pass
                     else:
-                        paths = [re.sub('%SystemRoot%', systemroot, path)
+                        paths = [path.replace('%SystemRoot%', systemroot)
                                  for path in paths]
                 else:
                     paths = py.std.os.environ['PATH'].split(':')
