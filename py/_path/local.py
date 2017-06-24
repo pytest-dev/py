@@ -333,13 +333,16 @@ class LocalPath(FSBase):
                     strargs = newargs
                     break
                 newargs.insert(0, arg)
+        # special case for when we have e.g. strpath == "/"
+        actual_sep = "" if strpath.endswith(sep) else sep
         for arg in strargs:
             arg = arg.strip(sep)
             if iswin32:
                 # allow unix style paths even on windows.
                 arg = arg.strip('/')
                 arg = arg.replace('/', sep)
-            strpath = strpath + sep + arg
+            strpath = strpath + actual_sep + arg
+            actual_sep = sep
         obj = object.__new__(self.__class__)
         obj.strpath = normpath(strpath)
         return obj

@@ -1,3 +1,8 @@
+1.4.34
+======
+
+- fix #127 - path.join() no longer returns double slashes in order to ease comparing
+  to avoid breaking in non-posix unix envs like cygwin
 - fix python37 compatibility of path.sysfind on windows by correctly replacing vars
 
 1.4.34
