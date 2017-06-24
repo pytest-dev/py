@@ -1,9 +1,6 @@
 import py
 import sys
-from py._path import svnwc as svncommon
 
-svnbin = py.path.local.sysfind('svn')
-repodump = py.path.local(__file__).dirpath('repotest.dump')
 from py.builtin import print_
 
 def pytest_funcarg__repowc1(request):
