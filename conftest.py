@@ -9,12 +9,6 @@ collect_ignore = ['build', 'doc/_build']
 import os, py
 pid = os.getpid()
 
-def pytest_addoption(parser):
-    group = parser.getgroup("pylib", "py lib testing options")
-    group.addoption('--runslowtests',
-           action="store_true", dest="runslowtests", default=False,
-           help=("run slow tests"))
-
 def pytest_funcarg__sshhost(request):
     val = request.config.getvalue("sshhost")
     if val:
