@@ -1,7 +1,6 @@
 import py
 import pytest
-from py._iniconfig import IniConfig, ParseError, __all__ as ALL
-from py._iniconfig import iscommentline
+from py.iniconfig import IniConfig, ParseError
 from textwrap import dedent
 
 def pytest_generate_tests(metafunc):
@@ -282,18 +281,3 @@ def test_example_pypirc():
     assert pypi['username'] == '<username>'
     assert pypi['password'] == '<password>'
     assert ['repository', 'username', 'password'] == list(other)
-
-
-def test_api_import():
-    assert ALL == ['IniConfig', 'ParseError']
-
-@pytest.mark.parametrize("line", [
-    "#qwe",
-    "  #qwe",
-    ";qwe",
-    " ;qwe",
-])
-def test_iscommentline_true(line):
-    assert iscommentline(line)
-
-
