@@ -269,12 +269,6 @@ class TestLocalPath(common.CommonFSTests):
         l2 = local(l)
         assert l2 == l
 
-        wc = py.path.svnwc('.')
-        l3 = local(wc)
-        assert l3 is not wc
-        assert l3.strpath == wc.strpath
-        assert not hasattr(l3, 'commit')
-
     @py.test.mark.xfail(run=False, reason="unreliable est for long filenames")
     def test_long_filenames(self, tmpdir):
         if sys.platform == "win32":

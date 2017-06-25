@@ -61,10 +61,7 @@ apipkg.initpkg(__name__, attr={'_apipkg': apipkg}, exportdefs={
 
     'path' : {
         '__doc__'        : '._path:__doc__',
-        'svnwc'          : '._path.svnwc:SvnWCCommandPath',
-        'svnurl'         : '._path.svnurl:SvnCommandPath',
         'local'          : '._path.local:LocalPath',
-        'SvnAuth'        : '._path.svnwc:SvnAuth',
     },
 
     # python inspection/code-generation API
