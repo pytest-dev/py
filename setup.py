@@ -1,7 +1,7 @@
 import os
 import sys
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def get_version():
@@ -36,13 +36,7 @@ def main():
                      'Topic :: Utilities',
                      'Programming Language :: Python',
                      'Programming Language :: Python :: 3'],
-        packages=['py',
-                  'py._code',
-                  'py._io',
-                  'py._log',
-                  'py._path',
-                  'py._process',
-        ],
+        packages=find_packages(exclude=['tasks', 'testing']),
         zip_safe=False,
     )
 

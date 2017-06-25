@@ -1,20 +1,17 @@
 import py
-import types
 import sys
 
-def checksubpackage(name):
+
+@py.test.mark.parametrize('name', [x for x in dir(py) if x[0] != '_'])
+def test_dir(name):
     obj = getattr(py, name)
-    if hasattr(obj, '__map__'): # isinstance(obj, Module):
+    if hasattr(obj, '__map__'):  # isinstance(obj, Module):
         keys = dir(obj)
         assert len(keys) > 0
         print (obj.__map__)
         for name in list(obj.__map__):
             assert hasattr(obj, name), (obj, name)
 
-def test_dir():
-    for name in dir(py):
-        if not name.startswith('_'):
-            yield checksubpackage, name
 
 def test_virtual_module_identity():
     from py import path as path1
@@ -24,11 +21,12 @@ def test_virtual_module_identity():
     from py.path import local as local2
     assert local1 is local2
 
+
 def test_importall():
     base = py._pydir
     nodirs = [
     ]
-    if sys.version_info >= (3,0):
+    if sys.version_info >= (3, 0):
         nodirs.append(base.join('_code', '_assertionold.py'))
     else:
         nodirs.append(base.join('_code', '_assertionnew.py'))
@@ -40,7 +38,7 @@ def test_importall():
         if p.basename == '__init__.py':
             continue
         relpath = p.new(ext='').relto(base)
-        if base.sep in relpath: # not py/*.py itself
+        if base.sep in relpath:  # not py/*.py itself
             for x in nodirs:
                 if p == x or p.relto(x):
                     break
@@ -52,9 +50,11 @@ def test_importall():
                 except py.test.skip.Exception:
                     pass
 
+
 def check_import(modpath):
     py.builtin.print_("checking import", modpath)
     assert __import__(modpath)
+
 
 def test_all_resolves():
     seen = py.builtin.set([py])
@@ -65,4 +65,3 @@ def test_all_resolves():
             for value in item.__dict__.values():
                 if isinstance(value, type(py.test)):
                     seen.add(value)
-
