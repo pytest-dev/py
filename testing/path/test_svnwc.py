@@ -114,7 +114,8 @@ class TestWCSvnCommandPath(CommonSvnTests):
             s = r.status(updates=1, rec=1)
             # Comparing just the file names, because paths are unpredictable
             # on Windows. (long vs. 8.3 paths)
-            py.std.pprint.pprint(s.allpath())
+            import pprint
+            pprint.pprint(s.allpath())
             assert r.join('anotherfile').basename in [item.basename for
                                                     item in s.update_available]
             #assert len(s.update_available) == 1

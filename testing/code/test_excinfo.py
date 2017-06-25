@@ -2,6 +2,7 @@
 
 import py
 import pytest
+import sys
 from test_source import astonly
 
 from py._code.code import FormattedExcinfo, ReprExceptionInfo
@@ -298,7 +299,7 @@ def test_excinfo_no_sourcecode():
     except ValueError:
         excinfo = py.code.ExceptionInfo()
     s = str(excinfo.traceback[-1])
-    if py.std.sys.version_info < (2,5):
+    if sys.version_info < (2, 5):
         assert s == "  File '<string>':1 in ?\n  ???\n"
     else:
         assert s == "  File '<string>':1 in <module>\n  ???\n"
@@ -677,7 +678,7 @@ raise ValueError()
         p = FormattedExcinfo()
         def raiseos():
             raise OSError(2)
-        monkeypatch.setattr(py.std.os, 'getcwd', raiseos)
+        monkeypatch.setattr('os.getcwd', raiseos)
         assert p._makepath(__file__) == __file__
         reprtb = p.repr_traceback(excinfo)
 
@@ -904,7 +905,7 @@ raise ValueError()
         assert s.endswith('\nAssertionError: assert 0')
         assert 'exec (source.compile())' in s
         # python 2.4 fails to get the source line for the assert
-        if py.std.sys.version_info >= (2, 5):
+        if sys.version_info >= (2, 5):
             assert s.count('assert 0') == 2
 
     def test_traceback_repr_style(self, importasmod):

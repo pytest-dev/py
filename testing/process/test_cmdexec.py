@@ -2,7 +2,9 @@ import py
 from py.process import cmdexec
 
 def exvalue():
-    return py.std.sys.exc_info()[1]
+    import sys
+    return sys.exc_info()[1]
+
 
 class Test_exec_cmd:
     def test_simple(self):
@@ -17,7 +19,7 @@ class Test_exec_cmd:
         assert py.builtin._istext(out)
 
     def test_simple_error(self):
-        py.test.raises (cmdexec.Error, cmdexec, 'exit 1')
+        py.test.raises(cmdexec.Error, cmdexec, 'exit 1')
 
     def test_simple_error_exact_status(self):
         try:

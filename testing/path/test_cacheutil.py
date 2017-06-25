@@ -1,5 +1,7 @@
-import py
+import pytest
 from py._path import cacheutil
+
+import time
 
 class BasicCacheAPITest:
     cache = None
@@ -10,20 +12,21 @@ class BasicCacheAPITest:
         assert val == 42
 
     def test_cache_get_key_error(self):
-        py.test.raises(KeyError, "self.cache._getentry(-23)")
+        pytest.raises(KeyError, "self.cache._getentry(-23)")
 
     def test_delentry_non_raising(self):
-        val = self.cache.getorbuild(100, lambda: 100)
+        self.cache.getorbuild(100, lambda: 100)
         self.cache.delentry(100)
-        py.test.raises(KeyError, "self.cache._getentry(100)")
+        pytest.raises(KeyError, "self.cache._getentry(100)")
 
     def test_delentry_raising(self):
-        val = self.cache.getorbuild(100, lambda: 100)
+        self.cache.getorbuild(100, lambda: 100)
         self.cache.delentry(100)
-        py.test.raises(KeyError, "self.cache.delentry(100, raising=True)")
+        pytest.raises(KeyError, self.cache.delentry, 100, raising=True)
 
     def test_clear(self):
         self.cache.clear()
+
 
 class TestBuildcostAccess(BasicCacheAPITest):
     cache = cacheutil.BuildcostAccessCache(maxentries=128)
@@ -36,6 +39,7 @@ class TestBuildcostAccess(BasicCacheAPITest):
         # test fail randomly.  Let's rather use incrementing
         # numbers instead.
         l = [0]
+
         def counter():
             l[0] = l[0] + 1
             return l[0]
@@ -65,20 +69,21 @@ class TestAging(BasicCacheAPITest):
 
     def test_cache_eviction(self):
         self.cache.getorbuild(17, lambda: 17)
-        endtime = py.std.time.time() + self.maxsecs * 10
-        while py.std.time.time() < endtime:
+        endtime = time.time() + self.maxsecs * 10
+        while time.time() < endtime:
             try:
                 self.cache._getentry(17)
             except KeyError:
                 break
-            py.std.time.sleep(self.maxsecs*0.3)
+            time.sleep(self.maxsecs*0.3)
         else:
-            py.test.fail("waiting for cache eviction failed")
+            pytest.fail("waiting for cache eviction failed")
+
 
 def test_prune_lowestweight():
     maxsecs = 0.05
     cache = cacheutil.AgingCache(maxentries=10, maxseconds=maxsecs)
     for x in range(cache.maxentries):
         cache.getorbuild(x, lambda: x)
-    py.std.time.sleep(maxsecs*1.1)
+    time.sleep(maxsecs*1.1)
     cache.getorbuild(cache.maxentries+1, lambda: 42)

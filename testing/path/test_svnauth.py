@@ -6,6 +6,7 @@ import sys
 
 svnbin = py.path.local.sysfind('svn')
 
+
 def make_repo_auth(repo, userdata):
     """ write config to repo
 
@@ -277,7 +278,7 @@ class Setup:
         if sys.platform == 'win32':
             repodir = '/' + str(repodir).replace('\\', '/')
         self.repo = py.path.svnurl("file://%s" % repodir)
-        if py.std.sys.platform == 'win32':
+        if sys.platform == 'win32':
             # remove trailing slash...
             repodir = repodir[1:]
         self.repopath = py.path.local(repodir)

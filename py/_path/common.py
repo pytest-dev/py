@@ -189,14 +189,16 @@ newline will be removed from the end of each line. """
         """ (deprecated) return object unpickled from self.read() """
         f = self.open('rb')
         try:
-            return py.error.checked_call(py.std.pickle.load, f)
+            import pickle
+            return py.error.checked_call(pickle.load, f)
         finally:
             f.close()
 
     def move(self, target):
         """ move this path to target. """
         if target.relto(self):
-            raise py.error.EINVAL(target,
+            raise py.error.EINVAL(
+                target,
                 "cannot move path into a subdirectory of itself")
         try:
             self.rename(target)
@@ -226,7 +228,7 @@ newline will be removed from the end of each line. """
                 path.check(file=1, link=1)  # a link pointing to a file
         """
         if not kw:
-            kw = {'exists' : 1}
+            kw = {'exists': 1}
         return self.Checkers(self)._evaluate(kw)
 
     def fnmatch(self, pattern):

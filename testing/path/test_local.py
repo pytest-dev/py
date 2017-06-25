@@ -98,7 +98,7 @@ class TestLocalPath(common.CommonFSTests):
             assert l[0]['ignore_errors'] == val
 
     def test_initialize_curdir(self):
-        assert str(local()) == py.std.os.getcwd()
+        assert str(local()) == os.getcwd()
 
     @skiponwin32
     def test_chdir_gone(self, path1):
@@ -186,7 +186,8 @@ class TestLocalPath(common.CommonFSTests):
             d = {'answer': 42}
             path.dump(d, bin=bin)
             f = path.open('rb+')
-            dnew = py.std.pickle.load(f)
+            import pickle
+            dnew = pickle.load(f)
             assert d == dnew
         finally:
             f.close()
@@ -197,7 +198,7 @@ class TestLocalPath(common.CommonFSTests):
         import time
         try:
             fd, name = tempfile.mkstemp()
-            py.std.os.close(fd)
+            os.close(fd)
         except AttributeError:
             name = tempfile.mktemp()
             open(name, 'w').close()
@@ -210,7 +211,7 @@ class TestLocalPath(common.CommonFSTests):
             path.setmtime()
             assert path.mtime() != mtime
         finally:
-            py.std.os.remove(name)
+            os.remove(name)
 
     def test_normpath(self, path1):
         new1 = path1.join("/otherdir")
@@ -238,7 +239,7 @@ class TestLocalPath(common.CommonFSTests):
         try:
             res = tmpdir.chdir()
             assert str(res) == str(old)
-            assert py.std.os.getcwd() == str(tmpdir)
+            assert os.getcwd() == str(tmpdir)
         finally:
             old.chdir()
 
@@ -510,7 +511,7 @@ class TestImport:
 
     def test_pyimport_check_filepath_consistency(self, monkeypatch, tmpdir):
         name = 'pointsback123'
-        ModuleType = type(py.std.os)
+        ModuleType = type(os)
         p = tmpdir.ensure(name + '.py')
         for ending in ('.pyc', '$py.class', '.pyo'):
             mod = ModuleType(name)
