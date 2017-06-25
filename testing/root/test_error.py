@@ -3,17 +3,24 @@ import py
 
 import errno
 
+
 def test_error_classes():
     for name in errno.errorcode.values():
         x = getattr(py.error, name)
         assert issubclass(x, py.error.Error)
         assert issubclass(x, EnvironmentError)
 
+
+def test_has_name():
+    assert py.error.__name__ == 'py.error'
+
+
 def test_picklability_issue1():
     e1 = py.error.ENOENT()
     s = py.std.pickle.dumps(e1)
     e2 = py.std.pickle.loads(s)
     assert isinstance(e2, py.error.ENOENT)
+
 
 def test_unknown_error():
     num = 3999
@@ -23,6 +30,7 @@ def test_unknown_error():
     assert issubclass(cls, EnvironmentError)
     cls2 = py.error._geterrnoclass(num)
     assert cls is cls2
+
 
 def test_error_conversion_ENOTDIR(testdir):
     p = testdir.makepyfile("")
