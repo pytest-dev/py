@@ -179,7 +179,7 @@ class TestLocalPath(common.CommonFSTests):
         p.write("hello", ensure=1)
         assert p.read() == "hello"
 
-    @py.test.mark.multi(bin=(False, True))
+    @py.test.mark.parametrize('bin', (False, True))
     def test_dump(self, tmpdir, bin):
         path = tmpdir.join("dumpfile%s" % int(bin))
         try:
