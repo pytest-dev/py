@@ -22,10 +22,6 @@ except ImportError:
 # so that py.error.* instances are picklable
 import sys
 
-sys.modules['py.error'] = apipkg.AliasModule("py.error", "py._error", 'error')
-import py.error  # "Dereference" it now just to be safe (issue110)
-
-
 apipkg.initpkg(__name__, attr={'_apipkg': apipkg}, exportdefs={
     # access to all standard lib modules
     'std': '._std:std',
