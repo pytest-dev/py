@@ -116,7 +116,7 @@ def test_kill_func_forked():
     ff = py.process.ForkedFunc(box_fun)
     os.kill(ff.pid, 15)
     result = ff.waitfinish()
-    if py.std.sys.version_info < (2,4):
+    if sys.version_info < (2,4):
         py.test.skip("signal detection does not work with python prior 2.4")
     assert result.signal == 15
 

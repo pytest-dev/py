@@ -366,7 +366,7 @@ class TestStdCaptureFD(TestStdCapture):
     def test_callcapture(self):
         def func(x, y):
             print (x)
-            py.std.sys.stderr.write(str(y))
+            sys.stderr.write(str(y))
             return 42
 
         res, out, err = py.io.StdCaptureFD.call(func, 3, y=4)

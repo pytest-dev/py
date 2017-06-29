@@ -1,7 +1,9 @@
 import pytest, py
+import re
 
 def exvalue():
-    return py.std.sys.exc_info()[1]
+    import sys
+    return sys.exc_info()[1]
 
 def f():
     return 2
@@ -23,7 +25,7 @@ def test_assert_within_finally():
             i = 42
     """)
     s = excinfo.exconly()
-    assert py.std.re.search("division.+by zero", s) is not None
+    assert re.search("division.+by zero", s) is not None
 
     #def g():
     #    A.f()

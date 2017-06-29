@@ -129,7 +129,7 @@ class TerminalWriter(object):
             if stringio:
                 self.stringio = file = py.io.TextIO()
             else:
-                file = py.std.sys.stdout
+                from sys import stdout as file
         elif py.builtin.callable(file) and not (
              hasattr(file, "write") and hasattr(file, "flush")):
             file = WriteFile(file, encoding=encoding)

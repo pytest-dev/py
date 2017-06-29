@@ -206,7 +206,9 @@ class LocalPath(FSBase):
                 # force remove of readonly files on windows
                 if iswin32:
                     self.chmod(0o700, rec=1)
-                py.error.checked_call(py.std.shutil.rmtree, self.strpath,
+                import shutil
+                py.error.checked_call(
+                    shutil.rmtree, self.strpath,
                     ignore_errors=ignore_errors)
             else:
                 py.error.checked_call(os.rmdir, self.strpath)
@@ -451,8 +453,9 @@ class LocalPath(FSBase):
     def dump(self, obj, bin=1):
         """ pickle object into path location"""
         f = self.open('wb')
+        import pickle
         try:
-            py.error.checked_call(py.std.pickle.dump, obj, f, bin)
+            py.error.checked_call(pickle.dump, obj, f, bin)
         finally:
             f.close()
 
@@ -687,7 +690,8 @@ class LocalPath(FSBase):
                 return sys.modules[modname]
             except KeyError:
                 # we have a custom modname, do a pseudo-import
-                mod = py.std.types.ModuleType(modname)
+                import types
+                mod = types.ModuleType(modname)
                 mod.__file__ = str(self)
                 sys.modules[modname] = mod
                 try:
@@ -732,7 +736,7 @@ class LocalPath(FSBase):
         else:
             if paths is None:
                 if iswin32:
-                    paths = py.std.os.environ['Path'].split(';')
+                    paths = os.environ['Path'].split(';')
                     if '' not in paths and '.' not in paths:
                         paths.append('.')
                     try:
@@ -743,7 +747,7 @@ class LocalPath(FSBase):
                         paths = [path.replace('%SystemRoot%', systemroot)
                                  for path in paths]
                 else:
-                    paths = py.std.os.environ['PATH'].split(':')
+                    paths = os.environ['PATH'].split(':')
             tryadd = []
             if iswin32:
                 tryadd += os.environ['PATHEXT'].split(os.pathsep)
@@ -774,14 +778,15 @@ class LocalPath(FSBase):
         return cls(x)
     _gethomedir = classmethod(_gethomedir)
 
-    #"""
-    #special class constructors for local filesystem paths
-    #"""
+    # """
+    # special class constructors for local filesystem paths
+    # """
     def get_temproot(cls):
         """ return the system's temporary directory
             (where tempfiles are usually created in)
         """
-        return py.path.local(py.std.tempfile.gettempdir())
+        import tempfile
+        return py.path.local(tempfile.gettempdir())
     get_temproot = classmethod(get_temproot)
 
     def mkdtemp(cls, rootdir=None):
@@ -905,14 +910,19 @@ class LocalPath(FSBase):
 
 def copymode(src, dest):
     """ copy permission from src to dst. """
-    py.std.shutil.copymode(src, dest)
+    import shutil
+    shutil.copymode(src, dest)
+
 
 def copystat(src, dest):
-    """ copy permission,  last modification time, last access time, and flags from src to dst."""
-    py.std.shutil.copystat(str(src), str(dest))
+    """ copy permission,  last modification time,
+    last access time, and flags from src to dst."""
+    import shutil
+    shutil.copystat(str(src), str(dest))
+
 
 def copychunked(src, dest):
-    chunksize = 524288 # half a meg of bytes
+    chunksize = 524288  # half a meg of bytes
     fsrc = src.open('rb')
     try:
         fdest = dest.open('wb')
@@ -926,6 +936,7 @@ def copychunked(src, dest):
             fdest.close()
     finally:
         fsrc.close()
+
 
 def isimportable(name):
     if name and (name[0].isalpha() or name[0] == '_'):

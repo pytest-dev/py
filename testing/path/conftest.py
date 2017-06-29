@@ -47,7 +47,7 @@ def getrepowc(tmpdir, reponame='basetestrepo', wcname='wc'):
     print_("created svn repository", repo)
     wcdir.ensure(dir=1)
     wc = py.path.svnwc(wcdir)
-    if py.std.sys.platform == 'win32':
+    if sys.platform == 'win32':
         repourl = "file://" + '/' + str(repo).replace('\\', '/')
     else:
         repourl = "file://%s" % repo

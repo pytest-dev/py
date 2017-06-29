@@ -1,6 +1,7 @@
 
 import py
 from py._xmlgen import unicode, html, raw
+import sys
 
 class ns(py.xml.Namespace):
     pass
@@ -12,14 +13,14 @@ def test_escape():
             return uvalue
         def __str__(self):
             x = self.__unicode__()
-            if py.std.sys.version_info[0] < 3:
+            if sys.version_info[0] < 3:
                 return x.encode('utf-8')
             return x
     y = py.xml.escape(uvalue)
     assert y == uvalue
     x = py.xml.escape(A())
     assert x == uvalue
-    if py.std.sys.version_info[0] < 3:
+    if sys.version_info[0] < 3:
         assert isinstance(x, unicode)
         assert isinstance(y, unicode)
         y = py.xml.escape(uvalue.encode('utf-8'))
