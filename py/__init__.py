@@ -34,8 +34,6 @@ apipkg.initpkg(__name__, attr={'_apipkg': apipkg}, exportdefs={
     # pytest-2.0 has a flat namespace, we use alias modules
     # to keep old references compatible
     'test' : 'pytest',
-    'test.collect' : 'pytest',
-    'test.cmdline' : 'pytest',
 
     # hook into the top-level standard library
     'process' : {
