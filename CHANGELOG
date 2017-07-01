@@ -1,3 +1,4 @@
+- fix #82 - remove unsupportable aliases
 - fix python37 compatibility of path.sysfind on windows by correctly replacing vars
 
 1.4.34

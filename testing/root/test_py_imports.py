@@ -56,6 +56,10 @@ def check_import(modpath):
     assert __import__(modpath)
 
 
+def test_star_import():
+    exec("from py import *")
+
+
 def test_all_resolves():
     seen = py.builtin.set([py])
     lastlength = None
