@@ -21,13 +21,11 @@ filesystem. It's just a bit nicer in usage than the regular Python APIs, and
 of course all the functionality is bundled together rather than spread over a
 number of modules.
 
-Example usage, here we use the ``py.test.ensuretemp()`` function to create
-a ``py.path.local`` object for us (which wraps a directory):
 
 .. sourcecode:: pycon
 
   >>> import py
-  >>> temppath = py.test.ensuretemp('py.path_documentation')
+  >>> temppath = py.path.local('py.path_documentation')
   >>> foopath = temppath.join('foo') # get child 'foo' (lazily)
   >>> foopath.check() # check if child 'foo' exists
   False
@@ -77,7 +75,7 @@ Example usage of ``py.path.svnwc``:
 .. sourcecode:: pycon
 
   .. >>> if not py.test.config.option.urlcheck: raise ValueError('skipchunk')
-  >>> temp = py.test.ensuretemp('py.path_documentation')
+  >>> temp = py.path.local('py.path_documentation')
   >>> wc = py.path.svnwc(temp.join('svnwc'))
   >>> wc.checkout('http://codespeak.net/svn/py/dist/py/path/local')
   >>> wc.join('local.py').check()
