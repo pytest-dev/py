@@ -9,8 +9,15 @@ python:
 - pypy
 
 matrix:
+  include:
+  - python: '2.7'
+    # using a different option due to pytest-addopts pytester issues
+    env: PYTEST_XADDOPTS="-n 3 --runslowtests"
   allow_failures:
   - python: pypy
-cache: python
-install: pip install . --force-reinstall
-script: py.test
+install:
+- pip install -U setuptools setuptools_scm
+- pip install pytest~=2.9.0 pytest-xdist~=1.17.0
+- pip install -U . --force-reinstall
+script:
+- py.test --lsof $PYTEST_XADDOPTS
