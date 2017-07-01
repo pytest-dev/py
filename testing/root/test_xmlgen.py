@@ -7,7 +7,7 @@ class ns(py.xml.Namespace):
     pass
 
 def test_escape():
-    uvalue = py.builtin._totext('\xc4\x85\xc4\x87\n\xe2\x82\xac\n', 'utf-8')
+    uvalue = py.builtin._totext('\xc4\x85\xc4\x87\t\xe2\x82\xac\t', 'utf-8')
     class A:
         def __unicode__(self):
             return uvalue
@@ -82,6 +82,12 @@ def test_tag_with_text_and_attributes_entity():
     assert x.attr.name == "hello & world"
     u = unicode(x)
     assert u == '<some name="hello &amp; world"/>'
+
+def test_tag_with_newline_attributes_entity():
+    x = ns.some(name="hello \r\n world")
+    assert x.attr.name == "hello \r\n world"
+    u = unicode(x)
+    assert u == '<some name="hello &#13&#10 world"/>'
 
 def test_raw():
     x = ns.some(py.xml.raw("<p>literal</p>"))

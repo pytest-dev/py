@@ -237,7 +237,8 @@ class _escape:
     def __init__(self):
         self.escape = {
             u('"') : u('&quot;'), u('<') : u('&lt;'), u('>') : u('&gt;'),
-            u('&') : u('&amp;'), u("'") : u('&apos;'),
+            u('&') : u('&amp;'), u("'") : u('&apos;'), u('\n') : u('&#10'),
+            u('\r') : u('&#13'),
             }
         self.charef_rex = re.compile(u("|").join(self.escape.keys()))
 
