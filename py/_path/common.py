@@ -1,6 +1,9 @@
 """
 """
-import os, sys, posixpath
+import warnings
+import os
+import sys
+import posixpath
 import fnmatch
 import py
 
@@ -377,6 +380,9 @@ newline will be removed from the end of each line. """
     def _sortlist(self, res, sort):
         if sort:
             if hasattr(sort, '__call__'):
+                warnings.warn(DeprecationWarning(
+                    "listdir(sort=callable) is deprecated and breaks on python3"
+                ), stacklevel=3)
                 res.sort(sort)
             else:
                 res.sort()
