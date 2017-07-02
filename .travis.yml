@@ -7,17 +7,22 @@ python:
 - '3.5'
 - '3.6'
 - pypy
+env:
+- DEPS="pytest~=2.9.0"
+- DEPS="pytest~=3.0.0"
+- DEPS="pytest~=3.1.0"
 
 matrix:
+
   include:
   - python: '2.7'
     # using a different option due to pytest-addopts pytester issues
-    env: PYTEST_XADDOPTS="-n 3 --runslowtests"
+    env: PYTEST_XADDOPTS="-n 3 --runslowtests" DEPS="pytest pytest-xdist"
   allow_failures:
   - python: pypy
 install:
 - pip install -U setuptools setuptools_scm
-- pip install pytest~=2.9.0 pytest-xdist~=1.17.0
+- pip install $DEPS
 - pip install -U . --force-reinstall
 script:
 - py.test --lsof $PYTEST_XADDOPTS
