@@ -3,7 +3,6 @@
 
 - deprecate py.std and remove all internal uses
 - fix #73 turn py.error into an actual module
-- fix #85 - escape newlines in xml attributes
 - path join to / no longer produces leading double slashes
 - fix #82 - remove unsupportable aliases
 - fix python37 compatibility of path.sysfind on windows by correctly replacing vars
