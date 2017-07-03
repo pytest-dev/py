@@ -143,7 +143,10 @@ def test_assert_implicit_multiline():
         e = exvalue()
         assert str(e).find('assert [1, 2, 3] !=') != -1
 
-
+@py.test.mark.xfail(py.test.__version__[0] != "2",
+                    reason="broken on modern pytest",
+                    run=False
+)
 def test_assert_with_brokenrepr_arg():
     class BrokenRepr:
         def __repr__(self): 0 / 0
@@ -279,8 +282,10 @@ def test_assert_raise_alias(testdir):
         "*1 failed*",
     ])
 
-
-@pytest.mark.skipif("sys.version_info < (2,5)")
+@py.test.mark.xfail(py.test.__version__[0] != "2",
+                    reason="broken on modern pytest",
+                    run=False)
+@py.test.mark.skipif("sys.version_info < (2,5)")
 def test_assert_raise_subclass():
     class SomeEx(AssertionError):
         def __init__(self, *args):
