@@ -442,6 +442,7 @@ class TestExecution:
         assert x.check()
 
     def test_make_numbered_dir_multiprocess_safe(self, tmpdir):
+        # https://github.com/pytest-dev/py/issues/30
         pool = multiprocessing.Pool(10)
         results = [pool.apply_async(batch_make_numbered_dirs, [tmpdir, 100]) for _ in range(20)]
         for r in results:
