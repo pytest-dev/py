@@ -891,13 +891,14 @@ class LocalPath(FSBase):
 
         # prune old directories
         udir_time = get_mtime(udir)
-        if keep and lock_timeout and udir_time:
+        if keep and udir_time:
             for path in rootdir.listdir():
                 num = parse_num(path)
                 if num is not None and num <= (maxnum - keep):
                     try:
                         # try acquiring lock to remove directory as exclusive user
-                        create_lockfile(path)
+                        if lock_timeout:
+                            create_lockfile(path)
                     except (py.error.EEXIST, py.error.ENOENT):
                         path_time = get_mtime(path)
                         if not path_time:
