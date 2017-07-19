@@ -43,14 +43,18 @@ def fake_fspath_obj(request):
 
 
 def batch_make_numbered_dirs(rootdir, repeats):
-    for i in range(repeats):
-        dir_ = py.path.local.make_numbered_dir(prefix='repro-', rootdir=rootdir)
-        file_ = dir_.join('foo')
-        file_.write('%s' % i)
-        actual = int(file_.read())
-        assert actual == i, 'int(file_.read()) is %s instead of %s' % (actual, i)
-        dir_.join('.lock').remove(ignore_errors=True)
-    return True
+    try:
+        for i in range(repeats):
+            dir_ = py.path.local.make_numbered_dir(prefix='repro-', rootdir=rootdir)
+            file_ = dir_.join('foo')
+            file_.write('%s' % i)
+            actual = int(file_.read())
+            assert actual == i, 'int(file_.read()) is %s instead of %s' % (actual, i)
+            dir_.join('.lock').remove(ignore_errors=True)
+        return True
+    except KeyboardInterrupt:
+        # makes sure that interrupting test session won't hang it
+        os.exit(2)
 
 
 class TestLocalPath(common.CommonFSTests):
