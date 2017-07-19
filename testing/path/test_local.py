@@ -6,9 +6,9 @@ import py
 import pytest
 import os
 import sys
+import multiprocessing
 from py.path import local
 import common
-import multiprocessing
 
 failsonjython = py.test.mark.xfail("sys.platform.startswith('java')")
 failsonjywin32 = py.test.mark.xfail(
@@ -364,6 +364,7 @@ class TestExecutionOnWindows:
         h = tmpdir.ensure("hello.bat")
         x = py.path.local.sysfind("hello")
         assert x == h
+
 
 class TestExecution:
     pytestmark = skiponwin32

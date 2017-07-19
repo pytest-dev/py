@@ -832,7 +832,6 @@ class LocalPath(FSBase):
 
         def atexit_remove_lockfile(lockfile):
             """ ensure lockfile is removed at process exit """
-
             mypid = os.getpid()
             def try_remove_lockfile():
                 # in a fork() situation, only the last process should
@@ -846,7 +845,6 @@ class LocalPath(FSBase):
                     lockfile.remove()
                 except py.error.Error:
                     pass
-
             atexit.register(try_remove_lockfile)
 
         # compute the maximum number currently in use with the prefix
