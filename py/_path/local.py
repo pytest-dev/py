@@ -804,7 +804,8 @@ class LocalPath(FSBase):
         """ return unique directory with a number greater than the current
             maximum one.  The number is assumed to start directly after prefix.
             if keep is true directories with a number less than (maxnum-keep)
-            will be removed.
+            will be removed. If .lock files are used (lock_timeout non-zero),
+            algorithm is multi-process safe.
         """
         if rootdir is None:
             rootdir = cls.get_temproot()
