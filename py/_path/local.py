@@ -4,7 +4,7 @@ local path implementation.
 from __future__ import with_statement
 
 from contextlib import contextmanager
-import sys, os, re, atexit, io
+import sys, os, re, atexit, io, uuid
 import py
 from py._path import common
 from py._path.common import iswin32, fspath
@@ -819,37 +819,20 @@ class LocalPath(FSBase):
                 except ValueError:
                     pass
 
-        # compute the maximum number currently in use with the
-        # prefix
-        lastmax = None
-        while True:
-            maxnum = -1
-            for path in rootdir.listdir():
-                num = parse_num(path)
-                if num is not None:
-                    maxnum = max(maxnum, num)
-
-            # make the new directory
-            try:
-                udir = rootdir.mkdir(prefix + str(maxnum+1))
-            except py.error.EEXIST:
-                # race condition: another thread/process created the dir
-                # in the meantime.  Try counting again
-                if lastmax == maxnum:
-                    raise
-                lastmax = maxnum
-                continue
-            break
-
-        # put a .lock file in the new directory that will be removed at
-        # process exit
-        if lock_timeout:
-            lockfile = udir.join('.lock')
+        def create_lockfile(path):
+            """ exclusively create lockfile. Throws when failed """
             mypid = os.getpid()
+            lockfile = path.join('.lock')
             if hasattr(lockfile, 'mksymlinkto'):
                 lockfile.mksymlinkto(str(mypid))
             else:
-                lockfile.write(str(mypid))
+                lockfile.write(str(mypid), 'wx')
+            return lockfile
+
+        def atexit_remove_lockfile(lockfile):
+            """ ensure lockfile is removed at process exit """
+
+            mypid = os.getpid()
             def try_remove_lockfile():
                 # in a fork() situation, only the last process should
                 # remove the .lock, otherwise the other processes run the
@@ -862,21 +845,81 @@ class LocalPath(FSBase):
                     lockfile.remove()
                 except py.error.Error:
                     pass
+
             atexit.register(try_remove_lockfile)
 
+        # compute the maximum number currently in use with the prefix
+        lastmax = None
+        while True:
+            maxnum = -1
+            for path in rootdir.listdir():
+                num = parse_num(path)
+                if num is not None:
+                    maxnum = max(maxnum, num)
+
+            # make the new directory
+            try:
+                udir = rootdir.mkdir(prefix + str(maxnum+1))
+                if lock_timeout:
+                    lockfile = create_lockfile(udir)
+                    atexit_remove_lockfile(lockfile)
+            except (py.error.EEXIST, py.error.ENOENT):
+                # race condition (1): another thread/process created the dir
+                #                     in the meantime - try again
+                # race condition (2): another thread/process spuriously acquired
+                #                     lock treating empty directory as candidate
+                #                     for removal - try again
+                if lastmax == maxnum:
+                    raise
+                lastmax = maxnum
+                continue
+            break
+
+        def get_mtime(path):
+            """ read file modification time """
+            try:
+                return path.lstat().mtime
+            except py.error.Error:
+                pass
+
+        garbage_prefix = prefix + 'garbage-'
+
+        def is_garbage(path):
+            """ check if path denotes directory scheduled for removal """
+            bn = path.basename
+            return bn.startswith(garbage_prefix)
+
         # prune old directories
-        if keep:
+        udir_time = get_mtime(udir)
+        if keep and lock_timeout and udir_time:
             for path in rootdir.listdir():
                 num = parse_num(path)
                 if num is not None and num <= (maxnum - keep):
-                    lf = path.join('.lock')
                     try:
-                        t1 = lf.lstat().mtime
-                        t2 = lockfile.lstat().mtime
-                        if not lock_timeout or abs(t2-t1) < lock_timeout:
-                            continue   # skip directories still locked
-                    except py.error.Error:
-                        pass   # assume that it means that there is no 'lf'
+                        # try acquiring lock to remove directory as exclusive user
+                        create_lockfile(path)
+                    except (py.error.EEXIST, py.error.ENOENT):
+                        path_time = get_mtime(path)
+                        if not path_time:
+                            # assume directory doesn't exist now
+                            continue
+                        if abs(udir_time - path_time) < lock_timeout:
+                            # assume directory with lockfile exists
+                            # and lock timeout hasn't expired yet
+                            continue
+
+                    # path dir locked for exlusive use
+                    # and scheduled for removal to avoid another thread/process
+                    # treating it as a new directory or removal candidate
+                    garbage_path = rootdir.join(garbage_prefix + str(uuid.uuid4()))
+                    try:
+                        path.rename(garbage_path)
+                        garbage_path.remove(rec=1)
+                    except KeyboardInterrupt:
+                        raise
+                    except: # this might be py.error.Error, WindowsError ...
+                        pass
+                if is_garbage(path):
                     try:
                         path.remove(rec=1)
                     except KeyboardInterrupt:
