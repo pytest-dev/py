@@ -750,7 +750,9 @@ class LocalPath(FSBase):
                     paths = os.environ['PATH'].split(':')
             tryadd = []
             if iswin32:
-                tryadd += os.environ['PATHEXT'].split(os.pathsep)
+                executable_extensions = os.environ['PATHEXT'].split(os.pathsep)
+                tryadd += executable_extensions
+                tryadd += ['{}.LNK'.format(ext) for ext in executable_extensions]
             tryadd.append("")
 
             for x in paths:
