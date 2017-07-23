@@ -7,7 +7,7 @@ python:
 - '3.4'
 - '3.5'
 - '3.6'
-- pypy
+- 'pypy-5.4'
 env:
 - DEPS="pytest~=2.9.0"
 - DEPS="pytest~=3.0.0"
@@ -20,7 +20,7 @@ matrix:
     # using a different option due to pytest-addopts pytester issues
     env: PYTEST_XADDOPTS="-n 3 --runslowtests" DEPS="pytest~=3.0.0 pytest-xdist"
   allow_failures:
-  - python: pypy
+  - python: 'pypy-5.4'
 install:
 - pip install -U setuptools setuptools_scm
 - pip install $DEPS
