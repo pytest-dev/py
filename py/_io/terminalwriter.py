@@ -5,7 +5,7 @@ Helper functions for writing to terminals and files.
 """
 
 
-import sys, os
+import signal, sys, os
 import py
 py3k = sys.version_info[0] >= 3
 from py.builtin import text, bytes
@@ -144,11 +144,29 @@ class TerminalWriter(object):
     def fullwidth(self):
         if hasattr(self, '_terminal_width'):
             return self._terminal_width
-        return get_terminal_width()
+        try:
+            width = self._cached_terminal_width
+        except AttributeError:
+            try:
+                signal.signal(signal.SIGWINCH, self._handle_sigwinch)
+            except AttributeError:  # SIGWINCH not supported.
+                width = self._cached_terminal_width = False
+                return width
+            else:
+                width = self._cached_terminal_width = get_terminal_width()
+                return width
+        if width is None:
+            width = self._cached_terminal_width = get_terminal_width()
+        elif width is False:
+            return get_terminal_width()
+        return width
 
     @fullwidth.setter
     def fullwidth(self, value):
         self._terminal_width = value
+
+    def _handle_sigwinch(self, signum=None, frame=None):
+        self._cached_terminal_width = None
 
     def _escaped(self, text, esc):
         if esc and self.hasmarkup:
