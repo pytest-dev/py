@@ -6,6 +6,7 @@ import py
 import pytest
 import os
 import sys
+import multiprocessing
 from py.path import local
 import common
 
@@ -39,6 +40,21 @@ def fake_fspath_obj(request):
             return self._path
 
     return FakeFSPathClass(os.path.join("this", "is", "a", "fake", "path"))
+
+
+def batch_make_numbered_dirs(rootdir, repeats):
+    try:
+        for i in range(repeats):
+            dir_ = py.path.local.make_numbered_dir(prefix='repro-', rootdir=rootdir)
+            file_ = dir_.join('foo')
+            file_.write('%s' % i)
+            actual = int(file_.read())
+            assert actual == i, 'int(file_.read()) is %s instead of %s' % (actual, i)
+            dir_.join('.lock').remove(ignore_errors=True)
+        return True
+    except KeyboardInterrupt:
+        # makes sure that interrupting test session won't hang it
+        os.exit(2)
 
 
 class TestLocalPath(common.CommonFSTests):
@@ -429,6 +445,13 @@ class TestExecution:
         x = tmpdir.make_numbered_dir(rootdir=tmpdir, lock_timeout=0)
         assert x.relto(tmpdir)
         assert x.check()
+
+    def test_make_numbered_dir_multiprocess_safe(self, tmpdir):
+        # https://github.com/pytest-dev/py/issues/30
+        pool = multiprocessing.Pool()
+        results = [pool.apply_async(batch_make_numbered_dirs, [tmpdir, 100]) for _ in range(20)]
+        for r in results:
+            assert r.get() == True
 
     def test_locked_make_numbered_dir(self, tmpdir):
         for i in range(10):
