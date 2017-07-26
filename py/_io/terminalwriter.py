@@ -31,9 +31,9 @@ def _getdimensions():
 
 
 def get_terminal_width():
-    height = width = 0
+    width = 0
     try:
-        height, width = _getdimensions()
+        _, width = _getdimensions()
     except py.builtin._sysex:
         raise
     except:
