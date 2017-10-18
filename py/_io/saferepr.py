@@ -56,7 +56,7 @@ class SafeRepr(reprlib.Repr):
                 s = s[:i] + '...' + s[len(s)-j:]
             return s
 
-def saferepr(obj, maxsize=240):
+def saferepr(obj, maxsize=240,maxother=160, maxarray=6, maxdict=4):
     """ return a size-limited safe repr-string for the given object.
     Failing __repr__ functions of user instances will be represented
     with a short exception info and 'saferepr' generally takes
@@ -66,6 +66,9 @@ def saferepr(obj, maxsize=240):
     # review exception handling
     srepr = SafeRepr()
     srepr.maxstring = maxsize
-    srepr.maxsize = maxsize
-    srepr.maxother = 160
+    srepr.maxsize = srepr.maxlong = maxsize
+    srepr.maxother = maxother
+    srepr.maxdict = maxdict
+    srepr.maxlist = srepr.maxarray = srepr.maxset = srepr.maxmaxfrozenset = srepr.maxdeque = srepr.maxtuple = maxarray
+
     return srepr.repr(obj)
