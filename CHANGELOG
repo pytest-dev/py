@@ -9,6 +9,8 @@
 - turn iniconfig and apipkg into vendored packages and ease de-vendoring for distributions
 - fix #68 remove invalid py.test.ensuretemp references
 - fix #25 - deprecate path.listdir(sort=callable)
+- add ``TerminalWriter.chars_on_current_line`` read-only property that tracks how many characters
+  have been written to the current line.
 
 1.4.34
 ====================================================================

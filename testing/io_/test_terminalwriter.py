@@ -226,6 +226,27 @@ def test_terminal_with_callable_write_and_flush():
     assert l == set(["2"])
 
 
+def test_chars_on_current_line():
+    tw = py.io.TerminalWriter(stringio=True)
+
+    written = []
+
+    def write_and_check(s, expected):
+        tw.write(s, bold=True)
+        written.append(s)
+        assert tw.chars_on_current_line == expected
+        assert tw.stringio.getvalue() == ''.join(written)
+
+    write_and_check('foo', 3)
+    write_and_check('bar', 6)
+    write_and_check('\n', 0)
+    write_and_check('\n', 0)
+    write_and_check('\n\n\n', 0)
+    write_and_check('\nfoo', 3)
+    write_and_check('\nfbar\nhello', 5)
+    write_and_check('10', 7)
+
+
 @pytest.mark.skipif(sys.platform == "win32", reason="win32 has no native ansi")
 def test_attr_hasmarkup():
     tw = py.io.TerminalWriter(stringio=True)
