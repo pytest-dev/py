@@ -10,6 +10,10 @@
 .. image:: https://img.shields.io/travis/pytest-dev/py.svg
    :target: https://travis-ci.org/pytest-dev/py
 
+.. image:: https://img.shields.io/appveyor/ci/pytest-dev/py.svg
+   :target: https://ci.appveyor.com/project/pytestbot/py
+
+
 The py lib is a Python development support library featuring
 the following tools and modules:
 
