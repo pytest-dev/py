@@ -10,7 +10,7 @@
 .. image:: https://img.shields.io/travis/pytest-dev/py.svg
    :target: https://travis-ci.org/pytest-dev/py
 
-.. image:: https://img.shields.io/appveyor/ci/pytest-dev/py.svg
+.. image:: https://ci.appveyor.com/api/projects/status/10keglan6uqwj5al/branch/master?svg=true
    :target: https://ci.appveyor.com/project/pytestbot/py
 
 
