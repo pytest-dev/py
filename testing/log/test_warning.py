@@ -1,7 +1,17 @@
 import pytest
+import sys
+
 import py
 
 mypath = py.path.local(__file__).new(ext=".py")
+
+
+@pytest.fixture(autouse=True)
+def skip_under_pytest_3_1():
+    from distutils.version import LooseVersion
+    if sys.platform.startswith('win') and LooseVersion(pytest.__version__) >= LooseVersion('3.1'):
+        pytest.skip('apiwarn is not compatible with pytest >= 3.1 (#162)')
+
 
 @pytest.mark.xfail
 def test_forwarding_to_warnings_module():
