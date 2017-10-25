@@ -1,5 +1,4 @@
 import py
-import svntestbase
 from py.path import SvnAuth
 import time
 import sys
@@ -323,6 +322,12 @@ class TestSvnWCAuthFunctional:
         assert log[0].msg == 'added foo.txt'
 
     def test_switch(self, setup):
+        import pytest
+        try:
+            import xdist
+            pytest.skip(reason='#160: fails under xdist')
+        except ImportError:
+            pass
         wc = py.path.svnwc(setup.temppath, auth=setup.auth)
         svnurl = 'svn://localhost:%s/%s' % (setup.port, setup.repopath.basename)
         wc.checkout(svnurl)
