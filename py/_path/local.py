@@ -781,14 +781,15 @@ class LocalPath(FSBase):
     # """
     # special class constructors for local filesystem paths
     # """
+    @classmethod
     def get_temproot(cls):
         """ return the system's temporary directory
             (where tempfiles are usually created in)
         """
         import tempfile
         return py.path.local(tempfile.gettempdir())
-    get_temproot = classmethod(get_temproot)
 
+    @classmethod
     def mkdtemp(cls, rootdir=None):
         """ return a Path object pointing to a fresh new temporary directory
             (which we created ourself).
@@ -797,7 +798,6 @@ class LocalPath(FSBase):
         if rootdir is None:
             rootdir = cls.get_temproot()
         return cls(py.error.checked_call(tempfile.mkdtemp, dir=str(rootdir)))
-    mkdtemp = classmethod(mkdtemp)
 
     def make_numbered_dir(cls, prefix='session-', rootdir=None, keep=3,
                           lock_timeout = 172800):   # two days
@@ -820,6 +820,8 @@ class LocalPath(FSBase):
                 except ValueError:
                     pass
 
+        exclusive_flag = 'x' if not sys.platform.startswith('win') else ''
+
         def create_lockfile(path):
             """ exclusively create lockfile. Throws when failed """
             mypid = os.getpid()
@@ -827,7 +829,7 @@ class LocalPath(FSBase):
             if hasattr(lockfile, 'mksymlinkto'):
                 lockfile.mksymlinkto(str(mypid))
             else:
-                lockfile.write(str(mypid), 'wx')
+                lockfile.write(str(mypid), 'w' + exclusive_flag)
             return lockfile
 
         def atexit_remove_lockfile(lockfile):
