@@ -4,6 +4,8 @@ import sys
 
 @py.test.mark.parametrize('name', [x for x in dir(py) if x[0] != '_'])
 def test_dir(name):
+    if name == 'log' and sys.platform.startswith('win'):
+        py.test.skip('syslog is not available on Windows')
     obj = getattr(py, name)
     if hasattr(obj, '__map__'):  # isinstance(obj, Module):
         keys = dir(obj)
@@ -52,6 +54,8 @@ def test_importall():
 
 
 def check_import(modpath):
+    if modpath == 'py._log.log' and sys.platform.startswith('win'):
+        py.test.skip('syslog is not available on Windows')
     py.builtin.print_("checking import", modpath)
     assert __import__(modpath)
 
