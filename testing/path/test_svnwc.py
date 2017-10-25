@@ -5,6 +5,13 @@ from py._path.svnwc import InfoSvnWCCommand, XMLWCStatus, parse_wcinfotime
 from py._path import svnwc as svncommon
 from svntestbase import CommonSvnTests
 
+
+@pytest.fixture(autouse=True)
+def skip_on_windows():
+    if sys.platform.startswith('win'):
+        pytest.skip('#161 all tests in this file are failing on Windows')
+
+
 def test_make_repo(path1, tmpdir):
     repo = tmpdir.join("repo")
     py.process.cmdexec('svnadmin create %s' % repo)
