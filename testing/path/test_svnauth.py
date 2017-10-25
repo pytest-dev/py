@@ -325,7 +325,7 @@ class TestSvnWCAuthFunctional:
         import pytest
         try:
             import xdist
-            pytest.skip(reason='#160: fails under xdist')
+            pytest.skip('#160: fails under xdist')
         except ImportError:
             pass
         wc = py.path.svnwc(setup.temppath, auth=setup.auth)
