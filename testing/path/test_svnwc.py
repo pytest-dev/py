@@ -6,10 +6,9 @@ from py._path import svnwc as svncommon
 from svntestbase import CommonSvnTests
 
 
-@pytest.fixture(autouse=True)
-def skip_on_windows():
-    if sys.platform.startswith('win'):
-        pytest.skip('#161 all tests in this file are failing on Windows')
+pytestmark = pytest.mark.xfail(sys.platform.startswith('win'),
+                               reason='#161 all tests in this file are failing on Windows',
+                               run=False)
 
 
 def test_make_repo(path1, tmpdir):
