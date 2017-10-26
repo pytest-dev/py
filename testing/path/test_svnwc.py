@@ -112,8 +112,9 @@ class TestWCSvnCommandPath(CommonSvnTests):
         assert r.join('sampledir/otherfile').basename in [item.basename
                                                     for item in s.unchanged]
 
-    @pytest.mark.xfail(reason="svn-1.7 has buggy 'status --xml' output")
     def test_status_update(self, path1):
+        # not a mark because the global "pytestmark" will end up overwriting a mark here
+        pytest.xfail("svn-1.7 has buggy 'status --xml' output")
         r = path1
         try:
             r.update(rev=1)
