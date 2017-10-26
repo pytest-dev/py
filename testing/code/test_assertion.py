@@ -25,13 +25,7 @@ def test_assert_within_finally():
             i = 42
     """)
     s = excinfo.exconly()
-    assert re.search("division.+by zero", s) is not None
-
-    #def g():
-    #    A.f()
-    #excinfo = getexcinfo(TypeError, g)
-    #msg = getmsg(excinfo)
-    #assert msg.find("must be called with A") != -1
+    assert re.search("ZeroDivisionError:.*division", s) is not None
 
 
 def test_assert_multiline_1():
