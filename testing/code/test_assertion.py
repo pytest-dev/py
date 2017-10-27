@@ -63,7 +63,6 @@ def test_is():
         assert s.startswith("assert 1 is 2")
 
 
-@py.test.mark.skipif("sys.version_info < (2,6)")
 def test_attrib():
     class Foo(object):
         b = 1
@@ -75,7 +74,6 @@ def test_attrib():
         s = str(e)
         assert s.startswith("assert 1 == 2")
 
-@py.test.mark.skipif("sys.version_info < (2,6)")
 def test_attrib_inst():
     class Foo(object):
         b = 1
@@ -227,7 +225,6 @@ def test_underscore_api():
     py.code._reinterpret_old # used by pypy
     py.code._reinterpret
 
-@py.test.mark.skipif("sys.version_info < (2,6)")
 def test_assert_customizable_reprcompare(monkeypatch):
     util = pytest.importorskip("_pytest.assertion.util")
     monkeypatch.setattr(util, '_reprcompare', lambda *args: 'hello')
@@ -279,7 +276,6 @@ def test_assert_raise_alias(testdir):
 @py.test.mark.xfail(py.test.__version__[0] != "2",
                     reason="broken on modern pytest",
                     run=False)
-@py.test.mark.skipif("sys.version_info < (2,5)")
 def test_assert_raise_subclass():
     class SomeEx(AssertionError):
         def __init__(self, *args):

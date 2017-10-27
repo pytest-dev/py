@@ -252,7 +252,6 @@ class TestSourceParsingAndCompiling:
         assert getstatement(2, source).lines == source.lines[2:3]
         assert getstatement(3, source).lines == source.lines[3:4]
 
-    @py.test.mark.skipif("sys.version_info < (2,6)")
     def test_getstatementrange_out_of_bounds_py3(self):
         source = Source("if xxx:\n   from .collections import something")
         r = source.getstatementrange(1)
@@ -262,7 +261,6 @@ class TestSourceParsingAndCompiling:
         source = Source(":")
         py.test.raises(SyntaxError, lambda: source.getstatementrange(0))
 
-    @py.test.mark.skipif("sys.version_info < (2,6)")
     def test_compile_to_ast(self):
         import ast
         source = Source("x = 4")
@@ -380,8 +378,6 @@ def test_deindent():
     lines = deindent(source.splitlines())
     assert lines == ['', 'def f():', '    def g():', '        pass', '    ']
 
-@py.test.mark.xfail("sys.version_info[:3] < (2,7,0) or "
-    "((3,0) <= sys.version_info[:2] < (3,2))")
 def test_source_of_class_at_eof_without_newline(tmpdir):
     # this test fails because the implicit inspect.getsource(A) below
     # does not return the "x = 1" last line.

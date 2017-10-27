@@ -477,10 +477,7 @@ def setuptestfs(path):
     otherdir.ensure('__init__.py')
 
     module_a = otherdir.ensure('a.py')
-    if sys.version_info >= (2,6):
-        module_a.write('from .b import stuff as result\n')
-    else:
-        module_a.write('from b import stuff as result\n')
+    module_a.write('from .b import stuff as result\n')
     module_b = otherdir.ensure('b.py')
     module_b.write('stuff="got it"\n')
     module_c = otherdir.ensure('c.py')

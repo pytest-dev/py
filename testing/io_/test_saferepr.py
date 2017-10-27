@@ -39,10 +39,7 @@ class TestSafeRepr:
         assert 'Exception' in saferepr(BrokenRepr(Exception("broken")))
         s = saferepr(BrokenReprException("really broken"))
         assert 'TypeError' in s
-        if sys.version_info < (2,6):
-            assert 'unknown' in saferepr(BrokenRepr("string"))
-        else:
-            assert 'TypeError' in saferepr(BrokenRepr("string"))
+        assert 'TypeError' in saferepr(BrokenRepr("string"))
 
         s2 = saferepr(BrokenRepr(BrokenReprException('omg even worse')))
         assert 'NameError' not in s2
