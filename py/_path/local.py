@@ -820,8 +820,6 @@ class LocalPath(FSBase):
                 except ValueError:
                     pass
 
-        exclusive_flag = 'x' if not sys.platform.startswith('win') else ''
-
         def create_lockfile(path):
             """ exclusively create lockfile. Throws when failed """
             mypid = os.getpid()
@@ -829,7 +827,12 @@ class LocalPath(FSBase):
             if hasattr(lockfile, 'mksymlinkto'):
                 lockfile.mksymlinkto(str(mypid))
             else:
-                lockfile.write(str(mypid), 'w' + exclusive_flag)
+                try:
+                    fd = os.open(str(lockfile), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+                except IOError:
+                    raise py.error.EEXIST()
+                with os.fdopen(fd, 'w') as f:
+                    f.write(str(mypid))
             return lockfile
 
         def atexit_remove_lockfile(lockfile):
@@ -910,7 +913,7 @@ class LocalPath(FSBase):
                             # and lock timeout hasn't expired yet
                             continue
 
-                    # path dir locked for exlusive use
+                    # path dir locked for exclusive use
                     # and scheduled for removal to avoid another thread/process
                     # treating it as a new directory or removal candidate
                     garbage_path = rootdir.join(garbage_prefix + str(uuid.uuid4()))

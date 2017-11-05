@@ -354,6 +354,13 @@ class TestLocalPath(common.CommonFSTests):
         assert py_path.join(fake_fspath_obj).strpath == os.path.join(
                 py_path.strpath, str_path)
 
+    def test_make_numbered_dir_multiprocess_safe(self, tmpdir):
+        # https://github.com/pytest-dev/py/issues/30
+        pool = multiprocessing.Pool()
+        results = [pool.apply_async(batch_make_numbered_dirs, [tmpdir, 100]) for _ in range(20)]
+        for r in results:
+            assert r.get()
+
 
 class TestExecutionOnWindows:
     pytestmark = win32only
@@ -445,13 +452,6 @@ class TestExecution:
         x = tmpdir.make_numbered_dir(rootdir=tmpdir, lock_timeout=0)
         assert x.relto(tmpdir)
         assert x.check()
-
-    def test_make_numbered_dir_multiprocess_safe(self, tmpdir):
-        # https://github.com/pytest-dev/py/issues/30
-        pool = multiprocessing.Pool()
-        results = [pool.apply_async(batch_make_numbered_dirs, [tmpdir, 100]) for _ in range(20)]
-        for r in results:
-            assert r.get() == True
 
     def test_locked_make_numbered_dir(self, tmpdir):
         for i in range(10):
