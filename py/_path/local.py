@@ -864,12 +864,15 @@ class LocalPath(FSBase):
                 if lock_timeout:
                     lockfile = create_lockfile(udir)
                     atexit_remove_lockfile(lockfile)
-            except (py.error.EEXIST, py.error.ENOENT):
+            except (py.error.EEXIST, py.error.ENOENT, py.error.EBUSY):
                 # race condition (1): another thread/process created the dir
                 #                     in the meantime - try again
                 # race condition (2): another thread/process spuriously acquired
                 #                     lock treating empty directory as candidate
                 #                     for removal - try again
+                # race condition (3): another thread/process tried to create the lock at
+                #                     the same time (happened in Python 3.3 on Windows)
+                # https://ci.appveyor.com/project/pytestbot/py/build/1.0.21/job/ffi85j4c0lqwsfwa
                 if lastmax == maxnum:
                     raise
                 lastmax = maxnum
@@ -900,7 +903,7 @@ class LocalPath(FSBase):
                         # try acquiring lock to remove directory as exclusive user
                         if lock_timeout:
                             create_lockfile(path)
-                    except (py.error.EEXIST, py.error.ENOENT):
+                    except (py.error.EEXIST, py.error.ENOENT, py.error.EBUSY):
                         path_time = get_mtime(path)
                         if not path_time:
                             # assume directory doesn't exist now
