@@ -354,6 +354,17 @@ class TestLocalPath(common.CommonFSTests):
         assert py_path.join(fake_fspath_obj).strpath == os.path.join(
                 py_path.strpath, str_path)
 
+    @pytest.mark.skipif(sys.version_info[:2] == (2, 6) and sys.platform.startswith('win'),
+                        reason='multiprocessing bug in Python 2.6/Windows prevents this test '
+                               'from working as intended '
+                               '(see https://bugs.python.org/issue10845 and #157).')
+    def test_make_numbered_dir_multiprocess_safe(self, tmpdir):
+        # https://github.com/pytest-dev/py/issues/30
+        pool = multiprocessing.Pool()
+        results = [pool.apply_async(batch_make_numbered_dirs, [tmpdir, 100]) for _ in range(20)]
+        for r in results:
+            assert r.get()
+
 
 class TestExecutionOnWindows:
     pytestmark = win32only
@@ -445,13 +456,6 @@ class TestExecution:
         x = tmpdir.make_numbered_dir(rootdir=tmpdir, lock_timeout=0)
         assert x.relto(tmpdir)
         assert x.check()
-
-    def test_make_numbered_dir_multiprocess_safe(self, tmpdir):
-        # https://github.com/pytest-dev/py/issues/30
-        pool = multiprocessing.Pool()
-        results = [pool.apply_async(batch_make_numbered_dirs, [tmpdir, 100]) for _ in range(20)]
-        for r in results:
-            assert r.get() == True
 
     def test_locked_make_numbered_dir(self, tmpdir):
         for i in range(10):

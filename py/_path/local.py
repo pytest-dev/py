@@ -781,14 +781,15 @@ class LocalPath(FSBase):
     # """
     # special class constructors for local filesystem paths
     # """
+    @classmethod
     def get_temproot(cls):
         """ return the system's temporary directory
             (where tempfiles are usually created in)
         """
         import tempfile
         return py.path.local(tempfile.gettempdir())
-    get_temproot = classmethod(get_temproot)
 
+    @classmethod
     def mkdtemp(cls, rootdir=None):
         """ return a Path object pointing to a fresh new temporary directory
             (which we created ourself).
@@ -797,7 +798,6 @@ class LocalPath(FSBase):
         if rootdir is None:
             rootdir = cls.get_temproot()
         return cls(py.error.checked_call(tempfile.mkdtemp, dir=str(rootdir)))
-    mkdtemp = classmethod(mkdtemp)
 
     def make_numbered_dir(cls, prefix='session-', rootdir=None, keep=3,
                           lock_timeout = 172800):   # two days
@@ -827,7 +827,9 @@ class LocalPath(FSBase):
             if hasattr(lockfile, 'mksymlinkto'):
                 lockfile.mksymlinkto(str(mypid))
             else:
-                lockfile.write(str(mypid), 'wx')
+                fd = py.error.checked_call(os.open, str(lockfile), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+                with os.fdopen(fd, 'w') as f:
+                    f.write(str(mypid))
             return lockfile
 
         def atexit_remove_lockfile(lockfile):
@@ -862,12 +864,15 @@ class LocalPath(FSBase):
                 if lock_timeout:
                     lockfile = create_lockfile(udir)
                     atexit_remove_lockfile(lockfile)
-            except (py.error.EEXIST, py.error.ENOENT):
+            except (py.error.EEXIST, py.error.ENOENT, py.error.EBUSY):
                 # race condition (1): another thread/process created the dir
                 #                     in the meantime - try again
                 # race condition (2): another thread/process spuriously acquired
                 #                     lock treating empty directory as candidate
                 #                     for removal - try again
+                # race condition (3): another thread/process tried to create the lock at
+                #                     the same time (happened in Python 3.3 on Windows)
+                # https://ci.appveyor.com/project/pytestbot/py/build/1.0.21/job/ffi85j4c0lqwsfwa
                 if lastmax == maxnum:
                     raise
                 lastmax = maxnum
@@ -898,7 +903,7 @@ class LocalPath(FSBase):
                         # try acquiring lock to remove directory as exclusive user
                         if lock_timeout:
                             create_lockfile(path)
-                    except (py.error.EEXIST, py.error.ENOENT):
+                    except (py.error.EEXIST, py.error.ENOENT, py.error.EBUSY):
                         path_time = get_mtime(path)
                         if not path_time:
                             # assume directory doesn't exist now
@@ -908,7 +913,7 @@ class LocalPath(FSBase):
                             # and lock timeout hasn't expired yet
                             continue
 
-                    # path dir locked for exlusive use
+                    # path dir locked for exclusive use
                     # and scheduled for removal to avoid another thread/process
                     # treating it as a new directory or removal candidate
                     garbage_path = rootdir.join(garbage_prefix + str(uuid.uuid4()))

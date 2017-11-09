@@ -5,6 +5,12 @@ from py._path.svnwc import InfoSvnWCCommand, XMLWCStatus, parse_wcinfotime
 from py._path import svnwc as svncommon
 from svntestbase import CommonSvnTests
 
+
+pytestmark = pytest.mark.xfail(sys.platform.startswith('win'),
+                               reason='#161 all tests in this file are failing on Windows',
+                               run=False)
+
+
 def test_make_repo(path1, tmpdir):
     repo = tmpdir.join("repo")
     py.process.cmdexec('svnadmin create %s' % repo)
@@ -106,8 +112,9 @@ class TestWCSvnCommandPath(CommonSvnTests):
         assert r.join('sampledir/otherfile').basename in [item.basename
                                                     for item in s.unchanged]
 
-    @pytest.mark.xfail(reason="svn-1.7 has buggy 'status --xml' output")
     def test_status_update(self, path1):
+        # not a mark because the global "pytestmark" will end up overwriting a mark here
+        pytest.xfail("svn-1.7 has buggy 'status --xml' output")
         r = path1
         try:
             r.update(rev=1)
