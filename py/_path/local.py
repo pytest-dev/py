@@ -827,10 +827,7 @@ class LocalPath(FSBase):
             if hasattr(lockfile, 'mksymlinkto'):
                 lockfile.mksymlinkto(str(mypid))
             else:
-                try:
-                    fd = os.open(str(lockfile), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
-                except IOError:
-                    raise py.error.EEXIST()
+                fd = py.error.checked_call(os.open, str(lockfile), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
                 with os.fdopen(fd, 'w') as f:
                     f.write(str(mypid))
             return lockfile
