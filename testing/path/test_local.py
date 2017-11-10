@@ -353,10 +353,6 @@ class TestLocalPath(common.CommonFSTests):
         assert py_path.join(fake_fspath_obj).strpath == os.path.join(
                 py_path.strpath, str_path)
 
-    @pytest.mark.skipif(sys.version_info[:2] == (2, 6) and sys.platform.startswith('win'),
-                        reason='multiprocessing bug in Python 2.6/Windows prevents this test '
-                               'from working as intended '
-                               '(see https://bugs.python.org/issue10845 and #157).')
     def test_make_numbered_dir_multiprocess_safe(self, tmpdir):
         # https://github.com/pytest-dev/py/issues/30
         pool = multiprocessing.Pool()
