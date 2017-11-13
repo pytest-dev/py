@@ -305,10 +305,7 @@ def test_excinfo_no_sourcecode():
     except ValueError:
         excinfo = py.code.ExceptionInfo()
     s = str(excinfo.traceback[-1])
-    if sys.version_info < (2, 5):
-        assert s == "  File '<string>':1 in ?\n  ???\n"
-    else:
-        assert s == "  File '<string>':1 in <module>\n  ???\n"
+    assert s == "  File '<string>':1 in <module>\n  ???\n"
 
 
 def test_excinfo_no_python_sourcecode(tmpdir):
@@ -918,9 +915,7 @@ raise ValueError()
         assert s.startswith('Traceback (most recent call last):\n  File')
         assert s.endswith('\nAssertionError: assert 0')
         assert 'exec (source.compile())' in s
-        # python 2.4 fails to get the source line for the assert
-        if sys.version_info >= (2, 5):
-            assert s.count('assert 0') == 2
+        assert s.count('assert 0') == 2
 
     @broken_on_modern_pytest
     def test_traceback_repr_style(self, importasmod):

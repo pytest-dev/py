@@ -1,6 +1,7 @@
 1.5.0
 =====
 
+- python 2.6 and 3.3 are no longer supported
 - deprecate py.std and remove all internal uses
 - fix #73 turn py.error into an actual module
 - path join to / no longer produces leading double slashes

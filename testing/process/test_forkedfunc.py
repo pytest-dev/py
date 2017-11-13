@@ -70,8 +70,6 @@ def test_forkedfunc_on_stdout():
 def test_forkedfunc_signal():
     result = py.process.ForkedFunc(boxseg).waitfinish()
     assert result.retval is None
-    if sys.version_info < (2,4):
-        py.test.skip("signal detection does not work with python prior 2.4")
     assert result.signal == 11
 
 def test_forkedfunc_huge_data():
@@ -116,8 +114,6 @@ def test_kill_func_forked():
     ff = py.process.ForkedFunc(box_fun)
     os.kill(ff.pid, 15)
     result = ff.waitfinish()
-    if sys.version_info < (2,4):
-        py.test.skip("signal detection does not work with python prior 2.4")
     assert result.signal == 15
 
 
