@@ -1,11 +1,9 @@
 import py
-import sys
 
-import pytest
+from py._log.log import default_keywordmapper
 
 callcapture = py.io.StdCapture.call
 
-default_keywordmapper = pytest.importorskip('py._log.log.default_keywordmapper')
 
 def setup_module(mod):
     mod._oldstate = default_keywordmapper.getstate()
