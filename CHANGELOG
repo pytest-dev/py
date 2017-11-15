@@ -1,3 +1,8 @@
+1.5.1
+=====
+
+- fix #167 - prevent pip from installing py in unsupported Python versions.
+
 1.5.0
 =====
 
