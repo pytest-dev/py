@@ -16,7 +16,6 @@ XXX implement this API: (maybe put it into slogger.py?)
 """
 import py
 import sys
-import syslog
 
 
 class Message(object):
@@ -190,11 +189,18 @@ class Syslog:
 
     def __call__(self, msg):
         """ write a message to the log """
+        import syslog
         syslog.syslog(self.priority, str(msg))
 
-for _prio in "EMERG ALERT CRIT ERR WARNING NOTICE INFO DEBUG".split():
-    _prio = "LOG_" + _prio
-    try:
-        setattr(Syslog, _prio, getattr(syslog, _prio))
-    except AttributeError:
-        pass
+
+try:
+    import syslog
+except ImportError:
+    pass
+else:
+    for _prio in "EMERG ALERT CRIT ERR WARNING NOTICE INFO DEBUG".split():
+        _prio = "LOG_" + _prio
+        try:
+            setattr(Syslog, _prio, getattr(syslog, _prio))
+        except AttributeError:
+            pass

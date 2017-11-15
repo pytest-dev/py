@@ -1,3 +1,8 @@
+1.5.2
+=====
+
+- fix #169, #170: error importing py.log on Windows: no module named ``syslog``.
+
 1.5.1
 =====
 

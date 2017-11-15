@@ -8,7 +8,7 @@ dictionary or an import path.
 
 (c) Holger Krekel and others, 2004-2014
 """
-__version__ = '1.5.1'
+__version__ = '1.5.2'
 
 try:
     from py._vendored_packages import apipkg
