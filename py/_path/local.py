@@ -669,7 +669,7 @@ class LocalPath(FSBase):
             mod = sys.modules[modname]
             if self.basename == "__init__.py":
                 return mod # we don't check anything as we might
-                       # we in a namespace package ... too icky to check
+                       # be in a namespace package ... too icky to check
             modfile = mod.__file__
             if modfile[-4:] in ('.pyc', '.pyo'):
                 modfile = modfile[:-1]
