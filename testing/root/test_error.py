@@ -2,6 +2,7 @@
 import py
 
 import errno
+import sys
 import subprocess
 
 
@@ -48,6 +49,7 @@ def test_checked_call_supports_kwargs(tmpdir):
 
 
 def test_error_importable():
+    """Regression test for #179"""
     subprocess.check_call(
         [sys.executable, '-c', 'from py.error import ENOENT'])
 
