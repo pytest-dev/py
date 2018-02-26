@@ -2,6 +2,7 @@
 import py
 
 import errno
+import subprocess
 
 
 def test_error_classes():
@@ -33,7 +34,7 @@ def test_unknown_error():
     assert cls is cls2
 
 
-def test_error_conversion_ENOTDIR(testdir):
+def test_error_conversion_enotdir(testdir):
     p = testdir.makepyfile("")
     excinfo = py.test.raises(py.error.Error, py.error.checked_call, p.listdir)
     assert isinstance(excinfo.value, EnvironmentError)
@@ -46,6 +47,11 @@ def test_checked_call_supports_kwargs(tmpdir):
     py.error.checked_call(tempfile.mkdtemp, dir=str(tmpdir))
 
 
+def test_error_importable():
+    subprocess.check_call(
+        [sys.executable, '-c', 'from py.error import ENOENT'])
+
+
 try:
     import unittest
     unittest.TestCase.assertWarns
@@ -56,13 +62,13 @@ else:
     import warnings
 
     class Case(unittest.TestCase):
-        def test_assertWarns(self):
+        def test_assert_warns(self):
             # Clear everything "py.*" from sys.modules and re-import py
             # as a fresh start
             for mod in tuple(sys.modules.keys()):
                 if mod and (mod == 'py' or mod.startswith('py.')):
                     del sys.modules[mod]
-            import py
+            __import__('py')
 
             with self.assertWarns(UserWarning):
                 warnings.warn('this should work')
