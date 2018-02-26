@@ -1,8 +1,12 @@
+1.5.3 (unreleased)
+==================
+
+- fix #179: ensure we can support 'from py.error import ...'
+
 1.5.2
 =====
 
 - fix #169, #170: error importing py.log on Windows: no module named ``syslog``.
-- fix #179: ensure we can support 'from py.error import ...'
 
 1.5.1
 =====
