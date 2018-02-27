@@ -794,3 +794,20 @@ def getrawcode(obj, trycall=True):
                     return x
         return obj
 
+
+class ExceptionContext(object):
+    def __init__(self, expected_exception):
+        self.expected_exception = expected_exception
+        self.excinfo = None
+
+    def __enter__(self):
+        self.excinfo = object.__new__(ExceptionInfo)
+        return self.excinfo
+
+    def __exit__(self, *tp):
+        __tracebackhide__ = True
+        self.excinfo.__init__(tp)
+        suppress_exception = issubclass(self.excinfo.type, self.expected_exception)
+        if sys.version_info[0] == 2 and suppress_exception:
+            sys.exc_clear()
+        return suppress_exception
