@@ -18,7 +18,7 @@ except ImportError:
     import apipkg
     lib_not_mangled_by_packagers = False
     vendor_prefix = ''
-__version__ = '1.5.2'
+__version__ = '1.5.3'
 
 
 apipkg.initpkg(__name__, attr={'_apipkg': apipkg, 'error': error}, exportdefs={
