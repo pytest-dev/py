@@ -1,5 +1,9 @@
-1.5.3 (unreleased)
-==================
+(unreleased)
+============
+
+
+1.5.3
+=====
 
 - fix #179: ensure we can support 'from py.error import ...'
 
