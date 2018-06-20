@@ -1,6 +1,8 @@
 (unreleased)
 ============
 
+- fix pytest-dev/pytest#3451: don't make assumptions about fs case sensitivity
+  in ``make_numbered_dir``.
 
 1.5.3
 =====
