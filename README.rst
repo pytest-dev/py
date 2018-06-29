@@ -1,7 +1,7 @@
 .. image:: https://img.shields.io/pypi/v/py.svg
     :target: https://pypi.org/project/py
 
-.. image:: https://anaconda.org/conda-forge/py/badges/version.svg
+.. image:: https://img.shields.io/conda/vn/conda-forge/py.svg
     :target: https://anaconda.org/conda-forge/py
 
 .. image:: https://img.shields.io/pypi/pyversions/pytest.svg
