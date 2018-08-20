@@ -24,9 +24,14 @@ if sys.platform == "win32":
 
 
 def _getdimensions():
-    import termios,fcntl,struct
-    call = fcntl.ioctl(1,termios.TIOCGWINSZ,"\000"*8)
-    height,width = struct.unpack( "hhhh", call ) [:2]
+    if colorama is None:
+        import termios,fcntl,struct
+        call = fcntl.ioctl(1,termios.TIOCGWINSZ,"\000"*8)
+        height,width = struct.unpack( "hhhh", call ) [:2]
+    else:
+        win = colorama.win32.GetConsoleScreenBufferInfo(colorama.win32.STDOUT).dwSize
+        height, width = win.Y, win.X
+
     return height, width
 
 
