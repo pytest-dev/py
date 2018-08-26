@@ -1,4 +1,4 @@
-1.5.5 (unreleased)
+1.6.0 (unreleased)
 ==================
 
 - add ``TerminalWriter.width_of_current_line`` (i18n version of

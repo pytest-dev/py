@@ -184,7 +184,7 @@ class TerminalWriter(object):
     def width_of_current_line(self):
         """Return an estimate of the width so far in the current line.
 
-        .. versionadded:: 1.5.5
+        .. versionadded:: 1.6.0
 
         :rtype: int
         """
