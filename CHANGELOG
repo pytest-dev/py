@@ -1,4 +1,4 @@
-1.6.0 (unreleased)
+1.6.0 (2018-08-27)
 ==================
 
 - add ``TerminalWriter.width_of_current_line`` (i18n version of
@@ -88,7 +88,7 @@ This issue was fixed in the 1.5.1 release.
 1.4.30
 ==================================================
 
-- fix issue68 an assert with a  multiline list comprehension 
+- fix issue68 an assert with a  multiline list comprehension
   was not reported correctly. Thanks Henrik Heibuerger.
 
 
@@ -116,7 +116,7 @@ This issue was fixed in the 1.5.1 release.
 
 - allow a new ensuresyspath="append" mode for py.path.local.pyimport()
   so that a neccessary import path is appended instead of prepended to
-  sys.path 
+  sys.path
 
 - strike undocumented, untested argument to py.path.local.pypkgpath
 
@@ -164,10 +164,10 @@ This issue was fixed in the 1.5.1 release.
   thus triggering the alias module to resolve and blowing
   up with ImportError.  The negative side is that something
   like "py.test.X" will now result in None instead of "importerror: pytest"
-  if pytest is not installed.  But you shouldn't import "py.test" 
+  if pytest is not installed.  But you shouldn't import "py.test"
   anyway anymore.
 
-- adapt one svn test to only check for any exception instead 
+- adapt one svn test to only check for any exception instead
   of specific ones because different svn versions cause different
   errors and we don't care.
 
@@ -190,8 +190,8 @@ This issue was fixed in the 1.5.1 release.
   its output even if it didn't flush itself.
 
 - refactor traceback generation in light of pytest issue 364
-  (shortening tracebacks).   you can now set a new traceback style 
-  on a per-entry basis such that a caller can force entries to be 
+  (shortening tracebacks).   you can now set a new traceback style
+  on a per-entry basis such that a caller can force entries to be
   isplayed as short or long entries.
 
 - win32: py.path.local.sysfind(name) will preferrably return files with
@@ -203,7 +203,7 @@ This issue was fixed in the 1.5.1 release.
 
 - ignore unicode decode errors in xmlescape.  Thanks Anatoly Bubenkoff.
 
-- on python2 modify traceback.format_exception_only to match python3 
+- on python2 modify traceback.format_exception_only to match python3
   behaviour, namely trying to print unicode for Exception instances
 
 - use a safer way for serializing exception reports (helps to fix
@@ -233,7 +233,7 @@ Changes between 1.4.17 and 1.4.18
 - introduce path.ensure_dir() as a synonym for ensure(..., dir=1)
 
 - some unicode/python3 related fixes wrt to path manipulations
-  (if you start passing unicode particular in py2 you might 
+  (if you start passing unicode particular in py2 you might
   still get problems, though)
 
 Changes between 1.4.16 and 1.4.17
@@ -300,7 +300,7 @@ Changes between 1.4.12 and 1.4.13
 Changes between 1.4.11 and 1.4.12
 ==================================================
 
-- fix python2.4 support - for pre-AST interpreters re-introduce 
+- fix python2.4 support - for pre-AST interpreters re-introduce
   old way to find statements in exceptions (closes pytest issue 209)
 - add tox.ini to distribution
 - fix issue23 - print *,** args information in tracebacks,
@@ -318,7 +318,7 @@ Changes between 1.4.10 and 1.4.11
   unicodeencode/decode problems, amend according test
 - introduce py.builtin.text and py.builtin.bytes
   to point to respective str/unicode (py2) and bytes/str (py3) types
-- fix error handling on win32/py33 for ENODIR 
+- fix error handling on win32/py33 for ENODIR
 
 Changes between 1.4.9 and 1.4.10
 ==================================================
@@ -355,12 +355,12 @@ Changes between 1.4.6 and 1.4.7
 Changes between 1.4.5 and 1.4.6
 ==================================================
 
-- help to fix pytest issue99: unify output of 
+- help to fix pytest issue99: unify output of
   ExceptionInfo.getrepr(style="native") with ...(style="long")
 - fix issue7: source.getstatementrange() now raises proper error
   if no valid statement can be found
-- fix issue8: fix code and tests of svnurl/svnwc to work on subversion 1.7 - 
-  note that path.status(updates=1) will not properly work svn-17's status 
+- fix issue8: fix code and tests of svnurl/svnwc to work on subversion 1.7 -
+  note that path.status(updates=1) will not properly work svn-17's status
   --xml output is broken.
 - make source.getstatementrange() more resilent about non-python code frames
   (as seen from jnja2)
@@ -429,7 +429,7 @@ Changes between 1.3.4 and 1.4.0
 
 - py.test was moved to a separate "pytest" package. What remains is
   a stub hook which will proxy ``import py.test`` to ``pytest``.
-- all command line tools ("py.cleanup/lookup/countloc/..." moved 
+- all command line tools ("py.cleanup/lookup/countloc/..." moved
   to "pycmd" package)
 - removed the old and deprecated "py.magic" namespace
 - use apipkg-1.1 and make py.apipkg.initpkg|ApiModule available
