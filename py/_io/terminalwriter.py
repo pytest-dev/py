@@ -5,7 +5,7 @@ Helper functions for writing to terminals and files.
 """
 
 
-import sys, os
+import sys, os, unicodedata
 import py
 py3k = sys.version_info[0] >= 3
 from py.builtin import text, bytes
@@ -52,6 +52,21 @@ def get_terminal_width():
     return width
 
 terminal_width = get_terminal_width()
+
+char_width = {
+    'A': 1,   # "Ambiguous"
+    'F': 2,   # Fullwidth
+    'H': 1,   # Halfwidth
+    'N': 1,   # Neutral
+    'Na': 1,  # Narrow
+    'W': 2,   # Wide
+}
+
+
+def get_line_width(text):
+    text = unicodedata.normalize('NFC', text)
+    return sum(char_width.get(unicodedata.east_asian_width(c), 1) for c in text)
+
 
 # XXX unify with _escaped func below
 def ansi_print(text, esc, file=None, newline=True, flush=False):
@@ -140,6 +155,7 @@ class TerminalWriter(object):
         self.hasmarkup = should_do_markup(file)
         self._lastlen = 0
         self._chars_on_current_line = 0
+        self._width_of_current_line = 0
 
     @property
     def fullwidth(self):
@@ -163,6 +179,16 @@ class TerminalWriter(object):
         :rtype: int
         """
         return self._chars_on_current_line
+
+    @property
+    def width_of_current_line(self):
+        """Return an estimate of the width so far in the current line.
+
+        .. versionadded:: 1.6.0
+
+        :rtype: int
+        """
+        return self._width_of_current_line
 
     def _escaped(self, text, esc):
         if esc and self.hasmarkup:
@@ -223,12 +249,17 @@ class TerminalWriter(object):
                 markupmsg = msg
             write_out(self._file, markupmsg)
 
-    def _update_chars_on_current_line(self, text):
-        fields = text.rsplit('\n', 1)
-        if '\n' in text:
-            self._chars_on_current_line = len(fields[-1])
+    def _update_chars_on_current_line(self, text_or_bytes):
+        newline = b'\n' if isinstance(text_or_bytes, bytes) else '\n'
+        current_line = text_or_bytes.rsplit(newline, 1)[-1]
+        if isinstance(current_line, bytes):
+            current_line = current_line.decode('utf-8', errors='replace')
+        if newline in text_or_bytes:
+            self._chars_on_current_line = len(current_line)
+            self._width_of_current_line = get_line_width(current_line)
         else:
-            self._chars_on_current_line += len(fields[-1])
+            self._chars_on_current_line += len(current_line)
+            self._width_of_current_line += get_line_width(current_line)
 
     def line(self, s='', **kw):
         self.write(s, **kw)
