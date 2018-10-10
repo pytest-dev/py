@@ -8,6 +8,7 @@ Helper functions for writing to terminals and files.
 import sys, os, unicodedata
 import py
 py3k = sys.version_info[0] >= 3
+py33 = sys.version_info >= (3, 3)
 from py.builtin import text, bytes
 
 win32_and_ctypes = False
@@ -24,10 +25,15 @@ if sys.platform == "win32":
 
 
 def _getdimensions():
-    import termios,fcntl,struct
-    call = fcntl.ioctl(1,termios.TIOCGWINSZ,"\000"*8)
-    height,width = struct.unpack( "hhhh", call ) [:2]
-    return height, width
+    if py33:
+        import shutil
+        size = shutil.get_terminal_size()
+        return size.lines, size.columns
+    else:
+        import termios, fcntl, struct
+        call = fcntl.ioctl(1, termios.TIOCGWINSZ, "\000" * 8)
+        height, width = struct.unpack("hhhh", call)[:2]
+        return height, width
 
 
 def get_terminal_width():
