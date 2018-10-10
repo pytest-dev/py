@@ -475,10 +475,19 @@ class TestImport:
         assert obj.x == 42
         assert obj.__name__ == 'execfile'
 
-    def test_pyimport_renamed_dir_creates_mismatch(self, tmpdir):
+    def test_pyimport_renamed_dir_creates_mismatch(self, tmpdir, monkeypatch):
         p = tmpdir.ensure("a", "test_x123.py")
         p.pyimport()
         tmpdir.join("a").move(tmpdir.join("b"))
+        with pytest.raises(tmpdir.ImportMismatchError):
+            tmpdir.join("b", "test_x123.py").pyimport()
+
+        # Errors can be ignored.
+        monkeypatch.setenv('PY_IGNORE_IMPORTMISMATCH', '1')
+        tmpdir.join("b", "test_x123.py").pyimport()
+
+        # PY_IGNORE_IMPORTMISMATCH=0 does not ignore error.
+        monkeypatch.setenv('PY_IGNORE_IMPORTMISMATCH', '0')
         with pytest.raises(tmpdir.ImportMismatchError):
             tmpdir.join("b", "test_x123.py").pyimport()
 

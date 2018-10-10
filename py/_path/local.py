@@ -683,7 +683,9 @@ class LocalPath(FSBase):
             except py.error.ENOENT:
                 issame = False
             if not issame:
-                raise self.ImportMismatchError(modname, modfile, self)
+                ignore = os.getenv('PY_IGNORE_IMPORTMISMATCH')
+                if ignore != '1':
+                    raise self.ImportMismatchError(modname, modfile, self)
             return mod
         else:
             try:
