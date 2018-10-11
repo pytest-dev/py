@@ -1,3 +1,10 @@
+1.7.0 (unreleased)
+==================
+
+- fix #174: use ``shutil.get_terminal_size()`` in Python 3.3+ to determine the size of the
+  terminal, which produces more accurate results than the previous method.
+
+
 1.6.0 (2018-08-27)
 ==================
 
