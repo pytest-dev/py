@@ -1,8 +1,11 @@
-1.7.0 (unreleased)
+1.7.0 (2018-10-11)
 ==================
 
 - fix #174: use ``shutil.get_terminal_size()`` in Python 3.3+ to determine the size of the
   terminal, which produces more accurate results than the previous method.
+
+- fix pytest-dev/pytest#2042: introduce new ``PY_IGNORE_IMPORTMISMATCH`` environment variable
+  that suppresses ``ImportMismatchError`` exceptions when set to ``1``.
 
 
 1.6.0 (2018-08-27)
