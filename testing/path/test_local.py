@@ -581,6 +581,39 @@ class TestImport:
         assert str(root1) not in sys.path[:-1]
 
 
+class TestImportlibImport:
+    pytestmark = py.test.mark.skipif("sys.version_info < (3, 5)")
+
+    OPTS = {'ensuresyspath': 'importlib'}
+
+    def test_pyimport(self, path1):
+        obj = path1.join('execfile.py').pyimport(**self.OPTS)
+        assert obj.x == 42
+        assert obj.__name__ == 'execfile'
+
+    def test_pyimport_dir_fails(self, tmpdir):
+        p = tmpdir.join("hello_123")
+        p.ensure("__init__.py")
+        with pytest.raises(ImportError):
+            p.pyimport(**self.OPTS)
+
+    def test_pyimport_execfile_different_name(self, path1):
+        obj = path1.join('execfile.py').pyimport(modname="0x.y.z", **self.OPTS)
+        assert obj.x == 42
+        assert obj.__name__ == '0x.y.z'
+
+    def test_pyimport_relative_import_fails(self, path1):
+        otherdir = path1.join('otherdir')
+        with pytest.raises(ImportError):
+            otherdir.join('a.py').pyimport(**self.OPTS)
+
+    def test_pyimport_doesnt_use_sys_modules(self, tmpdir):
+        p = tmpdir.ensure('file738jsk.py')
+        mod = p.pyimport(**self.OPTS)
+        assert mod.__name__ == 'file738jsk'
+        assert 'file738jsk' not in sys.modules
+
+
 def test_pypkgdir(tmpdir):
     pkg = tmpdir.ensure('pkg1', dir=1)
     pkg.ensure("__init__.py")
