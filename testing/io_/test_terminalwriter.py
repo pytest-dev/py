@@ -165,6 +165,12 @@ class TestTerminalWriter:
         assert len(l) == 1
         assert l[0] == "-" * 26 + " hello " + "-" * (27-win32) + "\n"
 
+    def test_sep_longer_than_width(self, tw):
+        tw.sep('-', 'a' * 10, fullwidth=5)
+        line, = tw.getlines()
+        # even though the string is wider than the line, still have a separator
+        assert line == '- aaaaaaaaaa -\n'
+
     @py.test.mark.skipif("sys.platform == 'win32'")
     def test__escaped(self, tw):
         text2 = tw._escaped("hello", (31))
