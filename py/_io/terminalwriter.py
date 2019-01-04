@@ -237,7 +237,7 @@ class TerminalWriter(object):
         # in some situations there is room for an extra sepchar at the right,
         # in particular if we consider that with a sepchar like "_ " the
         # trailing space is not important at the end of the line
-        if len(line) + len(sepchar.rstrip()) <= fullwidth:
+        if len(str(line)) + len(sepchar.rstrip()) <= fullwidth:
             line += sepchar.rstrip()
 
         self.line(line, **kw)
@@ -278,10 +278,10 @@ class TerminalWriter(object):
         self.write(line, **kw)
         self._checkfill(line)
         self.write('\r')
-        self._lastlen = len(line)
+        self._lastlen = len(str(line))
 
     def _checkfill(self, line):
-        diff2last = self._lastlen - len(line)
+        diff2last = self._lastlen - len(str(line))
         if diff2last > 0:
             self.write(" " * diff2last)
 
