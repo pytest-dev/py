@@ -45,9 +45,15 @@ matrix:
   - python: 'pypy3.5-6.0'
 
 install:
-  - pip install -U pip setuptools setuptools_scm
+  - pip install -U coverage coverage-enable-subprocess pip setuptools setuptools_scm
   - pip install $DEPS
   - pip install -U . --force-reinstall
 
 script:
-  - py.test --lsof $PYTEST_XADDOPTS
+  - coverage run -m pytest --lsof $PYTEST_XADDOPTS
+
+after_success:
+  - coverage combine
+  - coverage report -m
+  - coverage xml
+  - bash <(curl -s https://codecov.io/bash) -Z -X gcov -X coveragepy -X search -X xcode -X gcovout -X fix -f coverage.xml -e TRAVIS_PYTHON_VERSION
