@@ -37,6 +37,8 @@ except ImportError:
                 import pathlib
             except ImportError:
                 pass
+            except FileNotFoundError:  # Might happen in py34.
+                pass
             else:
                 if isinstance(path, pathlib.PurePath):
                     return py.builtin.text(path)
