@@ -17,7 +17,7 @@ matrix:
   include:
   - python: '2.7'
     # using a different option due to pytest-addopts pytester issues
-    env: PYTEST_XADDOPTS="-n 3 --runslowtests" DEPS="pytest~=3.0.0 pytest-xdist"
+    env: PYTEST_XADDOPTS="-n auto --runslowtests" DEPS="pytest~=3.0.0 pytest-xdist<1.25"
 
   - stage: deploy
     python: '3.6'
