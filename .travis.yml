@@ -12,6 +12,10 @@ env:
 - DEPS="pytest~=3.0.0"
 #- DEPS="pytest~=3.1.0"
 
+stages:
+  - name: deploy
+    if: tag IS present
+
 matrix:
 
   include:
