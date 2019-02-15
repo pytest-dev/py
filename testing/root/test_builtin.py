@@ -93,7 +93,7 @@ def test_execfile(tmpdir):
 
 def test_getfuncdict():
     def f():
-        pass
+        raise NotImplementedError
     f.x = 4
     assert py.builtin._getfuncdict(f)["x"] == 4
     assert py.builtin._getfuncdict(2) is None
