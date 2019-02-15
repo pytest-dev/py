@@ -6,6 +6,7 @@ python:
   - '3.4'
   - '3.5'
   - '3.6'
+  - '3.7'
   # - 'pypy2.7-6.0'
   - 'pypy3.5-6.0'
 
@@ -39,6 +40,10 @@ matrix:
         on:
           tags: true
           repo: pytest-dev/py
+
+  exclude:
+    - python: '3.7'
+      env: DEPS="pytest~=2.9.0"
 
   allow_failures:
   - python: 'pypy2.7-6.0'
