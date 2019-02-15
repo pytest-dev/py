@@ -41,8 +41,8 @@ matrix:
           tags: true
           repo: pytest-dev/py
 
-  include:
-    - exclude: '3.7'
+  exclude:
+    - python: '3.7'
       env: DEPS="pytest~=2.9.0"
 
   allow_failures:
