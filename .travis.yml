@@ -10,9 +10,12 @@ python:
   - 'pypy3.5-6.0'
 
 env:
-  - DEPS="pytest~=2.9.0"
-  - DEPS="pytest~=3.0.0"
-  #- DEPS="pytest~=3.1.0"
+  global:
+    - COVERAGE_PROCESS_START=$PWD/tox.ini
+  matrix:
+    - DEPS="pytest~=2.9.0"
+    - DEPS="pytest~=3.0.0"
+    #- DEPS="pytest~=3.1.0"
 
 stages:
   - name: deploy
