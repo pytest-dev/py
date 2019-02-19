@@ -1,3 +1,9 @@
+(unreleased)
+============
+
+- add ``"importlib"`` pyimport mode for python3.5+, allowing unimportable test suites
+  to contain identically named modules.
+
 1.7.0 (2018-10-11)
 ==================
 
