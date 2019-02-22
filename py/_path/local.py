@@ -579,14 +579,17 @@ class LocalPath(FSBase):
 
     @contextmanager
     def as_cwd(self):
-        """ return context manager which changes to current dir during the
-        managed "with" context. On __enter__ it returns the old dir.
+        """
+        Return a context manager, which changes to the path's dir during the
+        managed "with" context.
+        On __enter__ it returns the old dir, which might be ``None``.
         """
         old = self.chdir()
         try:
             yield old
         finally:
-            old.chdir()
+            if old is not None:
+                old.chdir()
 
     def realpath(self):
         """ return a new path which contains no symbolic links."""
