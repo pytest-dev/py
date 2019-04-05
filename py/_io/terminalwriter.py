@@ -26,14 +26,56 @@ if sys.platform == "win32":
 
 def _getdimensions():
     if py33:
-        import shutil
-        size = shutil.get_terminal_size()
-        return size.lines, size.columns
+        # Improved version of shutil.get_terminal_size that looks at stdin,
+        # stderr, stdout.  Ref: https://bugs.python.org/issue14841.
+        fallback = (80, 24)
+        # columns, lines are the working values
+        try:
+            columns = int(os.environ['COLUMNS'])
+        except (KeyError, ValueError):
+            columns = 0
+
+        try:
+            lines = int(os.environ['LINES'])
+        except (KeyError, ValueError):
+            lines = 0
+
+        # only query if necessary
+        if columns <= 0 or lines <= 0:
+            try:
+                os_get_terminal_size = os.get_terminal_size
+            except AttributeError:
+                size = os.terminal_size(fallback)
+            else:
+                for check in [sys.__stdin__, sys.__stderr__, sys.__stdout__]:
+                    try:
+                        size = os_get_terminal_size(check.fileno())
+                    except (AttributeError, ValueError, OSError):
+                        # fd is None, closed, detached, or not a terminal.
+                        continue
+                    else:
+                        break
+                else:
+                    size = os.terminal_size(fallback)
+            if columns <= 0:
+                columns = size.columns
+            if lines <= 0:
+                lines = size.lines
+
+        return lines, columns
     else:
-        import termios, fcntl, struct
-        call = fcntl.ioctl(1, termios.TIOCGWINSZ, "\000" * 8)
-        height, width = struct.unpack("hhhh", call)[:2]
-        return height, width
+        import termios
+        import fcntl
+        import struct
+        for fd in (0, 2, 1):
+            try:
+                call = fcntl.ioctl(fd, termios.TIOCGWINSZ, "\000" * 8)
+            except OSError:
+                continue
+            height, width = struct.unpack("hhhh", call)[:2]
+            return height, width
+
+        return 24, 80
 
 
 def get_terminal_width():

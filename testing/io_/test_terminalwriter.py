@@ -10,23 +10,46 @@ def test_get_terminal_width():
     x = py.io.get_terminal_width
     assert x == terminalwriter.get_terminal_width
 
-def test_getdimensions(monkeypatch):
+
+@pytest.mark.parametrize("via_fd", (0, 1, 2))
+def test_getdimensions(via_fd, monkeypatch):
+    mock_calls = []
+
     if sys.version_info >= (3, 3):
-        import shutil
         Size = namedtuple('Size', 'lines columns')
-        monkeypatch.setattr(shutil, 'get_terminal_size', lambda: Size(60, 100))
+
+        def os_get_terminal_size(*args):
+            mock_calls.append(args)
+            fd = args[0]
+            if fd != via_fd:
+                raise ValueError
+            return Size(60, 100)
+        monkeypatch.setattr(os, 'get_terminal_size', os_get_terminal_size)
         assert terminalwriter._getdimensions() == (60, 100)
+
     else:
         fcntl = py.test.importorskip("fcntl")
         import struct
-        l = []
-        monkeypatch.setattr(fcntl, 'ioctl', lambda *args: l.append(args))
+
+        def mock_ioctl(*args):
+            mock_calls.append(args)
+            fd = args[0]
+            if fd != via_fd:
+                raise OSError
+
+        monkeypatch.setattr(fcntl, 'ioctl', mock_ioctl)
         try:
             terminalwriter._getdimensions()
         except (TypeError, struct.error):
             pass
-        assert len(l) == 1
-        assert l[0][0] == 1
+
+    if via_fd == 0:
+        assert len(mock_calls) == 1
+    elif via_fd == 2:
+        assert len(mock_calls) == 2
+    elif via_fd == 1:
+        assert len(mock_calls) == 3
+    assert mock_calls[-1][0] == via_fd
 
 def test_terminal_width_COLUMNS(monkeypatch):
     """ Dummy test for get_terminal_width
