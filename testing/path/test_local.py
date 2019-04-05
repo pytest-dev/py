@@ -174,7 +174,31 @@ class TestLocalPath(common.CommonFSTests):
         assert path2 != path3
 
     def test_eq_with_none(self, path1):
-        assert path1 != None  # noqa
+        assert path1 != None  # noqa: E711
+
+    @pytest.mark.skipif(
+        sys.platform.startswith("win32"), reason="cannot remove cwd on Windows"
+    )
+    @pytest.mark.skipif(
+        sys.version_info < (3, 0) or sys.version_info >= (3, 5),
+        reason="only with Python 3 before 3.5"
+    )
+    def test_eq_with_none_and_custom_fspath(self, monkeypatch, path1):
+        import os
+        import shutil
+        import tempfile
+
+        d = tempfile.mkdtemp()
+        monkeypatch.chdir(d)
+        shutil.rmtree(d)
+
+        monkeypatch.delitem(sys.modules, 'pathlib', raising=False)
+        monkeypatch.setattr(sys, 'path', [''] + sys.path)
+
+        with pytest.raises(FileNotFoundError):
+            import pathlib  # noqa: F401
+
+        assert path1 != None  # noqa: E711
 
     def test_eq_non_ascii_unicode(self, path1):
         path2 = path1.join(u'temp')
