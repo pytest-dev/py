@@ -30,8 +30,9 @@ def test_make_repo(path1, tmpdir):
     rev = wc.commit()
     assert rev is None
 
-def pytest_funcarg__path1(request):
-    repo, repourl, wc = request.getfuncargvalue("repowc1")
+@pytest.fixture
+def path1(request):
+    repo, repourl, wc = request.getfixturevalue("repowc1")
     return wc
 
 class TestWCSvnCommandPath(CommonSvnTests):
@@ -346,7 +347,8 @@ class TestWCSvnCommandPath(CommonSvnTests):
         somefile = root.join('somefile')
         somefile.ensure(file=True)
         # not yet added to repo
-        py.test.raises(Exception, 'somefile.lock()')
+        with py.test.raises(Exception):
+            somefile.lock()
         somefile.write('foo')
         somefile.commit('test')
         assert somefile.check(versioned=True)
@@ -357,13 +359,15 @@ class TestWCSvnCommandPath(CommonSvnTests):
             assert locked[0].basename == somefile.basename
             assert locked[0].dirpath().basename == somefile.dirpath().basename
             #assert somefile.locked()
-            py.test.raises(Exception, 'somefile.lock()')
+            with py.test.raises(Exception):
+                somefile.lock()
         finally:
             somefile.unlock()
         #assert not somefile.locked()
         locked = root.status().locked
         assert locked == []
-        py.test.raises(Exception, 'somefile,unlock()')
+        with py.test.raises(Exception):
+            somefile,unlock()
         somefile.remove()
 
     def test_commit_nonrecursive(self, path1):
@@ -481,7 +485,8 @@ class TestInfoSvnWCCommand:
 
 
 def test_characters_at():
-    py.test.raises(ValueError, "py.path.svnwc('/tmp/@@@:')")
+    with py.test.raises(ValueError):
+        py.path.svnwc('/tmp/@@@:')
 
 def test_characters_tilde():
     py.path.svnwc('/tmp/test~')

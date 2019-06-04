@@ -18,7 +18,8 @@ def test_code_gives_back_name_for_not_existing_file():
 def test_code_with_class():
     class A:
         pass
-    py.test.raises(TypeError, "py.code.Code(A)")
+    with py.test.raises(TypeError):
+        py.code.Code(A)
 
 if True:
     def x():

@@ -2,10 +2,12 @@ import py
 from py._path.svnurl import InfoSvnCommand
 import datetime
 import time
+import pytest
 from svntestbase import CommonSvnTests
 
-def pytest_funcarg__path1(request):
-    repo, repourl, wc = request.getfuncargvalue("repowc1")
+@pytest.fixture
+def path1(request):
+    repo, repourl, wc = request.getfixturevalue("repowc1")
     return py.path.svnurl(repourl)
 
 class TestSvnURLCommandPath(CommonSvnTests):
@@ -20,10 +22,12 @@ class TestSvnURLCommandPath(CommonSvnTests):
         super(TestSvnURLCommandPath, self).test_visit_ignore(path1)
 
     def test_svnurl_needs_arg(self, path1):
-        py.test.raises(TypeError, "py.path.svnurl()")
+        with py.test.raises(TypeError):
+            py.path.svnurl()
 
     def test_svnurl_does_not_accept_None_either(self, path1):
-        py.test.raises(Exception, "py.path.svnurl(None)")
+        with py.test.raises(Exception):
+            py.path.svnurl(None)
 
     def test_svnurl_characters_simple(self, path1):
         py.path.svnurl("svn+ssh://hello/world")
@@ -32,7 +36,8 @@ class TestSvnURLCommandPath(CommonSvnTests):
         py.path.svnurl("http://user@host.com/some/dir")
 
     def test_svnurl_characters_at_path(self, path1):
-        py.test.raises(ValueError, 'py.path.svnurl("http://host.com/foo@bar")')
+        with py.test.raises(ValueError):
+            py.path.svnurl("http://host.com/foo@bar")
 
     def test_svnurl_characters_colon_port(self, path1):
         py.path.svnurl("http://host.com:8080/some/dir")
@@ -45,7 +50,8 @@ class TestSvnURLCommandPath(CommonSvnTests):
         # colons are allowed on win32, because they're part of the drive
         # part of an absolute path... however, they shouldn't be allowed in
         # other parts, I think
-        py.test.raises(ValueError, 'py.path.svnurl("http://host.com/foo:bar")')
+        with py.test.raises(ValueError):
+            py.path.svnurl("http://host.com/foo:bar")
 
     def test_export(self, path1, tmpdir):
         tmpdir = tmpdir.join("empty")
@@ -92,4 +98,5 @@ class TestSvnInfoCommand:
         assert info.kind == 'dir'
 
 def test_badchars():
-    py.test.raises(ValueError, "py.path.svnurl('http://host/tmp/@@@:')")
+    with py.test.raises(ValueError):
+        py.path.svnurl('http://host/tmp/@@@:')

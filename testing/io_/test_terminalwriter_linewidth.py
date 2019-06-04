@@ -1,6 +1,8 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
+import pytest
+
 from py._io.terminalwriter import TerminalWriter
 
 
@@ -31,6 +33,10 @@ def test_terminal_writer_line_width_update_with_wide_text():
     assert tw.width_of_current_line == 21  # 5*2 + 1 + 5*2
 
 
+@pytest.mark.skipif(
+    'sys.version_info > (3,)',
+    reason='Bytes are not accepted'
+           ' https://github.com/pytest-dev/pytest/issues/4861')
 def test_terminal_writer_line_width_update_with_wide_bytes():
     tw = TerminalWriter()
     tw.write('乇乂ㄒ尺卂 ㄒ卄丨匚匚'.encode('utf-8'))

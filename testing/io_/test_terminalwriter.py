@@ -107,14 +107,11 @@ def test_unicode_on_file_with_ascii_encoding(tmpdir, monkeypatch, encoding):
 
 win32 = int(sys.platform == "win32")
 class TestTerminalWriter:
-    def pytest_generate_tests(self, metafunc):
-        if "tw" in metafunc.funcargnames:
-            metafunc.addcall(id="path", param="path")
-            metafunc.addcall(id="stringio", param="stringio")
-            metafunc.addcall(id="callable", param="callable")
-    def pytest_funcarg__tw(self, request):
+
+    @pytest.fixture(params=["path", "stringio", "callable"])
+    def tw(self, request):
         if request.param == "path":
-            tmpdir = request.getfuncargvalue("tmpdir")
+            tmpdir = request.getfixturevalue("tmpdir")
             p = tmpdir.join("tmpfile")
             f = codecs.open(str(p), 'w+', encoding='utf8')
             tw = py.io.TerminalWriter(f)
@@ -182,8 +179,10 @@ class TestTerminalWriter:
             for color in ("red", "green"):
                 text2 = tw.markup("hello", **{color: True, 'bold': bold})
                 assert text2.find("hello") != -1
-        py.test.raises(ValueError, "tw.markup('x', wronkw=3)")
-        py.test.raises(ValueError, "tw.markup('x', wronkw=0)")
+        with py.test.raises(ValueError):
+            tw.markup('x', wronkw=3)
+        with py.test.raises(ValueError):
+            tw.markup('x', wronkw=0)
 
     def test_line_write_markup(self, tw):
         tw.hasmarkup = True

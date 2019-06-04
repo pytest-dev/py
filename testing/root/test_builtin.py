@@ -56,7 +56,8 @@ def test_frozenset():
 
 def test_print_simple():
     from py.builtin import print_
-    py.test.raises(TypeError, "print_(hello=3)")
+    with py.test.raises(TypeError):
+        print_(hello=3)
     f = py.io.TextIO()
     print_("hello", "world", file=f)
     s = f.getvalue()
@@ -133,7 +134,8 @@ def test_reraise():
         raise Exception()
     except Exception:
         cls, val, tb = sys.exc_info()
-    excinfo = py.test.raises(Exception, "_reraise(cls, val, tb)")
+    with py.test.raises(Exception):
+        _reraise(cls, val, tb)
 
 def test_exec():
     l = []

@@ -89,8 +89,10 @@ class TestLogConsumer:
 
     def test_no_auto_producer(self):
         p = py.log.Producer('x')
-        py.test.raises(AttributeError, "p._x")
-        py.test.raises(AttributeError, "p.x_y")
+        with py.test.raises(AttributeError):
+            p._x
+        with py.test.raises(AttributeError):
+            p.x_y
 
     def test_setconsumer_with_producer(self):
         l = []

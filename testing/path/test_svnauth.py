@@ -2,6 +2,7 @@ import py
 from py.path import SvnAuth
 import time
 import sys
+import pytest
 
 svnbin = py.path.local.sysfind('svn')
 
@@ -261,7 +262,8 @@ class TestSvnURLAuth(object):
         u.propget('foo')
         assert '--username="foo" --password="bar"' in u.commands[0]
 
-def pytest_funcarg__setup(request):
+@pytest.fixture
+def setup(request):
     return Setup(request)
 
 class Setup:
@@ -271,7 +273,7 @@ class Setup:
         if not request.config.option.runslowtests:
             py.test.skip('use --runslowtests to run these tests')
 
-        tmpdir = request.getfuncargvalue("tmpdir")
+        tmpdir = request.getfixturevalue("tmpdir")
         repodir = tmpdir.join("repo")
         py.process.cmdexec('svnadmin create %s' % repodir)
         if sys.platform == 'win32':

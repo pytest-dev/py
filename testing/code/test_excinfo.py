@@ -145,7 +145,8 @@ class TestTraceback_f_g_h:
 
     def test_traceback_cut_excludepath(self, testdir):
         p = testdir.makepyfile("def f(): raise ValueError")
-        excinfo = py.test.raises(ValueError, "p.pyimport().f()")
+        with py.test.raises(ValueError) as excinfo:
+            p.pyimport().f()
         basedir = py.path.local(py.test.__file__).dirpath()
         newtraceback = excinfo.traceback.cut(excludepath=basedir)
         for x in newtraceback:
@@ -273,8 +274,8 @@ def test_tbentry_reinterpret():
 def test_excinfo_exconly():
     excinfo = py.test.raises(ValueError, h)
     assert excinfo.exconly().startswith('ValueError')
-    excinfo = py.test.raises(ValueError,
-        "raise ValueError('hello\\nworld')")
+    with py.test.raises(ValueError) as excinfo:
+        raise ValueError('hello\\nworld')
     msg = excinfo.exconly(tryshort=True)
     assert msg.startswith('ValueError')
     assert msg.endswith("world")
@@ -350,10 +351,11 @@ def test_codepath_Queue_example():
 
 
 class TestFormattedExcinfo:
-    def pytest_funcarg__importasmod(self, request):
+    @pytest.fixture
+    def importasmod(self, request):
         def importasmod(source):
             source = py.code.Source(source)
-            tmpdir = request.getfuncargvalue("tmpdir")
+            tmpdir = request.getfixturevalue("tmpdir")
             modpath = tmpdir.join("mod.py")
             tmpdir.ensure("__init__.py")
             modpath.write(source)

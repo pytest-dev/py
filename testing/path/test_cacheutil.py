@@ -12,12 +12,14 @@ class BasicCacheAPITest:
         assert val == 42
 
     def test_cache_get_key_error(self):
-        pytest.raises(KeyError, "self.cache._getentry(-23)")
+        with pytest.raises(KeyError):
+            self.cache._getentry(-23)
 
     def test_delentry_non_raising(self):
         self.cache.getorbuild(100, lambda: 100)
         self.cache.delentry(100)
-        pytest.raises(KeyError, "self.cache._getentry(100)")
+        with pytest.raises(KeyError):
+            self.cache._getentry(100)
 
     def test_delentry_raising(self):
         self.cache.getorbuild(100, lambda: 100)
