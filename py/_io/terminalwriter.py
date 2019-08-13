@@ -154,7 +154,7 @@ class TerminalWriter(object):
         elif py.builtin.callable(file) and not (
              hasattr(file, "write") and hasattr(file, "flush")):
             file = WriteFile(file, encoding=encoding)
-        if hasattr(file, "isatty") and file.isatty() and colorama:
+        if colorama:
             file = colorama.AnsiToWin32(file).stream
         self.encoding = encoding or getattr(file, 'encoding', "utf-8")
         self._file = file
