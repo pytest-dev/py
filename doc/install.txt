@@ -7,7 +7,7 @@ installation info in a nutshell
 
 **PyPI name**: py_
 
-**Pythons**: CPython 2.7, 3.4, 3.5, 3.6, 3.7, PyPy-5.4
+**Pythons**: CPython 2.7, 3.5, 3.6, 3.7, PyPy-5.4
 
 **Operating systems**: Linux, Windows, OSX, Unix
 
