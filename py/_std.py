@@ -15,7 +15,7 @@ class Std(object):
         self.__dict__ = sys.modules
 
     def __getattr__(self, name):
-        warnings.warn("py.std is deprecated, plase import %s directly" % name,
+        warnings.warn("py.std is deprecated, please import %s directly" % name,
                       category=PyStdIsDeprecatedWarning,
                       stacklevel=2)
         try:
