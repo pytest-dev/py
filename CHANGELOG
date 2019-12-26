@@ -1,8 +1,10 @@
 Unreleased
 ==========
 
-- handle ``FileNotFoundError`` when trying to import pathlib in ``path.common``
+- Handle ``FileNotFoundError`` when trying to import pathlib in ``path.common``
   on Python 3.4 (#207).
+
+- ``py.path.local.samefile`` now works correctly in Python 3 on Windows when dealing with symlinks.
 
 1.8.0 (2019-02-21)
 ==================
