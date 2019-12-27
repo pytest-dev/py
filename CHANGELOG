@@ -1,5 +1,5 @@
-Unreleased
-==========
+1.8.1 (2019-12-27)
+==================
 
 - Handle ``FileNotFoundError`` when trying to import pathlib in ``path.common``
   on Python 3.4 (#207).
