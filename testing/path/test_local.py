@@ -704,6 +704,17 @@ def test_samefile(tmpdir):
         p2 = p.__class__(str(p).upper())
         assert p1.samefile(p2)
 
+@pytest.mark.skipif(not hasattr(os, "symlink"), reason="os.symlink not available")
+def test_samefile_symlink(tmpdir):
+    p1 = tmpdir.ensure("foo.txt")
+    p2 = tmpdir.join("linked.txt")
+    try:
+        os.symlink(str(p1), str(p2))
+    except OSError as e:
+        # on Windows this might fail if the user doesn't have special symlink permissions
+        pytest.skip(str(e.args[0]))
+
+    assert p1.samefile(p2)
 
 def test_listdir_single_arg(tmpdir):
     tmpdir.ensure("hello")
