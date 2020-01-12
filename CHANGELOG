@@ -1,3 +1,19 @@
+1.9.0 (TBD)
+===========
+
+- Add type annotation stubs for the following modules:
+  * ``py.error``
+  * ``py.iniconfig``
+  * ``py.path`` (not including SVN paths)
+  * ``py.io``
+  * ``py.xml``
+  There are no plans to type other modules at this time.
+
+  The type annotations are provided in external .pyi files, not inline in the
+  code, and may therefore contain small errors or omissions. If you use ``py``
+  in conjunction with a type checker, and encounter any type errors you believe
+  should be accepted, please report it in an issue.
+
 1.8.2 (2020-06-15)
 ==================
 

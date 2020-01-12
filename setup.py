@@ -34,7 +34,11 @@ def main():
                      'Programming Language :: Python :: Implementation :: PyPy',
                     ],
         packages=find_packages(exclude=['tasks', 'testing']),
+        include_package_data=True,
         zip_safe=False,
+        package_data={
+            "": ["py.typed"],
+        },
     )
 
 if __name__ == '__main__':
