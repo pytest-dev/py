@@ -36,6 +36,9 @@ def main():
                     ],
         packages=find_packages(exclude=['tasks', 'testing']),
         zip_safe=False,
+        package_data={
+            "": ["py.typed"],
+        },
     )
 
 if __name__ == '__main__':
