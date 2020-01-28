@@ -1072,7 +1072,10 @@ def test_behavior_with_bytes():  # type: () -> None
     brelpath = local(b"bytesname")
 
     if sys.version_info < (3,):
-        assert str(bpath) == "/bytesname"
+        if sys.platform == "win32":
+            assert str(bpath) == r"C:\bytesname"
+        else:
+            assert str(bpath) == "/bytesname"
         assert str(brelpath) == local("bytesname")
         local() / brelpath
         local(b"/") / brelpath
