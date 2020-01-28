@@ -1066,34 +1066,52 @@ class TestBinaryAndTextMethods:
         assert type(s) == type(part)
 
 
-def test_behavior_with_bytes():
+def test_behavior_with_bytes():  # type: () -> None
     """Test py.path.local's behavior with regard to bytes instead of text."""
     bpath = local(b"/bytesname")
-
-    with pytest.raises(TypeError, match=r"__str__ returned non-string \(type bytes\)"):
-        assert str(bpath) == "/bytesname"
-
     brelpath = local(b"bytesname")
-    with pytest.raises(TypeError, match="a bytes-like object is required, not 'str'"):
-        local() / brelpath
 
-    with pytest.raises(
-        TypeError, match="endswith first arg must be bytes or a tuple of bytes, not str"
-    ):
+    if sys.version_info < (3,):
+        assert str(bpath) == "/bytesname"
+        assert str(brelpath) == local("bytesname")
+        local() / brelpath
         local(b"/") / brelpath
+    else:
+        with pytest.raises(
+            TypeError, match=r"__str__ returned non-string \(type bytes\)"
+        ):
+            str(bpath)
+        with pytest.raises(
+            TypeError, match="a bytes-like object is required, not 'str'"
+        ):
+            local() / brelpath
+        with pytest.raises(
+            TypeError,
+            match="endswith first arg must be bytes or a tuple of bytes, not str",
+        ):
+            local(b"/") / brelpath
 
     p1 = local(b"/")
-    p1.sep = b"/"
-    with pytest.raises(TypeError, match="can't concat str to bytes"):
+    p1.sep = b"/"  # type: ignore[assignment,misc]  # noqa: F821
+    if sys.version_info < (3,):
         p1 / brelpath
+    else:
+        with pytest.raises(TypeError, match="can't concat str to bytes"):
+            p1 / brelpath
 
     p1 = local(b"")
-    p1.sep = b"/"
+    p1.sep = b"/"  # type: ignore[assignment,misc]  # noqa: F821
     assert p1 / brelpath == p1 / brelpath
 
-    assert p1 / brelpath != local("") / local("bytesname")
-    with pytest.raises(TypeError, match=r"__str__ returned non-string \(type bytes\)"):
-        str(p1 / brelpath)
+    if sys.version_info < (3,):
+        assert p1 / brelpath == local("") / local("bytesname")
+        assert str(p1 / brelpath) == str(local("") / local("bytesname"))
+    else:
+        assert p1 / brelpath != local("") / local("bytesname")
+        with pytest.raises(
+            TypeError, match=r"__str__ returned non-string \(type bytes\)"
+        ):
+            str(p1 / brelpath)
 
-    strpath = (p1 / brelpath).strpath.decode()
-    assert strpath == str(local("") / local("bytesname"))
+        strpath = (p1 / brelpath).strpath.decode()
+        assert strpath == str(local("") / local("bytesname"))
