@@ -1104,7 +1104,13 @@ def test_behavior_with_bytes():  # type: () -> None
 
     p1 = local(b"")
     p1.sep = b"/"  # type: ignore[assignment,misc]  # noqa: F821
-    assert p1 / brelpath == p1 / brelpath
+    if sys.version_info > (3,) and sys.platform == "win32":
+        with pytest.raises(
+            TypeError, match="a bytes-like object is required, not 'str'"
+        ):
+            p1 / brelpath
+    else:
+        assert p1 / brelpath == p1 / brelpath
 
     if sys.version_info < (3,):
         assert p1 / brelpath == local("") / local("bytesname")
