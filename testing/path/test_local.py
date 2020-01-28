@@ -1064,3 +1064,36 @@ class TestBinaryAndTextMethods:
         s = x.read_text("ascii")
         assert s == part
         assert type(s) == type(part)
+
+
+def test_behavior_with_bytes():
+    """Test py.path.local's behavior with regard to bytes instead of text."""
+    bpath = local(b"/bytesname")
+
+    with pytest.raises(TypeError, match=r"__str__ returned non-string \(type bytes\)"):
+        assert str(bpath) == "/bytesname"
+
+    brelpath = local(b"bytesname")
+    with pytest.raises(TypeError, match="a bytes-like object is required, not 'str'"):
+        local() / brelpath
+
+    with pytest.raises(
+        TypeError, match="endswith first arg must be bytes or a tuple of bytes, not str"
+    ):
+        local(b"/") / brelpath
+
+    p1 = local(b"/")
+    p1.sep = b"/"
+    with pytest.raises(TypeError, match="can't concat str to bytes"):
+        p1 / brelpath
+
+    p1 = local(b"")
+    p1.sep = b"/"
+    assert p1 / brelpath == p1 / brelpath
+
+    assert p1 / brelpath != local("") / local("bytesname")
+    with pytest.raises(TypeError, match=r"__str__ returned non-string \(type bytes\)"):
+        str(p1 / brelpath)
+
+    strpath = (p1 / brelpath).strpath.decode()
+    assert strpath == str(local("") / local("bytesname"))
