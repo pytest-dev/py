@@ -1,20 +1,19 @@
 import py
 import sys
+import pytest
 from py._path import svnwc as svncommon
 
 svnbin = py.path.local.sysfind('svn')
 repodump = py.path.local(__file__).dirpath('repotest.dump')
 from py.builtin import print_
 
-def pytest_funcarg__repowc1(request):
+@pytest.fixture
+def repowc1(request):
     if svnbin is None:
         py.test.skip("svn binary not found")
 
-    tmpdir = request.getfuncargvalue("tmpdir")
-    repo, repourl, wc = request.cached_setup(
-        setup=lambda: getrepowc(tmpdir, "path1repo", "path1wc"),
-        scope="module",
-    )
+    tmpdir = request.getfixturevalue("tmpdir")
+    repo, repourl, wc = getrepowc(tmpdir, "path1repo", "path1wc")
     for x in ('test_remove', 'test_move', 'test_status_deleted'):
         if request.function.__name__.startswith(x):
             #print >>sys.stderr, ("saving repo", repo, "for", request.function)
@@ -22,8 +21,9 @@ def pytest_funcarg__repowc1(request):
             request.addfinalizer(lambda: restore_repowc(_savedrepowc))
     return repo, repourl, wc
 
-def pytest_funcarg__repowc2(request):
-    tmpdir = request.getfuncargvalue("tmpdir")
+@pytest.fixture
+def repowc2(request):
+    tmpdir = request.getfixturevalue("tmpdir")
     name = request.function.__name__
     repo, url, wc = getrepowc(tmpdir, "%s-repo-2" % name, "%s-wc-2" % name)
     return repo, url, wc

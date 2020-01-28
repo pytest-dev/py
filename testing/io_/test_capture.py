@@ -1,6 +1,7 @@
 from __future__ import with_statement
 
 import os, sys
+import pytest
 import py
 
 needsdup = py.test.mark.skipif("not hasattr(os, 'dup')")
@@ -45,7 +46,8 @@ class TestTextIO:
         f = py.io.TextIO()
         if sys.version_info >= (3,0):
             f.write("\u00f6")
-            py.test.raises(TypeError, "f.write(bytes('hello', 'UTF-8'))")
+            with py.test.raises(TypeError):
+                f.write(bytes('hello', 'UTF-8'))
         else:
             f.write(unicode("\u00f6", 'UTF-8'))
             f.write("hello") # bytes
@@ -56,7 +58,8 @@ class TestTextIO:
 def test_bytes_io():
     f = py.io.BytesIO()
     f.write(tobytes("hello"))
-    py.test.raises(TypeError, "f.write(totext('hello'))")
+    with py.test.raises(TypeError):
+        f.write(totext('hello'))
     s = f.getvalue()
     assert s == tobytes("hello")
 
@@ -70,8 +73,9 @@ def test_dontreadfrominput():
     py.test.raises(ValueError, f.fileno)
     f.close() # just for completeness
 
-def pytest_funcarg__tmpfile(request):
-    testdir = request.getfuncargvalue("testdir")
+@pytest.fixture
+def tmpfile(request):
+    testdir = request.getfixturevalue("testdir")
     f = testdir.makepyfile("").open('wb+')
     request.addfinalizer(f.close)
     return f
@@ -315,7 +319,8 @@ class TestStdCapture:
         print ("XXX which indicates an error in the underlying capturing")
         print ("XXX mechanisms")
         cap = self.getcapture()
-        py.test.raises(IOError, "sys.stdin.read()")
+        with py.test.raises(IOError):
+            sys.stdin.read()
         out, err = cap.reset()
 
     def test_suspend_resume(self):

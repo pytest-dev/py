@@ -155,8 +155,8 @@ class CommonFSTests(object):
         l = path1.listdir()
         assert path1.join('sampledir') in l
         assert path1.join('samplefile') in l
-        py.test.raises(py.error.ENOTDIR,
-                       "path1.join('samplefile').listdir()")
+        with py.test.raises(py.error.ENOTDIR):
+            path1.join('samplefile').listdir()
 
     def test_listdir_fnmatchstring(self, path1):
         l = path1.listdir('s*dir')
@@ -300,7 +300,8 @@ class CommonFSTests(object):
         assert url.mtime() > 0
 
     def test_relto_wrong_type(self, path1):
-        py.test.raises(TypeError, "path1.relto(42)")
+        with py.test.raises(TypeError):
+            path1.relto(42)
 
     def test_load(self, path1):
         p = path1.join('samplepickle')

@@ -272,7 +272,8 @@ class TestSourceParsingAndCompiling:
         co = self.source.compile()
         py.builtin.exec_(co, globals())
         f(7)
-        excinfo = py.test.raises(AssertionError, "f(6)")
+        with py.test.raises(AssertionError) as excinfo:
+            f(6)
         frame = excinfo.traceback[-1].frame
         stmt = frame.code.fullsource.getstatement(frame.lineno)
         #print "block", str(block)
@@ -326,14 +327,13 @@ def test_getstartingblock_multiline():
 
 def test_getline_finally():
     def c(): pass
-    excinfo = py.test.raises(TypeError, """
-           teardown = None
-           try:
-                c(1)
-           finally:
-                if teardown:
-                    teardown()
-    """)
+    with py.test.raises(TypeError) as excinfo:
+       teardown = None
+       try:
+            c(1)
+       finally:
+            if teardown:
+                teardown()
     source = excinfo.traceback[-1].statement
     assert str(source).strip() == 'c(1)'
 

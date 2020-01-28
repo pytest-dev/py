@@ -18,15 +18,12 @@ def test_assert():
 
 
 def test_assert_within_finally():
-    excinfo = py.test.raises(ZeroDivisionError, """
+    with py.test.raises(ZeroDivisionError,
+                        match=".*division.* by zero"):
         try:
-            1/0
+            1 / 0
         finally:
             i = 42
-    """)
-    s = excinfo.exconly()
-    assert re.search("ZeroDivisionError:.*division", s) is not None
-
 
 def test_assert_multiline_1():
     try:
