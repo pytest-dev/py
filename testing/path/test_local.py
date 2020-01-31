@@ -1116,11 +1116,15 @@ def test_behavior_with_bytes():  # type: () -> None
         assert p1 / brelpath == local("") / local("bytesname")
         assert str(p1 / brelpath) == str(local("") / local("bytesname"))
     else:
-        assert p1 / brelpath != local("") / local("bytesname")
-        with pytest.raises(
-            TypeError, match=r"__str__ returned non-string \(type bytes\)"
-        ):
-            str(p1 / brelpath)
+        if sys.platform == "win32":
+            with pytest.raises(TypeError, "a bytes-like object is required, not 'str'"):
+                p1 / brelpath
+        else:
+            assert p1 / brelpath != local("") / local("bytesname")
+            with pytest.raises(
+                TypeError, match=r"__str__ returned non-string \(type bytes\)"
+            ):
+                str(p1 / brelpath)
 
-        strpath = (p1 / brelpath).strpath.decode()
-        assert strpath == str(local("") / local("bytesname"))
+            strpath = (p1 / brelpath).strpath.decode()
+            assert strpath == str(local("") / local("bytesname"))
