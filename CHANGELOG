@@ -1,3 +1,9 @@
+1.9.0 (UNRELEASED)
+==================
+
+- New ``TerminalWriter.write_source`` method that writes highlighted code to the terminal if
+  ``Pygments`` is installed.
+
 1.8.1 (2019-12-27)
 ==================
 

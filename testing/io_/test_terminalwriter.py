@@ -303,3 +303,16 @@ def test_should_do_markup_PY_COLORS_eq_0(monkeypatch):
     tw.line("hello", bold=True)
     s = f.getvalue()
     assert s == "hello\n"
+
+
+@pytest.mark.parametrize('atty', [True, False])
+def test_write_source(atty):
+    f = py.io.TextIO()
+    f.isatty = lambda: atty
+    tw = py.io.TerminalWriter(file=f)
+    tw.write_source("x = 1")
+    s = f.getvalue()
+    if atty:
+        assert s == 'x = \x1b[34m1\x1b[39;49;00m\n'
+    else:
+        assert s == "x = 1"

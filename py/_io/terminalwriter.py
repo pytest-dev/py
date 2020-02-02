@@ -255,6 +255,19 @@ class TerminalWriter(object):
                 markupmsg = msg
             write_out(self._file, markupmsg)
 
+    def write_source(self, source):
+        """Writes the given source code highlighted"""
+        if self.hasmarkup:
+            try:
+                from pygments.formatters.terminal import TerminalFormatter
+                from pygments.lexers.python import PythonLexer
+                from pygments import highlight
+            except ImportError:
+                pass
+            else:
+                source = highlight(source, PythonLexer(), TerminalFormatter())
+        self.write(source)
+
     def _update_chars_on_current_line(self, text_or_bytes):
         newline = b'\n' if isinstance(text_or_bytes, bytes) else '\n'
         current_line = text_or_bytes.rsplit(newline, 1)[-1]
