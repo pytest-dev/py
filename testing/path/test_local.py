@@ -164,6 +164,17 @@ class TestLocalPath(common.CommonFSTests):
         p = py.path.local("~", expanduser=True)
         assert p == os.path.expanduser("~")
 
+    @pytest.mark.skipif(
+        not sys.platform.startswith("win32"), reason="case insensitive only on windows"
+    )
+    def test_eq_hash_are_case_insensitive_on_windows(self):
+        a = py.path.local("/some/path")
+        b = py.path.local("/some/PATH")
+        assert a == b
+        assert hash(a) == hash(b)
+        assert a in {b}
+        assert a in {b: 'b'}
+
     def test_eq_with_strings(self, path1):
         path1 = path1.join('sampledir')
         path2 = str(path1)
