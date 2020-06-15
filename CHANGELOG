@@ -1,5 +1,5 @@
-1.8.2 (TBD)
-===========
+1.8.2 (2020-06-15)
+==================
 
 - On Windows, ``py.path.local``s which differ only in case now have the same
   Python hash value. Previously, such paths were considered equal but had
