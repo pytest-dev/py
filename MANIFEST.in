@@ -5,6 +5,7 @@ include setup.py
 include LICENSE
 include conftest.py
 include tox.ini
+recursive-include py *.pyi
 graft doc
 graft testing
 global-exclude *.pyc
