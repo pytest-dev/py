@@ -515,7 +515,8 @@ comment 4
         assert str(getstatement(line, source)) == '    x = 1'
     for line in range(6, 10):
         assert str(getstatement(line, source)) == '    assert False', (
-            line, source, getstatement(line, source))
+            '{}[{}] is {}'.format(
+                source, line, str(getstatement(line, source))))
     assert str(getstatement(10, source)) == '"""'
 
 def test_comment_in_statement():
