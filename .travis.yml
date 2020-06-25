@@ -14,7 +14,7 @@ python:
 env:
   global:
     - COVERAGE_PROCESS_START=$PWD/tox.ini
-  matrix:
+  jobs:
     - DEPS="pytest~=2.9.0"
     - DEPS="pytest~=3.0.0"
     #- DEPS="pytest~=3.1.0"
@@ -38,9 +38,9 @@ jobs:
       script: skip
       deploy:
         provider: pypi
-        user: nicoddemus
+        username: nicoddemus
         distributions: sdist bdist_wheel
-        skip_upload_docs: true
+        upload_docs: false
         password:
           secure: VNYW/sZoD+9DzKCe6vANNXXJR7jP7rwySafQ33N1jAnCrdylQjEN/p6tSfUe8jDi3wDpLPL9h8pwfxuUT7CRxglHov3Qe7zSeywixvHan5aFahQiQ8+gucYIM7wITHH3oQs7jN35pnhdnF+QlW2+eDCL6qOLU5XwuRhsDKXjQ/hUWR5hlX5EniD1gzyKEf6j1YCpST87tKpeLwVEYEmsucdkUZuXhxDtyaWQHWiPsLWwh/slQtUJEHeLF26r8UxFy0RiGne9jR+CzRfH5ktcA9/pArvp4VuwOii+1TDxVSYP7+I8Z+eUKN9JBg12QLaHwoIN/8J+MvHCkuf+OGSLM3sEyNRJGDev372xg3K7ylIkeeK4WXirKEp2ojgN8tniloDjnwdu/gPWBnrXuooA60tNoByHFa8KbMZAr2B2sQeMxD4VZGr1N8l0rX4gRTrwvdk3i3ulLKVSwkXaGn+GrfZTTboa7dEnpuma8tv1niNCSpStYIy7atS8129+5ijV3OC8DzOMh/rVbO9WsDb/RPG3yjFiDvEJPIPeE0l/m5u42QBqtdZSS2ia7UWTJBiEY09uFMTRmH5hhE/1aiYBbvAztf5CReUbeKdSQz3L8TTSZqewtFZmXTkX97/xQnrEpsnGezIM2DNuMEuQG3MxGkNCxwbQKpx/bkHdrD75yMk=
         on:
