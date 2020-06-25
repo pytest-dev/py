@@ -3,7 +3,7 @@ Release Procedure
 
 #. Create a branch ``release-X.Y.Z`` from the latest ``master``.
 
-#. Manually update the ``CHANGELOG`` and commit.
+#. Manually update the ``CHANGELOG.rst`` and commit.
 
 #. Open a PR for this branch targeting ``master``.
 
