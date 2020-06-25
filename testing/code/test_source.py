@@ -513,9 +513,9 @@ comment 4
 '''
     for line in range(2, 6):
         assert str(getstatement(line, source)) == '    x = 1'
-    for line in range(7, 10):
+    for line in range(6, 10):
         assert str(getstatement(line, source)) == '    assert False', (
-            line, source)
+            line, source, getstatement(line, source))
     assert str(getstatement(10, source)) == '"""'
 
 def test_comment_in_statement():
