@@ -107,7 +107,7 @@ class ForkedFunc:
             self.tempdir.remove()
 
     def __del__(self):
-        if self.pid is not None:  # only clean up in main process
+        if not (hasattr(self, "pid") and self.pid is None):  # only clean up in main process
             self._removetemp()
 
 
