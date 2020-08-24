@@ -16,6 +16,16 @@ def test_tempdir_gets_gc_collected(monkeypatch):
     assert ff.tempdir.check()
     ff.__del__()
     assert not ff.tempdir.check()
+    
+def test_no_second_exception_if_fork_fails(monkeypatch):
+    def raise_oserror():
+        # BlockingIOError on py3k
+        raise OSError("Resource temporarily unavailable")
+    monkeypatch.setattr(os, "fork", raise_oserror)
+    with pytest.raises(OSError, "Resource temporarily unavailable"):
+        ff = py.process.ForkedFunc(boxf1)
+    ff.__del__()
+    assert not ff.tempdir.check()
 
 def test_basic_forkedfunc():
     result = py.process.ForkedFunc(boxf1).waitfinish()
