@@ -1,3 +1,5 @@
+import gc
+
 import pytest
 import py, sys, os
 
@@ -24,8 +26,10 @@ def test_no_second_exception_if_fork_fails(monkeypatch):
     monkeypatch.setattr(os, "fork", raise_oserror)
     with pytest.raises(OSError, match="Resource temporarily unavailable"):
         py.process.ForkedFunc(boxf1)
-        # The second exception would be raised while leaving the with block
-        # Not marking it should be equivalent to assert_does_not_raise
+    # Make sure the ForkedFunc is collected
+    # That may be triggered by refcounting while exiting the with statement,
+    # but gc.collect() should work even on PyPy.
+    gc.collect()
 
 def test_basic_forkedfunc():
     result = py.process.ForkedFunc(boxf1).waitfinish()
