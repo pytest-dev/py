@@ -1,3 +1,7 @@
+arch:
+  - amd64
+  - ppc64le
+  
 dist: xenial
 language: python
 
@@ -52,6 +56,9 @@ matrix:
   allow_failures:
   - python: 'pypy'
   - python: 'pypy3'
+
+before_install:
+  if [[ "${TRAVIS_CPU_ARCH}" == "ppc64le" ]]; then sudo chown -Rvf $USER:$GROUP ~/.cache/pip/wheels; fi
 
 install:
   - pip install -U coverage coverage-enable-subprocess pip setuptools setuptools_scm
