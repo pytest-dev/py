@@ -1,3 +1,28 @@
+Metadata-Version: 2.1
+Name: iniconfig
+Version: 1.0.1
+Summary: iniconfig: brain-dead simple config-ini parsing
+Home-page: http://github.com/RonnyPfannschmidt/iniconfig
+Author: Ronny Pfannschmidt, Holger Krekel
+Author-email: opensource@ronnypfannschmidt.de, holger.krekel@gmail.com
+License: MIT License
+Platform: unix
+Platform: linux
+Platform: osx
+Platform: cygwin
+Platform: win32
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Utilities
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 3
+
 iniconfig: brain-dead simple parsing of ini files
 =======================================================
 
@@ -14,7 +39,7 @@ having a unique set of features:
 
 If you encounter issues or have feature wishes please report them to:
 
-    http://github.org/RonnyPfannschmidt/iniconfig/issues
+    http://github.com/RonnyPfannschmidt/iniconfig/issues
 
 Basic Example
 ===================================
