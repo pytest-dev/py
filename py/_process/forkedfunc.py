@@ -89,12 +89,14 @@ class ForkedFunc:
             exitstatus = 0
         signal = systemstatus & 0x7f
         if not exitstatus and not signal:
-            retval = self.RETVAL.open('rb')
+            retvalf = self.RETVAL.open('rb')
             try:
-                retval_data = retval.read()
+                retval_data = retvalf.read()
+                retval = marshal.loads(retval_data)
+            except:
+                retval = None
             finally:
-                retval.close()
-            retval = marshal.loads(retval_data)
+                retvalf.close()
         else:
             retval = None
         stdout = self.STDOUT.read()

@@ -34,6 +34,15 @@ def test_exitstatus():
     assert not result.out
     assert not result.err
 
+def test_exit0():
+    def exit0():
+        os._exit(0)
+    result = py.process.ForkedFunc(exit0).waitfinish()
+    assert result.exitstatus == 0
+    assert result.signal == 0
+    assert not result.out
+    assert not result.err
+
 def test_execption_in_func():
     def fun():
         raise ValueError(42)
