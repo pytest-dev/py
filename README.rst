@@ -7,11 +7,8 @@
 .. image:: https://img.shields.io/pypi/pyversions/pytest.svg
   :target: https://pypi.org/project/py
 
-.. image:: https://img.shields.io/travis/pytest-dev/py.svg
-   :target: https://travis-ci.org/pytest-dev/py
-
-.. image:: https://ci.appveyor.com/api/projects/status/10keglan6uqwj5al/branch/master?svg=true
-   :target: https://ci.appveyor.com/project/pytestbot/py
+.. image:: https://github.com/pytest-dev/py/workflows/build/badge.svg
+  :target: https://github.com/pytest-dev/py/actions
 
 
 **NOTE**: this library is in **maintenance mode** and should not be used in new code.
