@@ -721,8 +721,9 @@ def test_samefile_symlink(tmpdir):
     p2 = tmpdir.join("linked.txt")
     try:
         os.symlink(str(p1), str(p2))
-    except OSError as e:
+    except (OSError, NotImplementedError) as e:
         # on Windows this might fail if the user doesn't have special symlink permissions
+        # pypy3 on Windows doesn't implement os.symlink and raises NotImplementedError
         pytest.skip(str(e.args[0]))
 
     assert p1.samefile(p2)
