@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: iniconfig
-Version: 1.0.1
+Version: 1.1.1
 Summary: iniconfig: brain-dead simple config-ini parsing
 Home-page: http://github.com/RonnyPfannschmidt/iniconfig
 Author: Ronny Pfannschmidt, Holger Krekel
