@@ -1,3 +1,10 @@
+1.10.0 (2020-12-12)
+===================
+
+- Fix a regular expression DoS vulnerability in the py.path.svnwc SVN blame functionality (CVE-2020-29651)
+- Update vendored apipkg: 1.4 => 1.5
+- Update vendored iniconfig: 1.0.0 => 1.1.1
+
 1.9.0 (2020-06-24)
 ==================
 
