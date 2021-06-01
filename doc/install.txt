@@ -71,7 +71,10 @@ Mailing list and issue tracker
 
 - `py-dev developers list`_ and `commit mailing list`_.
 
-- #pylib on irc.freenode.net IRC channel for random questions.
+- ``#pytest`` `on irc.libera.chat <ircs://irc.libera.chat:6697/#pytest>`_ IRC
+  channel for random questions (using an IRC client, `via webchat
+  <https://web.libera.chat/#pytest>`_, or `via Matrix
+  <https://matrix.to/#/%23pytest:libera.chat>`_).
 
 - `issue tracker`_ use the issue tracker to report
   bugs or request features.
