@@ -36,7 +36,7 @@ jobs:
         python-version: ${{ matrix.python }}
     - name: Test
       run: |
-        tox -e ${{ matrix.tox_env }}  
+        pipx run tox -e ${{ matrix.tox_env }}  
 
   deploy:
 
