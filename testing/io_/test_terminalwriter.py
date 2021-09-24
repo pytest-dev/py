@@ -303,3 +303,39 @@ def test_should_do_markup_PY_COLORS_eq_0(monkeypatch):
     tw.line("hello", bold=True)
     s = f.getvalue()
     assert s == "hello\n"
+
+def test_should_do_markup(monkeypatch):
+    monkeypatch.delenv("PY_COLORS", raising=False)
+    monkeypatch.delenv("NO_COLOR", raising=False)
+
+    should_do_markup = terminalwriter.should_do_markup
+
+    f = py.io.TextIO()
+    f.isatty = lambda: True
+
+    assert should_do_markup(f) is True
+
+    # NO_COLOR without PY_COLORS.
+    monkeypatch.setenv("NO_COLOR", "0")
+    assert should_do_markup(f) is False
+    monkeypatch.setenv("NO_COLOR", "1")
+    assert should_do_markup(f) is False
+    monkeypatch.setenv("NO_COLOR", "any")
+    assert should_do_markup(f) is False
+
+    # PY_COLORS overrides NO_COLOR ("0" and "1" only).
+    monkeypatch.setenv("PY_COLORS", "1")
+    assert should_do_markup(f) is True
+    monkeypatch.setenv("PY_COLORS", "0")
+    assert should_do_markup(f) is False
+    # Uses NO_COLOR.
+    monkeypatch.setenv("PY_COLORS", "any")
+    assert should_do_markup(f) is False
+    monkeypatch.delenv("NO_COLOR")
+    assert should_do_markup(f) is True
+
+    # Back to defaults.
+    monkeypatch.delenv("PY_COLORS")
+    assert should_do_markup(f) is True
+    f.isatty = lambda: False
+    assert should_do_markup(f) is False
