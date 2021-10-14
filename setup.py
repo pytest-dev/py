@@ -11,7 +11,7 @@ def main():
         url='https://py.readthedocs.io/',
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
-        python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
+        python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
         author='holger krekel, Ronny Pfannschmidt, Benjamin Peterson and others',
         author_email='pytest-dev@python.org',
         classifiers=['Development Status :: 6 - Mature',
