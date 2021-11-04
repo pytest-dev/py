@@ -1,3 +1,10 @@
+1.11.0 (2021-11-04)
+===================
+
+- Support Python 3.11
+- Support ``NO_COLOR`` environment variable
+- Update vendored apipkg: 1.5 => 2.0
+
 1.10.0 (2020-12-12)
 ===================
 
