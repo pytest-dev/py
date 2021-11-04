@@ -1,3 +1,11 @@
+1.11.0  (2021-11-04)
+====================
+
+- update irc links to libera
+- disable bogous tests for apiwarn
+- upgrade apipkg for python 3.11 suport
+- add support for NO_COLOR env var to  terminal io
+
 1.10.0 (2020-12-12)
 ===================
 
