@@ -482,13 +482,13 @@ def test_capturing_and_logging_fundamentals(testdir, method):
         import py, logging
         cap = py.io.%s(out=False, in_=False)
 
-        logging.warn("hello1")
+        logging.warning("hello1")
         outerr = cap.suspend()
         print ("suspend, captured %%s" %%(outerr,))
-        logging.warn("hello2")
+        logging.warning("hello2")
 
         cap.resume()
-        logging.warn("hello3")
+        logging.warning("hello3")
 
         outerr = cap.suspend()
         print ("suspend2, captured %%s" %% (outerr,))

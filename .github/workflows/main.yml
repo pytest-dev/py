@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "pypy3"]
+        python: ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "pypy-3.8"]
         os: [ubuntu-latest, windows-latest]
         include:
           - python: "2.7"
@@ -25,13 +25,13 @@ jobs:
             tox_env: "py38-pytest30"
           - python: "3.9"
             tox_env: "py39-pytest30"
-          - python: "pypy3"
+          - python: "pypy-3.8"
             tox_env: "pypy3-pytest30"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
     - name: Test
@@ -47,9 +47,9 @@ jobs:
     needs: build
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: "3.7"
     - name: Install wheel
