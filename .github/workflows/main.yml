@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "pypy-3.8"]
+        python: ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "pypy-3.9"]
         os: [ubuntu-latest, windows-latest]
         include:
           - python: "2.7"
@@ -25,7 +25,11 @@ jobs:
             tox_env: "py38-pytest30"
           - python: "3.9"
             tox_env: "py39-pytest30"
-          - python: "pypy-3.8"
+          - python: "3.10"
+            tox_env: "py310-pytest30"
+          - python: "3.11"
+            tox_env: "py311-pytest30"
+          - python: "pypy-3.9"
             tox_env: "pypy3-pytest30"
 
     steps:
