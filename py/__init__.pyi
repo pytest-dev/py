@@ -2,11 +2,11 @@ from typing import Any
 
 # py allows to use e.g. py.path.local even without importing py.path.
 # So import implicitly.
-from . import error
-from . import iniconfig
-from . import path
-from . import io
-from . import xml
+from . import error as error
+from . import iniconfig as iniconfig
+from . import path as path
+from . import io as io
+from . import xml as xml
 
 __version__: str
 
