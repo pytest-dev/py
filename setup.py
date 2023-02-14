@@ -8,7 +8,11 @@ def main():
         long_description=open('README.rst').read(),
         use_scm_version={"write_to": "py/_version.py"},
         setup_requires=["setuptools_scm"],
-        url='https://py.readthedocs.io/',
+        url='https://github.com/pytest-dev/py',
+        project_urls = {
+                        "Documentation": "https://py.readthedocs.io/en/latest/",
+                        "Bug Tracker": "https://github.com/pytest-dev/py/issues",
+                       },
         license='MIT license',
         platforms=['unix', 'linux', 'osx', 'cygwin', 'win32'],
         python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
