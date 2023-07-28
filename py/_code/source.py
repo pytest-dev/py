@@ -16,7 +16,7 @@ except ImportError:
 
 
 class Source(object):
-    """ a immutable object holding a source code fragment,
+    """ an immutable object holding a source code fragment,
         possibly deindenting it.
     """
     _compilecounter = 0
