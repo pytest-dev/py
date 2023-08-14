@@ -1,3 +1,5 @@
+import gc
+
 import pytest
 import py, sys, os
 
@@ -16,6 +18,18 @@ def test_tempdir_gets_gc_collected(monkeypatch):
     assert ff.tempdir.check()
     ff.__del__()
     assert not ff.tempdir.check()
+    
+def test_no_second_exception_if_fork_fails(monkeypatch):
+    def raise_oserror():
+        # BlockingIOError on py3k
+        raise OSError("Resource temporarily unavailable")
+    monkeypatch.setattr(os, "fork", raise_oserror)
+    with pytest.raises(OSError, match="Resource temporarily unavailable"):
+        py.process.ForkedFunc(boxf1)
+    # Make sure the ForkedFunc is collected
+    # That may be triggered by refcounting while exiting the with statement,
+    # but gc.collect() should work even on PyPy.
+    gc.collect()
 
 def test_basic_forkedfunc():
     result = py.process.ForkedFunc(boxf1).waitfinish()
