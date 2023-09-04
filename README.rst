@@ -16,16 +16,16 @@
 The py lib is a Python development support library featuring
 the following tools and modules:
 
-* ``py.path``:  uniform local and svn path objects  -> please use pathlib/pathlib2 instead
-* ``py.apipkg``:  explicit API control and lazy-importing -> please use the standalone package instead
-* ``py.iniconfig``:  easy parsing of .ini files -> please use the standalone package instead
+* ``py.path``:  uniform local and svn path objects  -> please use pathlib/pathlib2 instead.
+* ``py.apipkg``:  explicit API control and lazy-importing -> please use the standalone package instead.
+* ``py.iniconfig``:  easy parsing of .ini files -> please use the standalone package instead.
 * ``py.code``: dynamic code generation and introspection (deprecated, moved to ``pytest`` as a implementation detail).
 
 **NOTE**: prior to the 1.4 release this distribution used to
-contain py.test which is now its own package, see https://docs.pytest.org
+contain py.test which is now its own package, see https://docs.pytest.org.
 
-For questions and more information please visit https://py.readthedocs.io
+For questions and more information please visit https://py.readthedocs.io.
 
-Bugs and issues: https://github.com/pytest-dev/py
+Bugs and issues: https://github.com/pytest-dev/py.
 
-Authors: Holger Krekel and others, 2004-2017
+Authors: Holger Krekel and others, 2004-2017.
