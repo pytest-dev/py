@@ -169,9 +169,9 @@ class LocalPath(FSBase):
         return hash(s)
 
     def __eq__(self, other):
-        s1 = fspath(self)
+        s1 = normpath(fspath(self))
         try:
-            s2 = fspath(other)
+            s2 = normpath(fspath(other))
         except TypeError:
             return False
         if iswin32:
